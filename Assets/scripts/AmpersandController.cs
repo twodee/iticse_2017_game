@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
+public class AmpersandController : MonoBehaviour {
   public float speed;
   public float groundRadius;
 
@@ -9,20 +9,23 @@ public class PlayerController : MonoBehaviour {
   private Transform foot;
   private bool isJumping;
   private LineRenderer lineRenderer;
-  private bool isTargeted;
+  private bool targetedThisFrame;
+  private CellController target;
 
   void Start() {
     rigidbody = GetComponent<Rigidbody2D>();
     foot = transform.Find("foot");
     isJumping = false;
     lineRenderer = GetComponent<LineRenderer>();
+    targetedThisFrame = false;
+    target = null;
   }
   
   void Update() {
     float horizontal = Input.GetAxis("HorizontalR");
     rigidbody.velocity = new Vector2(horizontal * speed, rigidbody.velocity.y);
 
-    if (Input.GetButton("Jump") && !isJumping) {
+    if (Input.GetButton("JumpR") && !isJumping) {
       Collider2D hit = Physics2D.OverlapCircle(foot.position, groundRadius, Utilities.GROUND_MASK);
       if (hit != null) {
         rigidbody.AddForce(Vector2.up * 300);
@@ -30,15 +33,13 @@ public class PlayerController : MonoBehaviour {
       }
     }
 
-    if (Input.GetMouseButtonDown(0)) {
-      Vector3 mouseInPixels = Input.mousePosition;
-      Vector3 mouseInWorld = Camera.main.ScreenToWorldPoint(mouseInPixels);
-      mouseInWorld.z = 0;
-      lineRenderer.SetPosition(1, mouseInWorld); 
-      isTargeted = true;
+    if (!targetedThisFrame && Input.GetMouseButtonDown(0)) {
+      lineRenderer.enabled = false;
+      target = null;
     }
+    targetedThisFrame = false;
 
-    if (isTargeted) {
+    if (lineRenderer.enabled) {
       lineRenderer.SetPosition(0, transform.position); 
     }
   }
@@ -46,6 +47,19 @@ public class PlayerController : MonoBehaviour {
   void OnCollisionEnter2D(Collision2D collision) {
     if (collision.gameObject.layer == Utilities.GROUND_LAYER) {
       isJumping = false;
+    }
+  }
+
+  public CellController Target {
+    get {
+      return target;
+    }
+
+    set {
+      target = value;
+      lineRenderer.enabled = true;
+      lineRenderer.SetPosition(1, target.gameObject.transform.position); 
+      targetedThisFrame = true;
     }
   }
 }

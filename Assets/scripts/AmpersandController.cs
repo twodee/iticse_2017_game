@@ -1,65 +1,122 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AmpersandController : MonoBehaviour {
-  public float speed;
-  public float groundRadius;
+public class AmpersandController : PlayerController {
+  public float barbLength;
 
-  private new Rigidbody2D rigidbody;
-  private Transform foot;
-  private bool isJumping;
   private LineRenderer lineRenderer;
-  private bool targetedThisFrame;
-  private CellController target;
+  private LineRenderer leftBarbRenderer;
+  private LineRenderer rightBarbRenderer;
+  private CellController targetCell;
+  private Vector2 targetPosition;
+  private Coroutine caster;
 
-  void Start() {
-    rigidbody = GetComponent<Rigidbody2D>();
-    foot = transform.Find("foot");
-    isJumping = false;
+  override public void Start() {
+    base.Start();
+    this.Type = "R";
     lineRenderer = GetComponent<LineRenderer>();
-    targetedThisFrame = false;
-    target = null;
+    leftBarbRenderer = transform.Find("leftbarb").GetComponent<LineRenderer>();
+    rightBarbRenderer = transform.Find("rightbarb").GetComponent<LineRenderer>();
+    targetCell = null;
+    caster = null;
   }
   
-  void Update() {
-    float horizontal = Input.GetAxis("HorizontalR");
-    rigidbody.velocity = new Vector2(horizontal * speed, rigidbody.velocity.y);
+  override public void Update() {
+    base.Update();
 
-    if (Input.GetButton("JumpR") && !isJumping) {
-      Collider2D hit = Physics2D.OverlapCircle(foot.position, groundRadius, Utilities.GROUND_MASK);
-      if (hit != null) {
-        rigidbody.AddForce(Vector2.up * 300);
-        isJumping = true;
+    // Emit feeler pointer on left-click.
+    if (Input.GetMouseButtonDown(0)) {
+      if (caster != null) {
+        StopCoroutine(caster);
       }
+      caster = StartCoroutine(CastPointer()); 
     }
 
-    if (!targetedThisFrame && Input.GetMouseButtonDown(0)) {
+    // Cancel pointer on right-click.
+    if (Input.GetMouseButtonDown(1)) {
       lineRenderer.enabled = false;
-      target = null;
+      leftBarbRenderer.enabled = false;
+      rightBarbRenderer.enabled = false;
+      targetCell = null;
     }
-    targetedThisFrame = false;
 
-    if (lineRenderer.enabled) {
-      lineRenderer.SetPosition(0, transform.position); 
+    // Only update pointer if we're not currently sending out a feeler ray.
+    if (caster == null && lineRenderer.enabled) {
+      Vector2 diff = targetPosition - (Vector2) transform.position;
+      diff.Normalize();
+      Vector2 perp = new Vector3(-diff.y, diff.x);
+      lineRenderer.SetPosition(0, (Vector2) transform.position + diff * 0.3f); 
+      leftBarbRenderer.SetPosition(0, targetPosition + barbLength * (perp - 1.5f * diff)); 
+      rightBarbRenderer.SetPosition(0, targetPosition - barbLength * (perp + 1.5f * diff)); 
     }
   }
 
-  void OnCollisionEnter2D(Collision2D collision) {
-    if (collision.gameObject.layer == Utilities.GROUND_LAYER) {
-      isJumping = false;
+  void PointAt(Vector2 position) {
+    Vector2 diff = position - (Vector2) transform.position;
+    diff.Normalize();
+    Vector2 perp = new Vector3(-diff.y, diff.x);
+    lineRenderer.SetPosition(0, (Vector2) transform.position + diff * 0.3f); 
+    leftBarbRenderer.SetPosition(0, position + barbLength * (perp - 1.5f * diff)); 
+    rightBarbRenderer.SetPosition(0, position - barbLength * (perp + 1.5f * diff)); 
+    lineRenderer.SetPosition(1, position); 
+    leftBarbRenderer.SetPosition(1, position); 
+    rightBarbRenderer.SetPosition(1, position); 
+  }
+
+  IEnumerator CastPointer() {
+    lineRenderer.enabled = true;
+    leftBarbRenderer.enabled = true;
+    rightBarbRenderer.enabled = true;
+
+    Vector3 mousePixels = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
+    Vector2 to = Camera.main.ScreenToWorldPoint(mousePixels);
+    Vector2 from = transform.position;
+    float maximumLength = Vector2.Distance(from, to);
+    Vector2 diff = to - from;
+    diff.Normalize();
+
+    /* Ray ray = new Ray(from, diff); */
+    /* float maximumLength; */
+    /* float cameraHeight = Camera.main.orthographicSize; */
+    /* float cameraWidth = cameraHeight * Camera.main.aspect; */
+    /* Bounds bounds = new Bounds((Vector2) Camera.main.transform.position, new Vector2(cameraWidth, cameraHeight)); */
+    /* Debug.Log("ray: " + ray); */
+    /* Debug.Log("bounds: " + bounds); */
+    /* bounds.IntersectRay(ray, out maximumLength); */
+    /* Debug.Log("maximumLength: " + maximumLength); */
+
+    float startTime = Time.time;
+    float elapsedTime = 0.0f;
+    float targetTime = 0.5f;
+    bool isHit = false;
+    targetCell = null;
+
+    RaycastHit2D hit;
+    while (elapsedTime < targetTime && !isHit) {
+      float proportion = elapsedTime / targetTime;
+      float length = proportion * maximumLength;
+      hit = Physics2D.Raycast(from, diff, length, Utilities.GROUND_MASK);
+      if (hit.collider != null) {
+        PointAt(hit.point); 
+        targetCell = hit.collider.gameObject.GetComponent<CellController>();
+        targetPosition = hit.point;
+        isHit = true;
+      } else {
+        PointAt(from + diff * length); 
+      }
+      yield return null;
+      elapsedTime = Time.time - startTime;
     }
+
+    lineRenderer.enabled = targetCell != null;
+    leftBarbRenderer.enabled = targetCell != null;
+    rightBarbRenderer.enabled = targetCell != null;
+    caster = null;
   }
 
   public CellController Target {
     get {
-      return target;
-    }
-
-    set {
-      target = value;
-      lineRenderer.enabled = true;
-      lineRenderer.SetPosition(1, target.gameObject.transform.position); 
-      targetedThisFrame = true;
+      return targetCell;
     }
   }
 }

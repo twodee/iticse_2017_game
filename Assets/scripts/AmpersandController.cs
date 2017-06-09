@@ -34,21 +34,33 @@ public class AmpersandController : PlayerController {
 
     // Cancel pointer on right-click.
     if (Input.GetMouseButtonDown(1)) {
-      lineRenderer.enabled = false;
-      leftBarbRenderer.enabled = false;
-      rightBarbRenderer.enabled = false;
-      targetCell = null;
+      Depoint();  
     }
 
     // Only update pointer if we're not currently sending out a feeler ray.
     if (caster == null && lineRenderer.enabled) {
       Vector2 diff = targetPosition - (Vector2) transform.position;
       diff.Normalize();
-      Vector2 perp = new Vector3(-diff.y, diff.x);
-      lineRenderer.SetPosition(0, (Vector2) transform.position + diff * 0.3f); 
-      leftBarbRenderer.SetPosition(0, targetPosition + barbLength * (perp - 1.5f * diff)); 
-      rightBarbRenderer.SetPosition(0, targetPosition - barbLength * (perp + 1.5f * diff)); 
+      RaycastHit2D hit = Physics2D.Raycast(transform.position, diff, Mathf.Infinity, Utilities.GROUND_MASK);
+
+      // If our ray hits a different object than it did before, that means some
+      // other object got in the way.
+      if (hit.collider.gameObject != targetCell.gameObject) {
+        Depoint();  
+      } else {
+        Vector2 perp = new Vector3(-diff.y, diff.x);
+        lineRenderer.SetPosition(0, (Vector2) transform.position + diff * 0.3f); 
+        leftBarbRenderer.SetPosition(0, targetPosition + barbLength * (perp - 1.5f * diff)); 
+        rightBarbRenderer.SetPosition(0, targetPosition - barbLength * (perp + 1.5f * diff)); 
+      }
     }
+  }
+
+  void Depoint() {
+    lineRenderer.enabled = false;
+    leftBarbRenderer.enabled = false;
+    rightBarbRenderer.enabled = false;
+    targetCell = null;
   }
 
   void PointAt(Vector2 position) {

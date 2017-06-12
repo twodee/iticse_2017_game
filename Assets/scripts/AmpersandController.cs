@@ -10,6 +10,7 @@ public class AmpersandController : PlayerController {
   private CellController targetCell;
   private Vector2 targetPosition;
   private Coroutine caster;
+  private StarController star;
 
   override public void Start() {
     base.Start();
@@ -17,6 +18,7 @@ public class AmpersandController : PlayerController {
     lineRenderer = GetComponent<LineRenderer>();
     leftBarbRenderer = transform.Find("leftbarb").GetComponent<LineRenderer>();
     rightBarbRenderer = transform.Find("rightbarb").GetComponent<LineRenderer>();
+    star = GameObject.Find("/players/star").GetComponent<StarController>();
     targetCell = null;
     caster = null;
   }
@@ -38,7 +40,7 @@ public class AmpersandController : PlayerController {
     }
 
     // Only update pointer if we're not currently sending out a feeler ray.
-    if (caster == null && lineRenderer.enabled) {
+    if (IsPointerAttached()) {
       Vector2 diff = targetPosition - (Vector2) transform.position;
       diff.Normalize();
       RaycastHit2D hit = Physics2D.Raycast(transform.position, diff, Mathf.Infinity, Utilities.GROUND_MASK);
@@ -87,16 +89,6 @@ public class AmpersandController : PlayerController {
     Vector2 diff = to - from;
     diff.Normalize();
 
-    /* Ray ray = new Ray(from, diff); */
-    /* float maximumLength; */
-    /* float cameraHeight = Camera.main.orthographicSize; */
-    /* float cameraWidth = cameraHeight * Camera.main.aspect; */
-    /* Bounds bounds = new Bounds((Vector2) Camera.main.transform.position, new Vector2(cameraWidth, cameraHeight)); */
-    /* Debug.Log("ray: " + ray); */
-    /* Debug.Log("bounds: " + bounds); */
-    /* bounds.IntersectRay(ray, out maximumLength); */
-    /* Debug.Log("maximumLength: " + maximumLength); */
-
     float startTime = Time.time;
     float elapsedTime = 0.0f;
     float targetTime = 0.5f;
@@ -130,5 +122,36 @@ public class AmpersandController : PlayerController {
     get {
       return targetCell;
     }
+  }
+
+  bool IsPointerAttached() {
+    return caster == null && lineRenderer.enabled;
+  }
+
+  override public bool IsTransmittable() {
+    return IsPointerAttached();
+  }
+
+  override public IEnumerator Transmit() {
+    GameObject cell = targetCell.gameObject.transform.Find("canvas/text").gameObject;
+    GameObject payload = Instantiate(cell);
+    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
+    payload.transform.position = cell.transform.position;
+
+    Vector2 startPosition = payload.transform.position;
+    Vector2 endPosition = star.gameObject.transform.position;
+
+    float startTime = Time.time;
+    float targetTime = 1.0f;
+    float elapsedTime = 0.0f;
+
+    while (elapsedTime <= targetTime) {
+      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      yield return null;
+      elapsedTime = Time.time - startTime;
+    }
+
+    star.Acquire(targetCell.Label);
+    Destroy(payload);
   }
 }

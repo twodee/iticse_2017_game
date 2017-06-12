@@ -404,7 +404,7 @@ GameObject:
   - component: {fileID: 205333293}
   m_Layer: 9
   m_Name: ampersand
-  m_TagString: player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -440,11 +440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  groundRadius: 0.01
   barbLength: 0.2
-  mask:
-    serializedVersion: 2
-    m_Bits: 768
 --- !u!50 &205333291
 Rigidbody2D:
   serializedVersion: 4
@@ -706,7 +702,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 479881255}
-  m_Layer: 9
+  - component: {fileID: 479881256}
+  m_Layer: 10
   m_Name: foot
   m_TagString: Untagged
   m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
@@ -726,6 +723,18 @@ Transform:
   m_Father: {fileID: 1670655078}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &479881256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 479881254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c71dc35a48848449979df2cf2038d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0.01
 --- !u!1 &821689606
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,7 +913,7 @@ GameObject:
   - component: {fileID: 1051670395}
   - component: {fileID: 1051670397}
   - component: {fileID: 1051670396}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: loot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -983,7 +992,7 @@ GameObject:
   - component: {fileID: 1096764014}
   - component: {fileID: 1096764013}
   - component: {fileID: 1096764012}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1305,9 +1314,9 @@ GameObject:
   - component: {fileID: 1670655081}
   - component: {fileID: 1670655080}
   - component: {fileID: 1670655079}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: star
-  m_TagString: player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1340,7 +1349,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  groundRadius: 0.01
 --- !u!58 &1670655080
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1386,6 +1394,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1858491353}
+  - component: {fileID: 1858491354}
   m_Layer: 9
   m_Name: foot
   m_TagString: Untagged
@@ -1406,6 +1415,18 @@ Transform:
   m_Father: {fileID: 205333289}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1858491354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1858491352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c71dc35a48848449979df2cf2038d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0.01
 --- !u!1001 &1867769109
 Prefab:
   m_ObjectHideFlags: 0
@@ -1468,7 +1489,7 @@ GameObject:
   - component: {fileID: 1975302976}
   - component: {fileID: 1975302978}
   - component: {fileID: 1975302977}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: text
   m_TagString: Untagged
   m_Icon: {fileID: 0}

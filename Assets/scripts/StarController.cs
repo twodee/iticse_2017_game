@@ -13,23 +13,43 @@ public class StarController : PlayerController {
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
   }
 
+  public void Acquire(string label) {
+    loot.text = label;
+  }
+
   override public void Update() {
     base.Update();
+  }
 
-    if (Input.GetButton("Get")) {
-      if (Vector2.Distance(transform.position, ampersand.gameObject.transform.position) <= 0.5f) {
-        if (ampersand.Target != null) {
-          loot.text = ampersand.Target.Label;
-        }
-      }
+  override public bool IsTransmittable() {
+    return loot.text != "";
+  }
+
+  override public IEnumerator Transmit() {
+    GameObject payload = Instantiate(loot.gameObject);
+    payload.transform.SetParent(ampersand.Target.gameObject.transform.Find("canvas"));
+    payload.transform.position = ampersand.gameObject.transform.position;
+
+    Vector2 startPosition = ampersand.gameObject.transform.position;
+    Vector2 endPosition = ampersand.Target.gameObject.transform.position;
+
+    float startTime = Time.time;
+    float targetTime = 1.0f;
+    float elapsedTime = 0.0f;
+
+    while (elapsedTime <= targetTime) {
+      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      yield return null;
+      elapsedTime = Time.time - startTime;
     }
 
-    if (Input.GetButton("Put")) {
-      if (Vector2.Distance(transform.position, ampersand.gameObject.transform.position) <= 0.5f) {
-        if (ampersand.Target != null) {
-          ampersand.Target.Label = loot.text;
-        }
-      }
+    Destroy(payload);
+    ampersand.Target.Label = loot.text;
+  }
+
+  public Vector2 LootPosition {
+    get {
+      return loot.gameObject.transform.position;
     }
   }
 }

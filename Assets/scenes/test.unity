@@ -440,6 +440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  isAirborne: 0
   barbLength: 0.2
 --- !u!50 &205333291
 Rigidbody2D:
@@ -734,7 +735,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26c71dc35a48848449979df2cf2038d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.01
+  width: 0.2
+  height: 0.02
 --- !u!1 &821689606
 GameObject:
   m_ObjectHideFlags: 0
@@ -1349,6 +1351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  isAirborne: 0
 --- !u!58 &1670655080
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1426,7 +1429,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26c71dc35a48848449979df2cf2038d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.01
+  width: 0.4
+  height: 0.03
 --- !u!1001 &1867769109
 Prefab:
   m_ObjectHideFlags: 0

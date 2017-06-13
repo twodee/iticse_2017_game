@@ -34,16 +34,48 @@ public abstract class PlayerController : MonoBehaviour {
       isAirborne = true;
     }
 
-    if (!isAirborne && isBurden && Input.GetButtonDown("Transmit" + type)) {
-      if (IsTransmittable()) {
-        isLocked = true;
-        StartCoroutine(TransmitAndUnlock());
-      }
+    if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
+      isLocked = true;
+      StartCoroutine(TransmitAndUnlock());
     }
   }
 
   IEnumerator TransmitAndUnlock() {
-    yield return StartCoroutine(Transmit()); 
+    // Squat
+    Vector2 startPosition = gameObject.transform.position;
+    Vector2 endPosition = (Vector2) gameObject.transform.position - Vector2.up * 0.1f;
+    Vector3 startScale = gameObject.transform.localScale;
+    Vector3 endScale = new Vector3(1.2f, 0.8f, 1.0f);
+
+    float startTime = Time.time;
+    float targetTime = 0.1f;
+    float elapsedTime = 0.0f;
+
+    // Squat down and widen.
+    while (elapsedTime < targetTime) {
+      gameObject.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      gameObject.transform.localScale = Vector3.Lerp(startScale, endScale, elapsedTime / targetTime);
+      yield return null;
+      elapsedTime = Time.time - startTime;
+    }
+
+    // And return to form...
+    startTime = Time.time;
+    elapsedTime = 0.0f;
+    while (elapsedTime < targetTime) {
+      gameObject.transform.position = Vector2.Lerp(endPosition, startPosition, elapsedTime / targetTime);
+      gameObject.transform.localScale = Vector3.Lerp(endScale, startScale, elapsedTime / targetTime);
+      yield return null;
+      elapsedTime = Time.time - startTime;
+    }
+
+    gameObject.transform.position = startPosition;
+    gameObject.transform.localScale = startScale;
+
+    if (isBurden && IsTransmittable()) {
+      yield return StartCoroutine(Transmit());
+    }
+
     isLocked = false;
   }
 

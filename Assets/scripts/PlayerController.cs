@@ -100,6 +100,16 @@ public abstract class PlayerController : MonoBehaviour {
     if (hit != null && hit.gameObject.tag == "pointer") {
       return hit.gameObject;
     }
+    else if (hit != null && hit.gameObject.tag == "cell") {
+      // does it have a parent that is a linked cell?
+      Transform parentTransform = hit.gameObject.transform.parent;
+      if (parentTransform != null && parentTransform.gameObject.tag == "linkedCell") {
+        return parentTransform.GetComponentInChildren<PointerController>().gameObject;
+      }
+      else {
+        return null;
+      }
+    }
     else {
       return null;
     }

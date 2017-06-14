@@ -7,9 +7,9 @@ public abstract class PlayerController : MonoBehaviour {
 
   private FootController foot;
   public bool isAirborne;
-  private new Rigidbody2D rigidbody;
+  protected new Rigidbody2D rigidbody;
   private GameObject otherPlayer;
-  private bool isBurden;
+  public bool isBurden;
   private int otherMask;
   private bool isLocked;
   private float oomph;
@@ -34,16 +34,49 @@ public abstract class PlayerController : MonoBehaviour {
       isAirborne = true;
     }
 
-    if (!isAirborne && isBurden && Input.GetButtonDown("Transmit" + type)) {
-      if (IsTransmittable()) {
-        isLocked = true;
-        StartCoroutine(TransmitAndUnlock());
-      }
+    if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
+      isLocked = true;
+      StartCoroutine(TransmitAndUnlock());
     }
+
   }
 
   IEnumerator TransmitAndUnlock() {
-    yield return StartCoroutine(Transmit()); 
+    // Squat
+    Vector2 startPosition = gameObject.transform.position;
+    Vector2 endPosition = (Vector2) gameObject.transform.position - Vector2.up * 0.1f;
+    Vector3 startScale = gameObject.transform.localScale;
+    Vector3 endScale = new Vector3(1.2f, 0.8f, 1.0f);
+
+    float startTime = Time.time;
+    float targetTime = 0.1f;
+    float elapsedTime = 0.0f;
+
+    // Squat down and widen.
+    while (elapsedTime < targetTime) {
+      gameObject.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      gameObject.transform.localScale = Vector3.Lerp(startScale, endScale, elapsedTime / targetTime);
+      yield return null;
+      elapsedTime = Time.time - startTime;
+    }
+
+    // And return to form...
+    startTime = Time.time;
+    elapsedTime = 0.0f;
+    while (elapsedTime < targetTime) {
+      gameObject.transform.position = Vector2.Lerp(endPosition, startPosition, elapsedTime / targetTime);
+      gameObject.transform.localScale = Vector3.Lerp(endScale, startScale, elapsedTime / targetTime);
+      yield return null;
+      elapsedTime = Time.time - startTime;
+    }
+
+    gameObject.transform.position = startPosition;
+    gameObject.transform.localScale = startScale;
+
+    if (isBurden && IsTransmittable()) {
+      yield return StartCoroutine(Transmit());
+    }
+
     isLocked = false;
   }
 
@@ -60,6 +93,31 @@ public abstract class PlayerController : MonoBehaviour {
   bool IsGrounded() {
     Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK | otherMask);
     return hit != null;
+  }
+
+  public GameObject GetOnPointer() {
+    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
+    if (hit != null && hit.gameObject.tag == "pointer") {
+      return hit.gameObject;
+    }
+    else {
+      return null;
+    }
+  }
+
+  public bool IsConnectedToOther() {
+    if (otherPlayer != null) {
+      PlayerController other = otherPlayer.GetComponent<PlayerController>();
+
+      // check if close to other player and they are on a pointer
+      CircleCollider2D otherCollider = other.GetComponent<CircleCollider2D>();
+      ColliderDistance2D distance = rigidbody.Distance(otherCollider);
+
+      return distance.distance < otherCollider.radius;
+    }
+    else {
+      return false;
+    }
   }
 
   void OnCollisionEnter2D(Collision2D collision) {

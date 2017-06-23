@@ -43,8 +43,6 @@ public class CameraController : MonoBehaviour {
     //horizontal size is based on actual screen ratio
     float minSizeX = minSizeY * Screen.width / Screen.height;
 
-    Vector3 middle = (player1.position + player2.position) * 0.5f;
-
 
     //multiplying by 0.5, because the ortographicSize is actually half the height
     float width = Mathf.Abs(player1.position.x - player2.position.x) * 0.5f + 1.5f;
@@ -57,8 +55,8 @@ public class CameraController : MonoBehaviour {
   }
 
   void Update() {
+	SetCameraSize();
     SetCameraPos();
-    SetCameraSize();
   }
   
 }

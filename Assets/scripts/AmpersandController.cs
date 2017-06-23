@@ -8,7 +8,7 @@ public class AmpersandController : PlayerController {
   private LineRenderer leftBarbRenderer;
   private LineRenderer rightBarbRenderer;
   private CellController targetCell;
-  
+
   private Vector2 targetPosition;
   private Coroutine caster;
   private StarController star;
@@ -20,10 +20,11 @@ public class AmpersandController : PlayerController {
     leftBarbRenderer = transform.Find("leftbarb").GetComponent<LineRenderer>();
     rightBarbRenderer = transform.Find("rightbarb").GetComponent<LineRenderer>();
     star = GameObject.Find("/players/star").GetComponent<StarController>();
+    otherPlayer = star;
     targetCell = null;
     caster = null;
   }
-  
+
   override public void Update() {
     base.Update();
 
@@ -32,12 +33,12 @@ public class AmpersandController : PlayerController {
       if (caster != null) {
         StopCoroutine(caster);
       }
-      caster = StartCoroutine(CastPointer()); 
+      caster = StartCoroutine(CastPointer());
     }
 
     // Cancel pointer on right-click.
     if (Input.GetMouseButtonDown(1)) {
-      Depoint();  
+      Depoint();
     }
 
     // Only update pointer if we're not currently sending out a feeler ray.
@@ -88,12 +89,12 @@ public class AmpersandController : PlayerController {
     Vector2 diff = position - (Vector2) transform.position;
     diff.Normalize();
     Vector2 perp = new Vector3(-diff.y, diff.x);
-    lineRenderer.SetPosition(0, (Vector2) transform.position + diff * 0.3f); 
-    leftBarbRenderer.SetPosition(0, position + barbLength * (perp - 1.5f * diff)); 
-    rightBarbRenderer.SetPosition(0, position - barbLength * (perp + 1.5f * diff)); 
-    lineRenderer.SetPosition(1, position); 
-    leftBarbRenderer.SetPosition(1, position); 
-    rightBarbRenderer.SetPosition(1, position); 
+    lineRenderer.SetPosition(0, (Vector2) transform.position + diff * 0.3f);
+    leftBarbRenderer.SetPosition(0, position + barbLength * (perp - 1.5f * diff));
+    rightBarbRenderer.SetPosition(0, position - barbLength * (perp + 1.5f * diff));
+    lineRenderer.SetPosition(1, position);
+    leftBarbRenderer.SetPosition(1, position);
+    rightBarbRenderer.SetPosition(1, position);
   }
 
   IEnumerator CastPointer() {
@@ -132,11 +133,11 @@ public class AmpersandController : PlayerController {
         else if (hitObject.tag == "cell") {
           targetCell = hitObject.GetComponent<CellController>();
         }
-       
+
         targetPosition = hit.point;
         isHit = true;
       } else {
-        PointAt(from + diff * length); 
+        PointAt(from + diff * length);
       }
       yield return null;
       elapsedTime = Time.time - startTime;

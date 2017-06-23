@@ -43,7 +43,7 @@ public class LevelLoader : MonoBehaviour {
     string filePath = Application.dataPath + "/levels/level1.txt";
 
     string text = System.IO.File.ReadAllText(filePath);
-    string[] lines = Regex.Split(text, "\r\n");
+    string[] lines = Regex.Split(text, "\n");
 
     int width = Convert.ToInt32(lines[0]);
     int height = Convert.ToInt32(lines[1]);

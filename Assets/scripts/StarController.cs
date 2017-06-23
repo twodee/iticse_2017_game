@@ -11,6 +11,7 @@ public class StarController : PlayerController {
     this.Type = "D";
     loot = transform.Find("canvas/loot").GetComponent<Text>();
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
+    otherPlayer = ampersand;
   }
 
   public void Acquire(string label) {
@@ -27,7 +28,7 @@ public class StarController : PlayerController {
       if (on == null && connected) {
         on = ampersand.GetOnPointer(); // if ampersand is on a pointer and they are close
       }
-      
+
       if (on != null) {
         PointerController pointer = on.GetComponent<PointerController>();
         if (pointer.Target != null) {

@@ -8,7 +8,7 @@ public abstract class PlayerController : MonoBehaviour {
   private FootController foot;
   public bool isAirborne;
   protected new Rigidbody2D rigidbody;
-  private GameObject otherPlayer;
+  protected PlayerController otherPlayer;
   public bool isBurden;
   private int otherMask;
   private bool isLocked;
@@ -18,10 +18,9 @@ public abstract class PlayerController : MonoBehaviour {
     rigidbody = GetComponent<Rigidbody2D>();
     foot = transform.Find("foot").GetComponent<FootController>();
     isAirborne = true;
-    otherPlayer = null;
     isLocked = false;
   }
-  
+
   virtual public void Update() {
     if (isLocked) {
       return;
@@ -73,16 +72,18 @@ public abstract class PlayerController : MonoBehaviour {
     gameObject.transform.position = startPosition;
     gameObject.transform.localScale = startScale;
 
-    if (isBurden && IsTransmittable()) {
+    if (IsConnectedToOther() && IsTransmittable()) {
+      otherPlayer.isLocked = true;
       yield return StartCoroutine(Transmit());
     }
 
     isLocked = false;
+    otherPlayer.isLocked = false;
   }
 
   void LateUpdate() {
-    if (otherPlayer != null && isBurden) {
-      oomph += otherPlayer.GetComponent<PlayerController>().oomph;
+    if (isBurden) {
+      oomph += otherPlayer.oomph;
     }
     rigidbody.velocity = new Vector2(oomph * speed, rigidbody.velocity.y);
   }
@@ -116,18 +117,12 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   public bool IsConnectedToOther() {
-    if (otherPlayer != null) {
-      PlayerController other = otherPlayer.GetComponent<PlayerController>();
 
-      // check if close to other player and they are on a pointer
-      CircleCollider2D otherCollider = other.GetComponent<CircleCollider2D>();
-      ColliderDistance2D distance = rigidbody.Distance(otherCollider);
+	  // check if close to other player and they are on a pointer
+	  CircleCollider2D otherCollider = otherPlayer.GetComponent<CircleCollider2D>();
+	  ColliderDistance2D distance = rigidbody.Distance(otherCollider);
 
-      return distance.distance < otherCollider.radius;
-    }
-    else {
-      return false;
-    }
+	  return distance.distance < otherCollider.radius;
   }
 
   void OnCollisionEnter2D(Collision2D collision) {
@@ -138,7 +133,6 @@ public abstract class PlayerController : MonoBehaviour {
     // If we land on top of the other people, let's reduce our mass to 0 so we
     // don't impede that player's jump.
     if ((1 << collision.gameObject.layer) == otherMask) {
-      otherPlayer = collision.gameObject;
       isBurden = transform.position.y > collision.gameObject.transform.position.y + 0.2;
       if (isBurden) {
         rigidbody.mass = 0;
@@ -147,8 +141,7 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   void OnCollisionExit2D(Collision2D collision) {
-    if (collision.gameObject == otherPlayer) {
-      otherPlayer = null;
+    if (collision.gameObject == otherPlayer.gameObject) {
       rigidbody.mass = 1;
       isBurden = false;
     }

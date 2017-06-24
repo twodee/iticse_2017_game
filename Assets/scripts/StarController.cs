@@ -6,16 +6,21 @@ public class StarController : PlayerController {
   private AmpersandController ampersand;
   private Text loot;
 
+  private ConsoleController consoleController;
+
   override public void Start() {
     base.Start();
     this.Type = "D";
     loot = transform.Find("canvas/loot").GetComponent<Text>();
+    loot.text = "";
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
     otherPlayer = ampersand;
+    consoleController = GameObject.Find("/HUD/Console").GetComponent<ConsoleController>();
   }
 
   public void Acquire(string label) {
     loot.text = label;
+    consoleController.Acquire(label);
   }
 
   override public void Update() {
@@ -46,6 +51,13 @@ public class StarController : PlayerController {
         }
       }
     }
+  }
+
+  override public void LevelEnd() {
+    loot.text = "";
+  }
+
+  override public void LevelStart() {
   }
 
   override public bool IsTransmittable() {

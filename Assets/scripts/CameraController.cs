@@ -45,7 +45,7 @@ public class CameraController : MonoBehaviour {
 
 
     //multiplying by 0.5, because the ortographicSize is actually half the height
-    float width = Mathf.Abs(player1.position.x - player2.position.x) * 0.5f + 1.5f;
+    float width = Mathf.Abs(player1.position.x - player2.position.x) * 0.5f + 1.0f;
     float height = Mathf.Abs(player1.position.y - player2.position.y) * 0.5f;
 
     //computing the size

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class AmpersandController : PlayerController {
@@ -159,6 +160,12 @@ public class AmpersandController : PlayerController {
     return caster == null && lineRenderer.enabled;
   }
 
+  override public void LevelEnd() {
+    Depoint();
+  }
+  override public void LevelStart() {
+  }
+
   override public bool IsTransmittable() {
     return IsPointerAttached();
   }
@@ -166,6 +173,7 @@ public class AmpersandController : PlayerController {
   override public IEnumerator Transmit() {
     GameObject cell = targetCell.gameObject.transform.Find("canvas/text").gameObject;
     GameObject payload = Instantiate(cell);
+    payload.GetComponentInChildren<Text>().enabled = true;
     payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
     payload.transform.position = cell.transform.position;
 

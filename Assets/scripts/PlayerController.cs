@@ -90,6 +90,8 @@ public abstract class PlayerController : MonoBehaviour {
 
   abstract public IEnumerator Transmit();
   abstract public bool IsTransmittable();
+  abstract public void LevelEnd();
+  abstract public void LevelStart();
 
   bool IsGrounded() {
     Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK | otherMask);

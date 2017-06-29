@@ -13,7 +13,7 @@ public class LevelController : MonoBehaviour {
 
 
   // Use this for initialization
-  void Start () {
+   void Awake() {
     consoleController = GameObject.Find("/HUD/Console").GetComponent<ConsoleController>();
     player1 = GameObject.Find("/players/star").GetComponent<StarController>();
     player2 = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();

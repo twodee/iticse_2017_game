@@ -21,10 +21,13 @@ public class LevelLoader : MonoBehaviour {
   private int currentLevel;
 
   // Use this for initialization
-  void Start () {
+  void Awake() {
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
     star = GameObject.Find("/players/star").GetComponent<StarController>();
     progressController = gameObject.GetComponent<LevelController>();
+  }
+
+  void Start () {
     LoadAllLevelNames();
     currentLevel = 0;
     LoadNextLevel();

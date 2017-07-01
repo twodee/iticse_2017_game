@@ -5,13 +5,13 @@ using UnityEngine;
 public abstract class PlayerController : MonoBehaviour {
   public float speed;
 
-  private FootController foot;
+  protected FootController foot;
   public bool isAirborne;
   protected new Rigidbody2D rigidbody;
   protected PlayerController otherPlayer;
   public bool isBurden;
   private int otherMask;
-  private bool isLocked;
+  protected bool isLocked;
   private float oomph;
 
   virtual public void Start() {
@@ -29,18 +29,17 @@ public abstract class PlayerController : MonoBehaviour {
     oomph = Input.GetAxis("Horizontal" + type);
     if (Input.GetButton("Jump" + type) && !isAirborne) {
       rigidbody.mass = 1;
-      rigidbody.AddForce(Vector2.up * 300);
       isAirborne = true;
-    }
-
-    if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
-      isLocked = true;
-      StartCoroutine(TransmitAndUnlock());
+      Jump();
     }
 
   }
 
-  IEnumerator TransmitAndUnlock() {
+  virtual protected void Jump (){
+    rigidbody.AddForce(Vector2.up * 300);
+	}
+
+  protected IEnumerator TransmitAndUnlock() {
     // Squat
     Vector2 startPosition = gameObject.transform.position;
     Vector2 endPosition = (Vector2) gameObject.transform.position - Vector2.up * 0.1f;
@@ -72,13 +71,11 @@ public abstract class PlayerController : MonoBehaviour {
     gameObject.transform.position = startPosition;
     gameObject.transform.localScale = startScale;
 
-    if (IsConnectedToOther() && IsTransmittable()) {
-      otherPlayer.isLocked = true;
+    if (IsTransmittable()) {
       yield return StartCoroutine(Transmit());
     }
 
     isLocked = false;
-    otherPlayer.isLocked = false;
   }
 
   void LateUpdate() {
@@ -118,7 +115,7 @@ public abstract class PlayerController : MonoBehaviour {
     }
   }
 
-  public bool IsConnectedToOther() {
+  virtual public bool IsConnectedToOther() {
 
 	  // check if close to other player and they are on a pointer
 	  CircleCollider2D otherCollider = otherPlayer.GetComponent<CircleCollider2D>();
@@ -149,7 +146,7 @@ public abstract class PlayerController : MonoBehaviour {
     }
   }
 
-  private string type;
+  protected string type;
   public string Type {
     get {
       return type;

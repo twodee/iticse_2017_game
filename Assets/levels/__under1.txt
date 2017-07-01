@@ -1,0 +1,16 @@
+18 ; width
+10 ; height
+9 ;camera x
+5 ;camera y
+Spell CAT ; instructions
+CAT ; console target
+------------------
+--     ACT      --
+--              --
+--              --
+--  &           --
+----xxx---.-------
+--  *           --
+--              --
+--              --
+------------------

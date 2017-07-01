@@ -64,7 +64,11 @@ public class LevelLoader : MonoBehaviour {
     // Read the data from the file in assets
     string filePath = (string)levels[index];
     string text = System.IO.File.ReadAllText(filePath);
-    string[] lines = Regex.Split(text, "\n");
+	Regex replaceComment = new Regex("[ ]*;.*\n");
+	Regex replaceLine = new Regex("\n\n");
+	text = replaceComment.Replace(text, "\n");
+	text = replaceLine.Replace(text, "\n");
+	string[] lines = Regex.Split(text, "\n");
 
     int width = Convert.ToInt32(lines[0]);
     int height = Convert.ToInt32(lines[1]);

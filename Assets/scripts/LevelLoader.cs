@@ -103,9 +103,11 @@ public class LevelLoader : MonoBehaviour {
     string filePath = (string)levels[index];
     string text = System.IO.File.ReadAllText(filePath);
     Regex replaceComment = new Regex("[ ]*;.*\n");
-    Regex replaceLine = new Regex("\n\n");
+    Regex replaceLine = new Regex("[\n]*\n");
+    Regex replaceBegin = new Regex("^\n");
     text = replaceComment.Replace(text, "\n");
     text = replaceLine.Replace(text, "\n");
+    text = replaceBegin.Replace(text, "");
     string[] lines = Regex.Split(text, "\n");
 
     int width = Convert.ToInt32(lines[0]);

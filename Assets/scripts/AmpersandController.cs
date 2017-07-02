@@ -86,7 +86,35 @@ public class AmpersandController : PlayerController {
         }
       }
     }
+    if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
+      Interact(true);
+    }
+  }
 
+  void Interact(bool squish) {
+    targetCell = null;
+    GameObject cell = GetOnCell();
+    if (cell != null) {
+      targetCell = cell.GetComponent<CellController>();
+    }
+
+    if (squish) {
+      isLocked = true;
+      StartCoroutine(TransmitAndUnlock());
+    }
+    else {
+      if (IsTransmittable()) {
+        StartCoroutine(Transmit());
+      }
+    }
+  }
+
+  public GameObject GetOnCell() {
+    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0,     Utilities.GROUND_MASK);
+    if (hit != null && hit.gameObject.tag == "cell") {
+      return hit.gameObject;
+    }
+    return null;
   }
 
   override protected void Jump (){

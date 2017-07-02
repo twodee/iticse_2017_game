@@ -4,8 +4,8 @@
 ; Header
 16 ; width
 9 ; height
-7.5 ; camera x
-4.0 ; camera y
+8 ; camera x
+4.5 ; camera y
 Copy One A to Counter ; instructions
 A ; console target
 

@@ -5,6 +5,7 @@ using System.Collections;
 public class StarController : PlayerController {
   private AmpersandController ampersand;
   private Text loot;
+  protected FootController head;
 
   private CellController targetCell;
 
@@ -13,6 +14,8 @@ public class StarController : PlayerController {
   override public void Start() {
     base.Start();
     this.Type = "D";
+    head = transform.Find("head").GetComponent<FootController>();
+
     loot = transform.Find("canvas/loot").GetComponent<Text>();
     loot.text = "";
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
@@ -29,6 +32,10 @@ public class StarController : PlayerController {
     if (hit != null && hit.gameObject.tag == "cell") {
       return hit.gameObject;
     }
+    hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0,     Utilities.GROUND_MASK);
+    if (hit != null && hit.gameObject.tag == "cell") {
+      return hit.gameObject;
+    }
     return null;
   }
 
@@ -38,6 +45,10 @@ public class StarController : PlayerController {
   }
 
   override public void Update() {
+    if (isLocked) {
+      return;
+    }
+
     base.Update();
 
     if (Input.GetButtonDown("Dereference")) {
@@ -67,23 +78,42 @@ public class StarController : PlayerController {
       }
     }
     if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
-      targetCell = null;
-      GameObject cell = GetOnCell();
-      if (cell != null) {
-        targetCell = cell.GetComponent<CellController>();
-      }
-      GameObject pointer = GetOnPointer();
-      if (pointer != null) {
-		    targetCell = pointer.GetComponent<PointerController>().Target;
-      }
+      Interact(true);
+    }
+  }
 
+  virtual public GameObject GetOnPointer() {
+    GameObject pointer = base.GetOnPointer();
+    if (pointer == null) {
+      pointer = GetOnPointer(head);
+    }
+    return pointer;
+  }
+
+  void Interact(bool squish) {
+    targetCell = null;
+    GameObject cell = GetOnCell();
+    if (cell != null) {
+      targetCell = cell.GetComponent<CellController>();
+    }
+    GameObject pointer = GetOnPointer();
+    if (pointer != null) {
+      targetCell = pointer.GetComponent<PointerController>().Target;
+    }
+
+    if (squish) {
       isLocked = true;
       StartCoroutine(TransmitAndUnlock());
+    }
+    else {
+      if (IsTransmittable()) {
+        StartCoroutine(Transmit());
+      }
     }
   }
 
   override protected void Jump () {
-    rigidbody.AddForce(Vector2.down * 300);
+    rigidbody.AddForce(Vector2.up * 500);
   }
 
   override public void LevelEnd() {
@@ -98,12 +128,25 @@ public class StarController : PlayerController {
   }
 
   override public IEnumerator Transmit() {
-    if (loot.text == "") {
+    if (loot.text == "" || targetCell.immutable) {
       return GetValue();
   	}
   	else {
       return PutValue();
     }
+  }
+
+  protected override void OnCollisionEnter2D(Collision2D collision) {
+    base.OnCollisionEnter2D(collision);
+    // check to see if the head has hit a cell
+    Collider2D hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
+    if (hit != null) {
+      if (hit.gameObject.tag == "cell" || hit.gameObject.tag == "pointer") {
+        rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+        Interact(false);
+      }
+    }
+
   }
 
   private IEnumerator PutValue() {
@@ -130,6 +173,7 @@ public class StarController : PlayerController {
     targetCell.Label = value;
     targetCell.GetComponentInChildren<Text>().enabled = true;
     levelController.OnTransmit();
+    rigidbody.constraints = RigidbodyConstraints2D.None;
 
   }
 
@@ -156,6 +200,7 @@ public class StarController : PlayerController {
     Acquire(targetCell.Label);
     Destroy(payload);
     levelController.OnTransmit();
+    rigidbody.constraints = RigidbodyConstraints2D.None;
 
   }
 

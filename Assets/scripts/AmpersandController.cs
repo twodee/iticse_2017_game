@@ -31,6 +31,10 @@ public class AmpersandController : PlayerController {
   }
 
   override public void Update() {
+    if (isLocked) {
+      return;
+    }
+
     base.Update();
 
     // Emit feeler pointer on left-click.
@@ -83,6 +87,9 @@ public class AmpersandController : PlayerController {
       }
     }
 
+  }
+
+  override protected void Jump (){
   }
 
   void Depoint() {

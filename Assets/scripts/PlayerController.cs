@@ -95,8 +95,12 @@ public abstract class PlayerController : MonoBehaviour {
     return hit != null;
   }
 
-  public GameObject GetOnPointer() {
-    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
+  virtual public GameObject GetOnPointer() {
+    return GetOnPointer(foot);
+  }
+
+  public GameObject GetOnPointer(FootController test) {
+    Collider2D hit = Physics2D.OverlapBox(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
     if (hit != null && hit.gameObject.tag == "pointer") {
       return hit.gameObject;
     }
@@ -124,7 +128,7 @@ public abstract class PlayerController : MonoBehaviour {
 	  return distance.distance < otherCollider.radius;
   }
 
-  void OnCollisionEnter2D(Collision2D collision) {
+  virtual protected void OnCollisionEnter2D(Collision2D collision) {
     // If the player's foot touches the ground, we want to be able to jump
     // again.
     isAirborne = !IsGrounded();

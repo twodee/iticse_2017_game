@@ -7,6 +7,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelLoader : MonoBehaviour {
+  private static int WORLD_HEIGHT = 9;
+  private static float MIDDLE_BAR_Y = 2;
+
   public GameObject floor_platform;
   public GameObject linkedCell;
   public GameObject cell;
@@ -108,7 +111,7 @@ public class LevelLoader : MonoBehaviour {
     int width = Convert.ToInt32(lines[0]);
     int height = Convert.ToInt32(lines[1]);
     Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-    cam.transform.position = new Vector3(Convert.ToInt32(lines[2]), Convert.ToInt32(lines[3]), -10);
+    cam.transform.position = new Vector3((float)Convert.ToDouble(lines[2]), (float)Convert.ToDouble(lines[3]), -WORLD_HEIGHT);
 
     AndAllEndLevelCondition endLevelCondition = new AndAllEndLevelCondition();
     progressController.Current = new Level(filePath, lines[4].Trim(), endLevelCondition);
@@ -116,7 +119,7 @@ public class LevelLoader : MonoBehaviour {
     int offset = 6;
 
     for (int i = 0; i < height; i++) {
-      float y = height - (i)-1 + 0.5f;
+      float y = height - (i) - 1 + 0.5f;
       string s = lines[i + offset];
       for (int j = 0; j < s.Length && j < width; j++) {
         float x = j + 0.5f;
@@ -129,12 +132,16 @@ public class LevelLoader : MonoBehaviour {
           go.transform.SetParent(this.transform);
           Text t = go.GetComponentInChildren<Text>();
           t.text = c.ToString();
+          CellController cc = go.GetComponent<CellController>();
+          if (y < MIDDLE_BAR_Y) {
+            cc.immutable = true;
+          }
         }
         else if (c >= 'a' && c <= 'z') {
           GameObject go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
           Text t = go.GetComponentInChildren<Text>();
-          t.text = c.ToString().ToUpper();
+          t.text = "";//c.ToString().ToUpper();
           t.enabled = false;
         }
         else if (c == '-') {

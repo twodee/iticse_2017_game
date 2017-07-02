@@ -1,7 +1,7 @@
 18 ; width
-10 ; height
+9 ; height
 9 ;camera x
-5 ;camera y
+4.5 ;camera y
 Spell CAT in the blanks; instructions
 A ; console target
 ------------------
@@ -12,10 +12,9 @@ A ; console target
 ----xxx---.-------
 --  *           --
 --              --
---              --
-------------------
+-------C-A-T------
 1
-10 4 7 8
+10 3 7 7
 ------------------
 --              --
 --              --
@@ -24,7 +23,6 @@ A ; console target
 ----CAT-----------
 --              --
 --              --
---              --
 ------------------
 1
-10 4 7 8
+10 3 7 7

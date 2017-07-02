@@ -1,0 +1,34 @@
+; One source value, A, and three empty stack values (two are blocked from Val)
+; Val copies A from source to stack, Addy copies A to blocked locations
+
+; Header
+16 ; width
+9 ; height
+7.5 ; camera x
+4.0 ; camera y
+Copy Three A's to Counter ; instructions
+AAA ; console target
+
+; Initial Layout
+----------------
+--            --
+--            --
+--            --
+-- &          --
+-------xxx------
+--      --------
+-- *          --
+-------A--------
+0 ; number of fixed links
+
+; Target Layout
+----------------
+--            --
+--            --
+--            --
+--            --
+-------AAA------
+--      --------
+--            --
+-------?--------
+0 ; number of fixed links

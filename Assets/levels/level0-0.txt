@@ -1,0 +1,34 @@
+; One source value, A, and one empty stack value
+; Val copies A from source to stack, Addy does nothing
+
+; Header
+16 ; width
+9 ; height
+7.5 ; camera x
+4.0 ; camera y
+Copy One A to Counter ; instructions
+A ; console target
+
+; Initial Layout
+----------------
+--            --
+--            --
+--            --
+-- &          --
+-------x--------
+--            --
+-- *          --
+-------A--------
+0 ; number of fixed links
+
+; Target Layout
+----------------
+--            --
+--            --
+--            --
+--            --
+-------A--------
+--            --
+--            --
+-------?--------
+0 ; number of fixed links

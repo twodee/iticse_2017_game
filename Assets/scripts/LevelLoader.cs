@@ -37,8 +37,8 @@ public class LevelLoader : MonoBehaviour {
 
   void Start () {
     LoadAllLevelNames();
-//    currentLevel = PlayerPrefs.GetInt("currentLevel")-2;
-    currentLevel = 1;
+    currentLevel = PlayerPrefs.GetInt("currentLevel")-2;
+//    currentLevel = 1;
     LoadNextLevel();
   }
 

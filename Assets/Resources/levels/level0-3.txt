@@ -16,7 +16,7 @@ AB ; console target
 --            --
 -- &          --
 -------xx-------
---      --------
+--      ▔     --
 -- *          --
 ------A-B-------
 0 ; number of fixed links

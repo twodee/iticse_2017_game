@@ -104,6 +104,9 @@ public class StarController : PlayerController {
       if (IsTransmittable()) {
         StartCoroutine(Transmit());
       }
+      else {
+        rigidbody.constraints = RigidbodyConstraints2D.None;
+      }
     }
   }
 

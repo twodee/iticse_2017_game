@@ -60,6 +60,7 @@ public class LevelLoader : MonoBehaviour {
 
   void LoadLevel(int index) {
     EmptyLevel();
+	index = PlayerPrefs.GetInt("currentLevel")-1;
 
     // Read the data from the file in assets
     string filePath = (string)levels[index];

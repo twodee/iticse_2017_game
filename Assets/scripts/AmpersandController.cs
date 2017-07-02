@@ -107,7 +107,10 @@ public class AmpersandController : PlayerController {
   public GameObject GetOnCell() {
     Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0,     Utilities.GROUND_MASK);
     if (hit != null && hit.gameObject.tag == "cell") {
-      return hit.gameObject;
+      CellController cc = hit.gameObject.GetComponent<CellController>();
+      if (!cc.IsBlocked(CellController.UP)) {
+        return hit.gameObject;
+      }
     }
     return null;
   }

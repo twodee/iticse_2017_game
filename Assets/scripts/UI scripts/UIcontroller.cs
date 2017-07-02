@@ -104,7 +104,7 @@ public class UIcontroller : MonoBehaviour {
 	{
 		string sceneName = SceneManager.GetActiveScene().name;     // "level 0-1" for example
 
-		if (sceneName.Substring(0,5).Equals("level"))
+		if (sceneName.Length >= 5 && sceneName.Substring(0,5).Equals("level"))
 		{
 			sceneName = sceneName.Remove(0,5);					// Left with "0-1"
 			string[] sceneLocale = sceneName.Split ('-'); 
@@ -126,8 +126,8 @@ public class UIcontroller : MonoBehaviour {
 		}
 		else
 		{
-			AudioManager.instance.PlaySingle(false, worldVictorySFX);
-			AudioManager.instance.PlayNewMusic(worldVictoryMusic);
+//			AudioManager.instance.PlaySingle(false, worldVictorySFX);
+//			AudioManager.instance.PlayNewMusic(worldVictoryMusic);
 		}
 
 	}

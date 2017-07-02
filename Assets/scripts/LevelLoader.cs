@@ -37,7 +37,8 @@ public class LevelLoader : MonoBehaviour {
 
   void Start () {
     LoadAllLevelNames();
-    currentLevel = PlayerPrefs.GetInt("currentLevel")-2;
+//    currentLevel = PlayerPrefs.GetInt("currentLevel")-2;
+    currentLevel = 1;
     LoadNextLevel();
   }
 
@@ -123,6 +124,7 @@ public class LevelLoader : MonoBehaviour {
     progressController.Current = new Level(filePath, lines[4].Trim(), endLevelCondition);
     endLevelCondition.Add(new CollectEndLevelCondition(progressController.Current, lines[5].Trim()));
     int offset = 6;
+    ArrayList blockedCells = new ArrayList();
 
     for (int i = 0; i < height; i++) {
       float y = height - (i) - 1 + 0.5f;
@@ -149,6 +151,12 @@ public class LevelLoader : MonoBehaviour {
           Text t = go.GetComponentInChildren<Text>();
           t.text = "";//c.ToString().ToUpper();
           t.enabled = false;
+        }
+        else if (c == '▔') {
+          blockedCells.Add(new int[]{ (int)x, (int)y + 1, CellController.DOWN });
+        }
+        else if (c == '▁') {
+          blockedCells.Add(new int[]{ (int)x, (int)y - 1, CellController.UP });
         }
         else if (c == '-') {
           GameObject go = (GameObject)Instantiate(floor_platform, pos, Quaternion.identity);
@@ -195,7 +203,7 @@ public class LevelLoader : MonoBehaviour {
 
     offset += links;
     for (int i = 0; i < height; i++) {
-      int y = height - (i)-1;
+      int y = height - (i) - 1;
       string s = lines[i + offset];
       for (int j = 0; j < s.Length && j < width; j++) {
         int x = j;
@@ -222,6 +230,12 @@ public class LevelLoader : MonoBehaviour {
       PointerController pc = pointer.GetComponent<PointerController>();
       CellController cc = target.GetComponent<CellController>();
       endLevelCondition.Add(new LinkTargetEndLevelCondition(pc, cc));
+    }
+
+    foreach (int[] blockedCell in blockedCells) {
+      GameObject go = findAt(blockedCell[0], blockedCell[1]);
+      CellController cc = go.GetComponent<CellController>();
+      cc.blocked |= blockedCell[2];
     }
   }
 

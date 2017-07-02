@@ -22,13 +22,19 @@ public class StarController : PlayerController {
   }
 
   public GameObject GetOnCell() {
-    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0,     Utilities.GROUND_MASK);
+    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
     if (hit != null && hit.gameObject.tag == "cell") {
-      return hit.gameObject;
+      CellController cc = hit.gameObject.GetComponent<CellController>();
+      if (!cc.IsBlocked(CellController.UP)) {
+        return hit.gameObject;
+      }
     }
-    hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0,     Utilities.GROUND_MASK);
+    hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
     if (hit != null && hit.gameObject.tag == "cell") {
-      return hit.gameObject;
+      CellController cc = hit.gameObject.GetComponent<CellController>();
+      if (!cc.IsBlocked(CellController.DOWN)) {
+        return hit.gameObject;
+      }
     }
     return null;
   }

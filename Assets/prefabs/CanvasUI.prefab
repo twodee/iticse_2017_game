@@ -267,7 +267,6 @@ GameObject:
   - component: {fileID: 114610696666331776}
   - component: {fileID: 114150722002934824}
   - component: {fileID: 114612287033844016}
-  - component: {fileID: 114648751652024612}
   m_Layer: 5
   m_Name: CanvasUI
   m_TagString: Untagged
@@ -1130,7 +1129,7 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -1228,21 +1227,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: X
---- !u!114 &114648751652024612
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1431649435463536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c41d25a31db7ac42bc926db4d4830a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floor_platform: {fileID: 0}
-  linkedCell: {fileID: 0}
-  cell: {fileID: 0}
-  pointerCell: {fileID: 0}
 --- !u!114 &114661448386285998
 MonoBehaviour:
   m_ObjectHideFlags: 1

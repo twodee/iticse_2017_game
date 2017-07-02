@@ -8,7 +8,7 @@ public class PointerController : MonoBehaviour
   private CellController targetCell;
   private LineRenderer lineRenderer;
 
-  void Start() {
+  void Awake() {
     lineRenderer = GetComponent<LineRenderer>();
     targetCell = null;
   }

@@ -8,6 +8,7 @@ TagManager:
   - pointer
   - linkedCell
   - cell
+  - ground
   layers:
   - Default
   - TransparentFX

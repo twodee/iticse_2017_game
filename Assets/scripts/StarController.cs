@@ -8,7 +8,7 @@ public class StarController : PlayerController {
 
   private CellController targetCell;
 
-  private ConsoleController consoleController;
+  private LevelController levelController;
 
   override public void Start() {
     base.Start();
@@ -17,7 +17,7 @@ public class StarController : PlayerController {
     loot.text = "";
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
     otherPlayer = ampersand;
-    consoleController = GameObject.Find("/HUD/Console").GetComponent<ConsoleController>();
+    levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
   }
 
   override public bool IsConnectedToOther() {
@@ -34,7 +34,7 @@ public class StarController : PlayerController {
 
   public void Acquire(string label) {
     loot.text = label;
-    consoleController.Acquire(label);
+    levelController.OnCollect(label);
   }
 
   override public void Update() {
@@ -49,7 +49,7 @@ public class StarController : PlayerController {
 //      }
 
       if (on != null) {
-        PointerController pointer = on.GetComponent<PointerController>();
+//        PointerController pointer = on.GetComponent<PointerController>();
 //        if (pointer.Target != null) {
 //          // teleport the star and ampersand (if connected) on top of the target cell
 //          CellController cc = pointer.Target;
@@ -110,12 +110,14 @@ public class StarController : PlayerController {
     GameObject payload = Instantiate(loot.gameObject);
     payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
     payload.transform.position = gameObject.transform.position;
+    string value = loot.text;
+    loot.text = "";
 
     Vector2 startPosition = gameObject.transform.position;
     Vector2 endPosition = targetCell.gameObject.transform.position;
 
     float startTime = Time.time;
-    float targetTime = 1.0f;
+    float targetTime = (endPosition-startPosition).magnitude / 5.0f;
     float elapsedTime = 0.0f;
 
     while (elapsedTime <= targetTime) {
@@ -125,8 +127,10 @@ public class StarController : PlayerController {
     }
 
     Destroy(payload);
-    targetCell.Label = loot.text;
-    loot.text = "";
+    targetCell.Label = value;
+    targetCell.GetComponentInChildren<Text>().enabled = true;
+    levelController.OnTransmit();
+
   }
 
   private IEnumerator GetValue() {
@@ -140,7 +144,7 @@ public class StarController : PlayerController {
     Vector2 endPosition = gameObject.transform.position;
 
     float startTime = Time.time;
-    float targetTime = 1.0f;
+    float targetTime = (endPosition-startPosition).magnitude / 5.0f;
     float elapsedTime = 0.0f;
 
     while (elapsedTime <= targetTime) {
@@ -151,6 +155,8 @@ public class StarController : PlayerController {
 
     Acquire(targetCell.Label);
     Destroy(payload);
+    levelController.OnTransmit();
+
   }
 
   public Vector2 LootPosition {

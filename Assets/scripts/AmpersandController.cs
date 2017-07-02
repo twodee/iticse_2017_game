@@ -14,6 +14,8 @@ public class AmpersandController : PlayerController {
   private Coroutine caster;
   private StarController star;
 
+  private LevelController levelController;
+
   override public void Start() {
     base.Start();
     this.Type = "R";
@@ -21,6 +23,8 @@ public class AmpersandController : PlayerController {
     leftBarbRenderer = transform.Find("leftbarb").GetComponent<LineRenderer>();
     rightBarbRenderer = transform.Find("rightbarb").GetComponent<LineRenderer>();
     star = GameObject.Find("/players/star").GetComponent<StarController>();
+    levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
+
     otherPlayer = star;
     targetCell = null;
     caster = null;
@@ -71,6 +75,8 @@ public class AmpersandController : PlayerController {
       if (p != null) {
         PointerController sourcePointer = p.GetComponent<PointerController>();
         sourcePointer.Target = targetCell;
+        levelController.OnAttach();
+
         if (IsPointerAttached()) {
           Depoint();
         }

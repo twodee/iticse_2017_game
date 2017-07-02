@@ -2,8 +2,8 @@
 10 ; height
 9 ;camera x
 5 ;camera y
-Spell CAT ; instructions
-CAT ; console target
+Spell CAT in the blanks; instructions
+A ; console target
 ------------------
 --     ACT      --
 --              --
@@ -11,6 +11,18 @@ CAT ; console target
 --  &           --
 ----xxx---.-------
 --  *           --
+--              --
+--              --
+------------------
+1
+10 4 7 8
+------------------
+--              --
+--              --
+--              --
+--              --
+----CAT-----------
+--              --
 --              --
 --              --
 ------------------

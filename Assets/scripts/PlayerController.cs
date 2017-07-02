@@ -72,8 +72,12 @@ public abstract class PlayerController : MonoBehaviour {
     gameObject.transform.position = startPosition;
     gameObject.transform.localScale = startScale;
 
+<<<<<<< HEAD
     if (IsConnectedToOther() && IsTransmittable()) {
       otherPlayer.isLocked = true;
+=======
+    if (isBurden && IsTransmittable()) {
+>>>>>>> 140106797135aea20e4431d5f2ff320728981f62
       yield return StartCoroutine(Transmit());
     }
 

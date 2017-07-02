@@ -195,6 +195,21 @@ public class LevelLoader : MonoBehaviour {
         }
       }
     }
+
+    offset += height;
+    int targetLinks = Convert.ToInt32(lines[offset++]);
+    for (int i = 0; i < targetLinks; i++) {
+      string[] lineLinks = Regex.Split(lines[offset + i], "[\\s,]+");
+      int x1 = Convert.ToInt32(lineLinks[0]);
+      int y1 = Convert.ToInt32(lineLinks[1]);
+      int x2 = Convert.ToInt32(lineLinks[2]);
+      int y2 = Convert.ToInt32(lineLinks[3]);
+      GameObject pointer = findAt(x1, y1);
+      GameObject target = findAt(x2, y2);
+      PointerController pc = pointer.GetComponent<PointerController>();
+      CellController cc = target.GetComponent<CellController>();
+      endLevelCondition.Add(new LinkTargetEndLevelCondition(pc, cc));
+    }
   }
 
 	// Update is called once per frame

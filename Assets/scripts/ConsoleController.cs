@@ -20,15 +20,7 @@ public class ConsoleController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-
-  }
-
-  public void Acquire(string loot) {
-    text.text = text.text + loot;
-    if (text.text.Length > levelController.Current.consoleMatch.Length) {
-      text.text = text.text.Substring(text.text.Length - levelController.Current.consoleMatch.Length);
-    }
-    levelController.CheckProgress();
+    text.text = levelController.Current.collected;
   }
 
   public void LevelStart() {

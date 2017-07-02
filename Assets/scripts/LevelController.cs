@@ -26,8 +26,21 @@ public class LevelController : MonoBehaviour {
 		
 	}
 
+  public void OnCollect(string loot) {
+    current.collected += loot;
+    CheckProgress();
+  }
+
+  public void OnTransmit() {
+    CheckProgress();
+  }
+
+  public void OnAttach() {
+    CheckProgress();
+  }
+
   public void CheckProgress() {
-    if (consoleController.text.text.Equals(current.consoleMatch)) {
+    if (current.endLevelCondition.Check()) {
       loader.LoadNextLevel();
     }
   }

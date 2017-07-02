@@ -7,6 +7,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class LevelLoader : MonoBehaviour {
+  private static int WORLD_HEIGHT = 9;
+  private static float MIDDLE_BAR_Y = 2;
+
   public GameObject floor_platform;
   public GameObject linkedCell;
   public GameObject cell;
@@ -16,15 +19,20 @@ public class LevelLoader : MonoBehaviour {
   private StarController star;
 
   private LevelController progressController;
+  private ConsoleController consoleController;
 
   private ArrayList levels;
   private int currentLevel;
+
+  private Dictionary<long, GameObject> objects;
 
   // Use this for initialization
   void Awake() {
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
     star = GameObject.Find("/players/star").GetComponent<StarController>();
     progressController = gameObject.GetComponent<LevelController>();
+    consoleController = GameObject.Find("HUD/Console").GetComponent<ConsoleController>();
+    objects = new Dictionary<long, GameObject>();
   }
 
   void Start () {
@@ -35,11 +43,41 @@ public class LevelLoader : MonoBehaviour {
 
   void EmptyLevel() {
     // Find all of our children and...eliminate them.
+    objects.Clear();
 
     while (transform.childCount > 0) {
       Transform c = transform.GetChild(0);
       c.SetParent(null); // become Batman
       Destroy(c.gameObject); // become The Joker
+    }
+  }
+
+  static long Key(int x, int y) {
+    //implicit conversion of left to a long
+    long res = x;
+
+    //shift the bits creating an empty space on the right
+    // ex: 0x0000CFFF becomes 0xCFFF0000
+    res = (res << 32);
+
+    //combine the bits on the right with the previous value
+    // ex: 0xCFFF0000 | 0x0000ABCD becomes 0xCFFFABCD
+    res = res | (long)(uint)y; //uint first to prevent loss of signed bit
+
+    //return the combined result
+    return res;
+  }
+
+  GameObject findAt(int x, int y) {
+    return objects[Key(x, y)];
+  }
+
+  void loadObjects() {
+    for (int i = 0; i < transform.childCount; i++) {
+      Transform c = transform.GetChild(i);
+      if (c.gameObject.tag != "ground") {
+        objects[Key((int)c.gameObject.transform.position.x, (int)c.gameObject.transform.position.y)] = c.gameObject;
+      }
     }
   }
 
@@ -65,19 +103,25 @@ public class LevelLoader : MonoBehaviour {
     // Read the data from the file in assets
     string filePath = (string)levels[index];
     string text = System.IO.File.ReadAllText(filePath);
+    Regex replaceComment = new Regex("[ ]*;.*\n");
+    Regex replaceLine = new Regex("\n\n");
+    text = replaceComment.Replace(text, "\n");
+    text = replaceLine.Replace(text, "\n");
     string[] lines = Regex.Split(text, "\n");
 
     int width = Convert.ToInt32(lines[0]);
     int height = Convert.ToInt32(lines[1]);
     Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-    cam.transform.position = new Vector3(Convert.ToInt32(lines[2]), Convert.ToInt32(lines[3]), -10);
+    cam.transform.position = new Vector3((float)Convert.ToDouble(lines[2]), (float)Convert.ToDouble(lines[3]), -WORLD_HEIGHT);
 
-    progressController.Current = new Level(filePath, lines[4].Trim(), lines[5].Trim());
+    AndAllEndLevelCondition endLevelCondition = new AndAllEndLevelCondition();
+    progressController.Current = new Level(filePath, lines[4].Trim(), endLevelCondition);
+    endLevelCondition.Add(new CollectEndLevelCondition(progressController.Current, lines[5].Trim()));
     int offset = 6;
 
     for (int i = 0; i < height; i++) {
-      float y = height - (10 * (float)(i + 1) / (float)height) + 0.5f;
-      string s = lines[i+offset];
+      float y = height - (i) - 1 + 0.5f;
+      string s = lines[i + offset];
       for (int j = 0; j < s.Length && j < width; j++) {
         float x = j + 0.5f;
 
@@ -89,12 +133,16 @@ public class LevelLoader : MonoBehaviour {
           go.transform.SetParent(this.transform);
           Text t = go.GetComponentInChildren<Text>();
           t.text = c.ToString();
+          CellController cc = go.GetComponent<CellController>();
+          if (y < MIDDLE_BAR_Y) {
+            cc.immutable = true;
+          }
         }
         else if (c >= 'a' && c <= 'z') {
           GameObject go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
           Text t = go.GetComponentInChildren<Text>();
-          t.text = c.ToString().ToUpper();
+          t.text = "";//c.ToString().ToUpper();
           t.enabled = false;
         }
         else if (c == '-') {
@@ -121,12 +169,59 @@ public class LevelLoader : MonoBehaviour {
           star.transform.position = pos;
         }
       }
+    }
 
+    loadObjects();
+
+    offset += height;
+    int links = Convert.ToInt32(lines[offset++]);
+    for (int i = 0; i < links; i++) {
+      string[] lineLinks = Regex.Split(lines[offset + i], "[\\s,]+");
+      int x1 = Convert.ToInt32(lineLinks[0]);
+      int y1 = Convert.ToInt32(lineLinks[1]);
+      int x2 = Convert.ToInt32(lineLinks[2]);
+      int y2 = Convert.ToInt32(lineLinks[3]);
+      GameObject pointer = findAt(x1, y1);
+      GameObject target = findAt(x2, y2);
+      PointerController pc = pointer.GetComponent<PointerController>();
+      CellController cc = target.GetComponent<CellController>();
+      pc.Target = cc;
+    }
+
+    offset += links;
+    for (int i = 0; i < height; i++) {
+      int y = height - (i)-1;
+      string s = lines[i + offset];
+      for (int j = 0; j < s.Length && j < width; j++) {
+        int x = j;
+
+        char c = s[j];
+
+        if (c >= 'A' && c <= 'Z') {
+          GameObject go = findAt(x, y);
+          endLevelCondition.Add(new CellValueEndLevelCondition(go.GetComponentInChildren<Text>(), c.ToString()));
+        }
+      }
+    }
+
+    offset += height;
+    int targetLinks = Convert.ToInt32(lines[offset++]);
+    for (int i = 0; i < targetLinks; i++) {
+      string[] lineLinks = Regex.Split(lines[offset + i], "[\\s,]+");
+      int x1 = Convert.ToInt32(lineLinks[0]);
+      int y1 = Convert.ToInt32(lineLinks[1]);
+      int x2 = Convert.ToInt32(lineLinks[2]);
+      int y2 = Convert.ToInt32(lineLinks[3]);
+      GameObject pointer = findAt(x1, y1);
+      GameObject target = findAt(x2, y2);
+      PointerController pc = pointer.GetComponent<PointerController>();
+      CellController cc = target.GetComponent<CellController>();
+      endLevelCondition.Add(new LinkTargetEndLevelCondition(pc, cc));
     }
   }
 
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 }

@@ -5,6 +5,7 @@ using System.Collections;
 public class CellController : MonoBehaviour {
   private Text label;
   public PointerController pointer;
+  public bool immutable;
   void Start() {
     label = transform.Find("canvas/text").GetComponent<Text>();
     if (transform.parent != null && transform.parent.gameObject.tag == "linkedCell") {

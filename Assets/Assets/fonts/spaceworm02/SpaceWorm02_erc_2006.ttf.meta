@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: d3af3cc97f85f4aa8949cb2f4fca90de
+timeCreated: 1498917625
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: SPACEWORM02
+  fontNames:
+  - SPACEWORM02
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -4,23 +4,17 @@ using System.Collections;
 
 public class StarController : PlayerController {
   private AmpersandController ampersand;
-  private Text loot;
   protected FootController head;
 
-  private CellController targetCell;
 
-  private LevelController levelController;
 
   override public void Start() {
     base.Start();
     this.Type = "D";
     head = transform.Find("head").GetComponent<FootController>();
 
-    loot = transform.Find("canvas/loot").GetComponent<Text>();
-    loot.text = "";
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
     otherPlayer = ampersand;
-    levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
   }
 
   override public bool IsConnectedToOther() {
@@ -39,10 +33,7 @@ public class StarController : PlayerController {
     return null;
   }
 
-  public void Acquire(string label) {
-    loot.text = label;
-    levelController.OnCollect(label);
-  }
+
 
   override public void Update() {
     if (isLocked) {
@@ -77,12 +68,10 @@ public class StarController : PlayerController {
 
       }
     }
-    if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
-      Interact(true);
-    }
+
   }
 
-  virtual public GameObject GetOnPointer() {
+  override public GameObject GetOnPointer() {
     GameObject pointer = base.GetOnPointer();
     if (pointer == null) {
       pointer = GetOnPointer(head);
@@ -90,7 +79,7 @@ public class StarController : PlayerController {
     return pointer;
   }
 
-  void Interact(bool squish) {
+  override protected void Interact(bool squish) {
     targetCell = null;
     GameObject cell = GetOnCell();
     if (cell != null) {
@@ -149,60 +138,7 @@ public class StarController : PlayerController {
 
   }
 
-  private IEnumerator PutValue() {
-    GameObject payload = Instantiate(loot.gameObject);
-    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
-    payload.transform.position = gameObject.transform.position;
-    string value = loot.text;
-    loot.text = "";
 
-    Vector2 startPosition = gameObject.transform.position;
-    Vector2 endPosition = targetCell.gameObject.transform.position;
-
-    float startTime = Time.time;
-    float targetTime = (endPosition-startPosition).magnitude / 5.0f;
-    float elapsedTime = 0.0f;
-
-    while (elapsedTime <= targetTime) {
-      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
-      yield return null;
-      elapsedTime = Time.time - startTime;
-    }
-
-    Destroy(payload);
-    targetCell.Label = value;
-    targetCell.GetComponentInChildren<Text>().enabled = true;
-    levelController.OnTransmit();
-    rigidbody.constraints = RigidbodyConstraints2D.None;
-
-  }
-
-  private IEnumerator GetValue() {
-    GameObject cell = targetCell.gameObject.transform.Find("canvas/text").gameObject;
-    GameObject payload = Instantiate(cell);
-    payload.GetComponentInChildren<Text>().enabled = true;
-    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
-    payload.transform.position = cell.transform.position;
-
-    Vector2 startPosition = payload.transform.position;
-    Vector2 endPosition = gameObject.transform.position;
-
-    float startTime = Time.time;
-    float targetTime = (endPosition-startPosition).magnitude / 5.0f;
-    float elapsedTime = 0.0f;
-
-    while (elapsedTime <= targetTime) {
-      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
-      yield return null;
-      elapsedTime = Time.time - startTime;
-    }
-
-    Acquire(targetCell.Label);
-    Destroy(payload);
-    levelController.OnTransmit();
-    rigidbody.constraints = RigidbodyConstraints2D.None;
-
-  }
 
   public Vector2 LootPosition {
     get {

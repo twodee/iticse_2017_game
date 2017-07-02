@@ -37,7 +37,7 @@ public class LevelLoader : MonoBehaviour {
 
   void Start () {
     LoadAllLevelNames();
-    currentLevel = 0;
+    currentLevel = PlayerPrefs.GetInt("currentLevel")-2;
     LoadNextLevel();
   }
 
@@ -93,12 +93,12 @@ public class LevelLoader : MonoBehaviour {
   }
 
   public void LoadNextLevel() {
-    LoadLevel(currentLevel++);
+    LoadLevel(++currentLevel);
+    PlayerPrefs.SetInt("currentLevel", currentLevel+1);
   }
 
   void LoadLevel(int index) {
     EmptyLevel();
-	index = PlayerPrefs.GetInt("currentLevel")-1;
 
     // Read the data from the file in assets
     string filePath = (string)levels[index];

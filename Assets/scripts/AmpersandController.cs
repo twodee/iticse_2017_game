@@ -8,13 +8,11 @@ public class AmpersandController : PlayerController {
   private LineRenderer lineRenderer;
   private LineRenderer leftBarbRenderer;
   private LineRenderer rightBarbRenderer;
-  private CellController targetCell;
 
   private Vector2 targetPosition;
   private Coroutine caster;
   private StarController star;
 
-  private LevelController levelController;
 
   override public void Start() {
     base.Start();
@@ -85,13 +83,10 @@ public class AmpersandController : PlayerController {
           Depoint();
         }
       }
-    }
-    if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
-      Interact(true);
-    }
+    } 
   }
 
-  void Interact(bool squish) {
+  override protected void Interact(bool squish) {
     targetCell = null;
     GameObject cell = GetOnCell();
     if (cell != null) {
@@ -208,30 +203,39 @@ public class AmpersandController : PlayerController {
   }
 
   override public bool IsTransmittable() {
-    return IsPointerAttached();
+    return IsPointerAttached() || targetCell != null;
   }
 
   override public IEnumerator Transmit() {
-    GameObject cell = targetCell.gameObject.transform.Find("canvas/text").gameObject;
-    GameObject payload = Instantiate(cell);
-    payload.GetComponentInChildren<Text>().enabled = true;
-    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
-    payload.transform.position = cell.transform.position;
-
-    Vector2 startPosition = payload.transform.position;
-    Vector2 endPosition = star.gameObject.transform.position;
-
-    float startTime = Time.time;
-    float targetTime = 1.0f;
-    float elapsedTime = 0.0f;
-
-    while (elapsedTime <= targetTime) {
-      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
-      yield return null;
-      elapsedTime = Time.time - startTime;
+    if (loot.text == "" || targetCell.immutable) {
+      return GetValue();
     }
-
-    star.Acquire(targetCell.Label);
-    Destroy(payload);
+    else {
+      return PutValue();
+    }
   }
+
+//  override public IEnumerator Transmit() {
+//    GameObject cell = targetCell.gameObject.transform.Find("canvas/text").gameObject;
+//    GameObject payload = Instantiate(cell);
+//    payload.GetComponentInChildren<Text>().enabled = true;
+//    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
+//    payload.transform.position = cell.transform.position;
+//
+//    Vector2 startPosition = payload.transform.position;
+//    Vector2 endPosition = star.gameObject.transform.position;
+//
+//    float startTime = Time.time;
+//    float targetTime = 1.0f;
+//    float elapsedTime = 0.0f;
+//
+//    while (elapsedTime <= targetTime) {
+//      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+//      yield return null;
+//      elapsedTime = Time.time - startTime;
+//    }
+//
+//    star.Acquire(targetCell.Label);
+//    Destroy(payload);
+//  }
 }

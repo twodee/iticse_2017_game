@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public abstract class PlayerController : MonoBehaviour {
   public float speed;
@@ -14,9 +16,20 @@ public abstract class PlayerController : MonoBehaviour {
   protected bool isLocked;
   private float oomph;
 
+  protected Text loot;
+
+  protected CellController targetCell;
+  protected LevelController levelController;
+
+
   virtual public void Start() {
     rigidbody = GetComponent<Rigidbody2D>();
     foot = transform.Find("foot").GetComponent<FootController>();
+    loot = transform.Find("canvas/loot").GetComponent<Text>();
+    loot.text = "";
+    levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
+
+
     isAirborne = true;
     isLocked = false;
   }
@@ -33,6 +46,9 @@ public abstract class PlayerController : MonoBehaviour {
       Jump();
     }
 
+    if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
+      Interact(true);
+    }
   }
 
   virtual protected void Jump (){
@@ -78,6 +94,65 @@ public abstract class PlayerController : MonoBehaviour {
     isLocked = false;
   }
 
+  protected IEnumerator PutValue() {
+    GameObject payload = Instantiate(loot.gameObject);
+    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
+    payload.transform.position = gameObject.transform.position;
+    string value = loot.text;
+    loot.text = "";
+
+    Vector2 startPosition = gameObject.transform.position;
+    Vector2 endPosition = targetCell.gameObject.transform.position;
+
+    float startTime = Time.time;
+    float targetTime = (endPosition-startPosition).magnitude / 5.0f;
+    float elapsedTime = 0.0f;
+
+    while (elapsedTime <= targetTime) {
+      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      yield return null;
+      elapsedTime = Time.time - startTime;
+    }
+
+    Destroy(payload);
+    targetCell.Label = value;
+    targetCell.GetComponentInChildren<Text>().enabled = true;
+    levelController.OnTransmit();
+    rigidbody.constraints = RigidbodyConstraints2D.None;
+
+  }
+
+  protected IEnumerator GetValue() {
+    GameObject cell = targetCell.gameObject.transform.Find("canvas/text").gameObject;
+    GameObject payload = Instantiate(cell);
+    payload.GetComponentInChildren<Text>().enabled = true;
+    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
+    payload.transform.position = cell.transform.position;
+
+    Vector2 startPosition = payload.transform.position;
+    Vector2 endPosition = gameObject.transform.position;
+
+    float startTime = Time.time;
+    float targetTime = (endPosition-startPosition).magnitude / 5.0f;
+    float elapsedTime = 0.0f;
+
+    while (elapsedTime <= targetTime) {
+      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      yield return null;
+      elapsedTime = Time.time - startTime;
+    }
+
+    Acquire(targetCell.Label);
+    Destroy(payload);
+    levelController.OnTransmit();
+    rigidbody.constraints = RigidbodyConstraints2D.None;
+  }
+
+  public void Acquire(string label) {
+    loot.text = label;
+    levelController.OnCollect(label);
+  }
+
   void LateUpdate() {
     if (isBurden) {
       oomph += otherPlayer.oomph;
@@ -89,6 +164,8 @@ public abstract class PlayerController : MonoBehaviour {
   abstract public bool IsTransmittable();
   abstract public void LevelEnd();
   abstract public void LevelStart();
+  abstract protected void Interact(bool squish);
+
 
   bool IsGrounded() {
     Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK | otherMask);

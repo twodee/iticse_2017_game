@@ -83,10 +83,11 @@ public class LevelLoader : MonoBehaviour {
 
   void LoadAllLevelNames() {
     levels = new ArrayList();
-    string[] fileEntries = Directory.GetFiles(Application.dataPath + "/levels/");
+    string[] fileEntries = Directory.GetFiles(Application.dataPath + "/Resources/levels/");
     foreach (string file in fileEntries) {
       if (file.EndsWith(".txt")) {
-        levels.Add(file);
+        int start = Application.dataPath.Length+"/Resources/".Length;
+        levels.Add(file.Substring(start, file.Length-start-4));
       }
     }
     levels.Sort();
@@ -102,7 +103,9 @@ public class LevelLoader : MonoBehaviour {
 
     // Read the data from the file in assets
     string filePath = (string)levels[index];
-    string text = System.IO.File.ReadAllText(filePath);
+    TextAsset textFile = Resources.Load(filePath) as TextAsset;
+    string text = textFile.text;
+
     Regex replaceComment = new Regex("[ ]*;.*\n");
     Regex replaceLine = new Regex("[\n]*\n");
     Regex replaceBegin = new Regex("^\n");

@@ -1,0 +1,36 @@
+; Copy value to heap using existing pointer.
+; 1. Val copies A from source to pointer in stack which copies the value to the heap (Addy does nothing)
+
+; Header
+20 ; width
+9 ; height
+10 ; camera x
+4.5 ; camera y
+Copy A to table ; instructions
+A ; console target
+
+; Initial Layout
+--       x        --
+--                --
+--                --
+--                --
+-- &              --
+--+++++++.++++++++--
+--                --
+-- *              --
+---------A----------
+1 ; number of fixed links
+9 3 9 8 ; source xy, target xy (lower left origin)
+
+; Target Layout
+--       A        --
+--                --
+--                --
+--                --
+--                --
+--+++++++.++++++++--
+--                --
+--                --
+---------?----------
+1 ; number of fixed links
+9 3 9 8 ; source xy, target xy (lower left origin)

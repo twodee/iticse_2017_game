@@ -2,10 +2,10 @@
 9 ; height
 10 ;camera x
 4.5 ;camera y
-Spell CAT in the blanks; instructions
+Spell CAB in the blanks; instructions
 A ; console target
 --                --
---     AAT        --
+--     AAB        --
 --                --
 --                --
 --   ▁▁&          --
@@ -20,7 +20,7 @@ A ; console target
 --                --
 --                --
 --                --
---++CAT+++++++++++--
+--++CAB+++++++++++--
 --                --
 --                --
 --------------------

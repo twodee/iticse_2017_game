@@ -8,7 +8,8 @@ public class CellController : MonoBehaviour {
   public static int LEFT = 4;
   public static int RIGHT = 8;
 
-  private Text label;
+  private Text loot;
+  private SpriteRenderer lootSprite;
   public PointerController pointer;
   public bool immutable;
   private int blocked;
@@ -16,10 +17,16 @@ public class CellController : MonoBehaviour {
   private SpriteRenderer upBarrier;
   private SpriteRenderer downBarrier;
 
+  private LevelController levelController;
+
   void Awake() {
-    label = transform.Find("canvas/text").GetComponent<Text>();
+    loot = transform.Find("loot/canvas/text").GetComponent<Text>();
+    lootSprite = transform.Find("loot").GetComponent<SpriteRenderer>();
+
     upBarrier = transform.Find("UpBarrier").GetComponent<SpriteRenderer>();
     downBarrier = transform.Find("DownBarrier").GetComponent<SpriteRenderer>();
+
+    levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
 
     if (transform.parent != null && transform.parent.gameObject.tag == "linkedCell") {
       pointer = transform.parent.GetComponentInChildren<PointerController>();
@@ -29,13 +36,15 @@ public class CellController : MonoBehaviour {
     }
   }
 
-  public string Label {
+  public string Loot {
     get {
-      return label.text;
+      return loot.text;
     }
 
     set {
-      label.text = value;
+      loot.text = value;
+      Sprite s = levelController.GetSprite(value);
+      lootSprite.sprite = s;
     }
   }
 

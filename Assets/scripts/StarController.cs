@@ -75,13 +75,14 @@ public class StarController : PlayerController {
 
   override public void LevelEnd() {
     loot.text = "";
+    lootSprite.sprite = null;
   }
 
   override public void LevelStart() {
   }
 
   override public bool IsTransmittable() {
-    return targetCell != null ;
+    return targetCell != null && !(loot.text == "" && targetCell.Loot == "");
   }
 
   override public IEnumerator Transmit() {

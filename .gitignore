@@ -38,3 +38,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 *.exe
+
+# Mac OS
+.DS_Store

@@ -174,12 +174,13 @@ public class AmpersandController : PlayerController {
   override public void LevelEnd() {
     Depoint();
     loot.text = "";
+    lootSprite.sprite = null;
   }
   override public void LevelStart() {
   }
 
   override public bool IsTransmittable() {
-    return IsPointerAttached() || targetCell != null;
+    return IsPointerAttached() || (targetCell != null && !(loot.text == "" && targetCell.Loot == ""));
   }
 
   override public IEnumerator Transmit() {

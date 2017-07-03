@@ -16,11 +16,12 @@ A ; console target
 --                --
 --                --
 -- &              --
---+++++++.++++++++--
---                --
+--++++++.++.++++++--
+--      ▔         --
 -- *              --
 ---------A----------
-0 ; number of fixed links
+1 ; number of fixed links
+8 3 9 8
 
 ; Target Layout
 --       A        --
@@ -29,7 +30,8 @@ A ; console target
 --                --
 --                --
 --+++++++.++++++++--
---                --
+--      ▔         --
 --                --
 ---------?----------
-0 ; number of fixed links
+1 ; number of fixed links
+8 3 9 8

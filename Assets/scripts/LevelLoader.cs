@@ -97,7 +97,11 @@ public class LevelLoader : MonoBehaviour {
   }
 
   public void LoadNextLevel() {
-    LoadLevel(++currentLevel);
+    currentLevel++;
+    if (currentLevel == levels.Count) {
+      currentLevel = 0;
+    }
+    LoadLevel(currentLevel);
     PlayerPrefs.SetInt("currentLevel", currentLevel+1);
   }
 

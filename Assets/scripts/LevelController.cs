@@ -22,8 +22,10 @@ public class LevelController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update() {
+    if (Input.GetButtonDown("NextLevel")) {
+      loader.LoadNextLevel();
+    }
 	}
 
   public void OnCollect(string loot) {

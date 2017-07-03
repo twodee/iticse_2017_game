@@ -286,8 +286,10 @@ public class LevelLoader : MonoBehaviour {
 
     foreach (int[] blockedCell in blockedCells) {
       GameObject go = findAt(blockedCell[0], blockedCell[1]);
-      CellController cc = go.GetComponent<CellController>();
-      cc.Blocked |= blockedCell[2];
+      if (go.tag == "cell" || go.tag == "pointer") {
+        CellBehavior cc = go.GetComponent<CellBehavior>();
+        cc.Blocked |= blockedCell[2];
+      }
     }
 
     setDisplayTypeOnObjects();

@@ -61,10 +61,7 @@ public class StarController : PlayerController {
 
   override public GameObject GetOnPointer() {
     GameObject pointer = base.GetOnPointer();
-    if (pointer == null) {
-      pointer = GetOnPointer(head);
-    }
-    return pointer;
+    return pointer != null ? pointer : GetOnPointer(head, CellBehavior.DOWN);
   }
 
 

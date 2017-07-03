@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PointerController : MonoBehaviour
+public class PointerController : CellBehavior
 {
   private CellController targetCell;
   private LineRenderer lineRenderer;
 
-  void Awake() {
+  protected void Awake() {
+    base.Awake();
     lineRenderer = GetComponent<LineRenderer>();
     targetCell = null;
   }
@@ -25,7 +26,7 @@ public class PointerController : MonoBehaviour
       }
       else {
         lineRenderer.enabled = true;
-        lineRenderer.SetPosition(0, new Vector3(transform.position.x, transform.position.y, -1));
+        lineRenderer.SetPosition(0, new Vector3(transform.position.x, transform.position.y, -0.1));
         lineRenderer.SetPosition(1, new Vector3(targetCell.transform.position.x, targetCell.transform.position.y, -0.1f));
       }
     }

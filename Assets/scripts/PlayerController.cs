@@ -178,17 +178,15 @@ public abstract class PlayerController : MonoBehaviour {
   abstract public void LevelStart();
 
   public GameObject GetOnCell() {
-    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
+    GameObject go = GetOnCell(foot, CellBehavior.UP);
+    return go != null ? go : GetOnCell(head, CellBehavior.DOWN);
+  }
+
+  public GameObject GetOnCell(FootController test, int direction) {
+    Collider2D hit = Physics2D.OverlapBox(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
     if (hit != null && hit.gameObject.tag == "cell") {
       CellController cc = hit.gameObject.GetComponent<CellController>();
-      if (!cc.IsBlocked(CellController.UP)) {
-        return hit.gameObject;
-      }
-    }
-    hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
-    if (hit != null && hit.gameObject.tag == "cell") {
-      CellController cc = hit.gameObject.GetComponent<CellController>();
-      if (!cc.IsBlocked(CellController.DOWN)) {
+      if (!cc.IsBlocked(direction)) {
         return hit.gameObject;
       }
     }
@@ -219,13 +217,16 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   virtual public GameObject GetOnPointer() {
-    return GetOnPointer(foot);
+    return GetOnPointer(foot, CellBehavior.UP);
   }
 
-  public GameObject GetOnPointer(FootController test) {
+  public GameObject GetOnPointer(FootController test, int direction) {
     Collider2D hit = Physics2D.OverlapBox(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
     if (hit != null && hit.gameObject.tag == "pointer") {
-      return hit.gameObject;
+      CellBehavior cc = hit.gameObject.GetComponent<CellBehavior>();
+      if (!cc.IsBlocked(direction)) {
+        return hit.gameObject;
+      }
     }
     else if (hit != null && hit.gameObject.tag == "cell") {
       // does it have a parent that is a linked cell?
@@ -237,9 +238,7 @@ public abstract class PlayerController : MonoBehaviour {
         return null;
       }
     }
-    else {
-      return null;
-    }
+    return null;
   }
 
   virtual public bool IsConnectedToOther() {

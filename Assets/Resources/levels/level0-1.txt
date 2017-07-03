@@ -28,7 +28,7 @@ AA ; console target
 --            --
 --            --
 -------AA-------
---      --------
+--            --
 --            --
 -------?--------
 0 ; number of fixed links

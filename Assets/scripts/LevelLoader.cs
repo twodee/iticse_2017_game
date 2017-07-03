@@ -14,6 +14,8 @@ public class LevelLoader : MonoBehaviour {
   public GameObject linkedCell;
   public GameObject cell;
   public GameObject pointerCell;
+  public GameObject counter;
+  public GameObject cabinet;
 
   private AmpersandController ampersand;
   private StarController star;
@@ -38,7 +40,7 @@ public class LevelLoader : MonoBehaviour {
   void Start () {
     LoadAllLevelNames();
     currentLevel = PlayerPrefs.GetInt("currentLevel")-2;
-//    currentLevel = 1;
+//    currentLevel = 3;
     LoadNextLevel();
   }
 
@@ -159,7 +161,11 @@ public class LevelLoader : MonoBehaviour {
           blockedCells.Add(new int[]{ (int)x, (int)y - 1, CellController.UP });
         }
         else if (c == '-') {
-          GameObject go = (GameObject)Instantiate(floor_platform, pos, Quaternion.identity);
+          GameObject go = (GameObject)Instantiate(cabinet, pos, Quaternion.identity);
+          go.transform.SetParent(this.transform);
+        }
+        else if (c == '+') {
+          GameObject go = (GameObject)Instantiate(counter, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
         }
         else if (c == '.') {
@@ -235,7 +241,7 @@ public class LevelLoader : MonoBehaviour {
     foreach (int[] blockedCell in blockedCells) {
       GameObject go = findAt(blockedCell[0], blockedCell[1]);
       CellController cc = go.GetComponent<CellController>();
-      cc.blocked |= blockedCell[2];
+      cc.Blocked |= blockedCell[2];
     }
   }
 

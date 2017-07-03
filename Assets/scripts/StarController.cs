@@ -4,14 +4,12 @@ using System.Collections;
 
 public class StarController : PlayerController {
   private AmpersandController ampersand;
-  protected FootController head;
 
 
 
   override public void Start() {
     base.Start();
     this.Type = "D";
-    head = transform.Find("head").GetComponent<FootController>();
 
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
     otherPlayer = ampersand;
@@ -21,23 +19,7 @@ public class StarController : PlayerController {
     return true;
   }
 
-  public GameObject GetOnCell() {
-    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
-    if (hit != null && hit.gameObject.tag == "cell") {
-      CellController cc = hit.gameObject.GetComponent<CellController>();
-      if (!cc.IsBlocked(CellController.UP)) {
-        return hit.gameObject;
-      }
-    }
-    hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
-    if (hit != null && hit.gameObject.tag == "cell") {
-      CellController cc = hit.gameObject.GetComponent<CellController>();
-      if (!cc.IsBlocked(CellController.DOWN)) {
-        return hit.gameObject;
-      }
-    }
-    return null;
-  }
+
 
 
 
@@ -85,30 +67,7 @@ public class StarController : PlayerController {
     return pointer;
   }
 
-  override protected void Interact(bool squish) {
-    targetCell = null;
-    GameObject cell = GetOnCell();
-    if (cell != null) {
-      targetCell = cell.GetComponent<CellController>();
-    }
-    GameObject pointer = GetOnPointer();
-    if (pointer != null) {
-      targetCell = pointer.GetComponent<PointerController>().Target;
-    }
 
-    if (squish) {
-      isLocked = true;
-      StartCoroutine(TransmitAndUnlock());
-    }
-    else {
-      if (IsTransmittable()) {
-        StartCoroutine(Transmit());
-      }
-      else {
-        rigidbody.constraints = RigidbodyConstraints2D.None;
-      }
-    }
-  }
 
   override protected void Jump () {
     rigidbody.AddForce(Vector2.up * 500);
@@ -136,12 +95,14 @@ public class StarController : PlayerController {
 
   protected override void OnCollisionEnter2D(Collision2D collision) {
     base.OnCollisionEnter2D(collision);
-    // check to see if the head has hit a cell
-    Collider2D hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
-    if (hit != null) {
-      if (hit.gameObject.tag == "cell" || hit.gameObject.tag == "pointer") {
-        rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
-        Interact(false);
+    string collisionTag = collision.gameObject.tag;
+    if (collisionTag == "cell" || collisionTag == "pointer") {
+      // check to see if it is the head that has hit a cell
+      Collider2D hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
+      if (hit != null) {
+        if (hit.gameObject.tag == "cell" || hit.gameObject.tag == "pointer") {
+          Interact(false);
+        }
       }
     }
 

@@ -25,8 +25,8 @@ public class PointerController : MonoBehaviour
       }
       else {
         lineRenderer.enabled = true;
-        lineRenderer.SetPosition(0, (Vector2)transform.position);
-        lineRenderer.SetPosition(1, (Vector2)targetCell.transform.position);
+        lineRenderer.SetPosition(0, new Vector3(transform.position.x, transform.position.y, -1));
+        lineRenderer.SetPosition(1, new Vector3(targetCell.transform.position.x, targetCell.transform.position.y, -1));
       }
     }
   }

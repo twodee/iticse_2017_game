@@ -86,34 +86,6 @@ public class AmpersandController : PlayerController {
     } 
   }
 
-  override protected void Interact(bool squish) {
-    targetCell = null;
-    GameObject cell = GetOnCell();
-    if (cell != null) {
-      targetCell = cell.GetComponent<CellController>();
-    }
-
-    if (squish) {
-      isLocked = true;
-      StartCoroutine(TransmitAndUnlock());
-    }
-    else {
-      if (IsTransmittable()) {
-        StartCoroutine(Transmit());
-      }
-    }
-  }
-
-  public GameObject GetOnCell() {
-    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0,     Utilities.GROUND_MASK);
-    if (hit != null && hit.gameObject.tag == "cell") {
-      CellController cc = hit.gameObject.GetComponent<CellController>();
-      if (!cc.IsBlocked(CellController.UP)) {
-        return hit.gameObject;
-      }
-    }
-    return null;
-  }
 
   override protected void Jump (){
   }
@@ -201,6 +173,7 @@ public class AmpersandController : PlayerController {
 
   override public void LevelEnd() {
     Depoint();
+    loot.text = "";
   }
   override public void LevelStart() {
   }
@@ -216,6 +189,10 @@ public class AmpersandController : PlayerController {
     else {
       return PutValue();
     }
+  }
+  override protected void Interact(bool squish) {
+    Depoint();
+    base.Interact(squish);
   }
 
 //  override public IEnumerator Transmit() {

@@ -11,10 +11,16 @@ public class CellController : MonoBehaviour {
   private Text label;
   public PointerController pointer;
   public bool immutable;
-  public int blocked;
+  private int blocked;
 
-  void Start() {
+  private SpriteRenderer upBarrier;
+  private SpriteRenderer downBarrier;
+
+  void Awake() {
     label = transform.Find("canvas/text").GetComponent<Text>();
+    upBarrier = transform.Find("UpBarrier").GetComponent<SpriteRenderer>();
+    downBarrier = transform.Find("DownBarrier").GetComponent<SpriteRenderer>();
+
     if (transform.parent != null && transform.parent.gameObject.tag == "linkedCell") {
       pointer = transform.parent.GetComponentInChildren<PointerController>();
     }
@@ -30,6 +36,18 @@ public class CellController : MonoBehaviour {
 
     set {
       label.text = value;
+    }
+  }
+
+  public int Blocked {
+    get {
+      return blocked;
+    }
+
+    set {
+      blocked = value;
+      upBarrier.enabled = IsBlocked(UP);
+      downBarrier.enabled = IsBlocked(DOWN);
     }
   }
 

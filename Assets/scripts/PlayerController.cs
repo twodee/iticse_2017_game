@@ -8,6 +8,8 @@ public abstract class PlayerController : MonoBehaviour {
   public float speed;
 
   protected FootController foot;
+  protected FootController head;
+
   public bool isAirborne;
   protected new Rigidbody2D rigidbody;
   protected PlayerController otherPlayer;
@@ -28,6 +30,7 @@ public abstract class PlayerController : MonoBehaviour {
     loot = transform.Find("canvas/loot").GetComponent<Text>();
     loot.text = "";
     levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
+    head = transform.Find("head").GetComponent<FootController>();
 
 
     isAirborne = true;
@@ -55,42 +58,46 @@ public abstract class PlayerController : MonoBehaviour {
     rigidbody.AddForce(Vector2.up * 300);
 	}
 
-  protected IEnumerator TransmitAndUnlock() {
-    // Squat
-    Vector2 startPosition = gameObject.transform.position;
-    Vector2 endPosition = (Vector2) gameObject.transform.position - Vector2.up * 0.1f;
-    Vector3 startScale = gameObject.transform.localScale;
-    Vector3 endScale = new Vector3(1.2f, 0.8f, 1.0f);
+  protected IEnumerator TransmitAndUnlock(bool squish) {
+    if (squish) {
+      // Squat
+      Vector2 startPosition = gameObject.transform.position;
+      Vector2 endPosition = (Vector2)gameObject.transform.position - Vector2.up * 0.1f;
+      Vector3 startScale = gameObject.transform.localScale;
+      Vector3 endScale = new Vector3(1.2f, 0.8f, 1.0f);
 
-    float startTime = Time.time;
-    float targetTime = 0.1f;
-    float elapsedTime = 0.0f;
+      float startTime = Time.time;
+      float targetTime = 0.1f;
+      float elapsedTime = 0.0f;
 
-    // Squat down and widen.
-    while (elapsedTime < targetTime) {
-      gameObject.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
-      gameObject.transform.localScale = Vector3.Lerp(startScale, endScale, elapsedTime / targetTime);
-      yield return null;
-      elapsedTime = Time.time - startTime;
+      // Squat down and widen.
+      while (elapsedTime < targetTime) {
+        gameObject.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+        gameObject.transform.localScale = Vector3.Lerp(startScale, endScale, elapsedTime / targetTime);
+        yield return null;
+        elapsedTime = Time.time - startTime;
+      }
+
+      // And return to form...
+      startTime = Time.time;
+      elapsedTime = 0.0f;
+      while (elapsedTime < targetTime) {
+        gameObject.transform.position = Vector2.Lerp(endPosition, startPosition, elapsedTime / targetTime);
+        gameObject.transform.localScale = Vector3.Lerp(endScale, startScale, elapsedTime / targetTime);
+        yield return null;
+        elapsedTime = Time.time - startTime;
+      }
+
+      gameObject.transform.position = startPosition;
+      gameObject.transform.localScale = startScale;
     }
-
-    // And return to form...
-    startTime = Time.time;
-    elapsedTime = 0.0f;
-    while (elapsedTime < targetTime) {
-      gameObject.transform.position = Vector2.Lerp(endPosition, startPosition, elapsedTime / targetTime);
-      gameObject.transform.localScale = Vector3.Lerp(endScale, startScale, elapsedTime / targetTime);
-      yield return null;
-      elapsedTime = Time.time - startTime;
-    }
-
-    gameObject.transform.position = startPosition;
-    gameObject.transform.localScale = startScale;
 
     if (IsTransmittable()) {
       yield return StartCoroutine(Transmit());
     }
 
+    levelController.OnTransmit();
+    rigidbody.constraints = RigidbodyConstraints2D.None;
     isLocked = false;
   }
 
@@ -117,8 +124,7 @@ public abstract class PlayerController : MonoBehaviour {
     Destroy(payload);
     targetCell.Label = value;
     targetCell.GetComponentInChildren<Text>().enabled = true;
-    levelController.OnTransmit();
-    rigidbody.constraints = RigidbodyConstraints2D.None;
+
 
   }
 
@@ -144,8 +150,7 @@ public abstract class PlayerController : MonoBehaviour {
 
     Acquire(targetCell.Label);
     Destroy(payload);
-    levelController.OnTransmit();
-    rigidbody.constraints = RigidbodyConstraints2D.None;
+
   }
 
   public void Acquire(string label) {
@@ -164,7 +169,41 @@ public abstract class PlayerController : MonoBehaviour {
   abstract public bool IsTransmittable();
   abstract public void LevelEnd();
   abstract public void LevelStart();
-  abstract protected void Interact(bool squish);
+
+  public GameObject GetOnCell() {
+    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
+    if (hit != null && hit.gameObject.tag == "cell") {
+      CellController cc = hit.gameObject.GetComponent<CellController>();
+      if (!cc.IsBlocked(CellController.UP)) {
+        return hit.gameObject;
+      }
+    }
+    hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
+    if (hit != null && hit.gameObject.tag == "cell") {
+      CellController cc = hit.gameObject.GetComponent<CellController>();
+      if (!cc.IsBlocked(CellController.DOWN)) {
+        return hit.gameObject;
+      }
+    }
+    return null;
+  }
+
+  virtual protected void Interact(bool squish) {
+    targetCell = null;
+    GameObject cell = GetOnCell();
+    if (cell != null) {
+      targetCell = cell.GetComponent<CellController>();
+    }
+    GameObject pointer = GetOnPointer();
+    if (pointer != null) {
+      targetCell = pointer.GetComponent<PointerController>().Target;
+    }
+
+    isLocked = true;
+    rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY;
+
+    StartCoroutine(TransmitAndUnlock(squish));
+  }
 
 
   bool IsGrounded() {

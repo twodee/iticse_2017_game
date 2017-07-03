@@ -55,8 +55,8 @@ public class CameraController : MonoBehaviour {
   }
 
   void Update() {
-	SetCameraSize();
-    SetCameraPos();
+	//SetCameraSize();
+    //SetCameraPos();
   }
   
 }

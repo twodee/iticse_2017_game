@@ -35,18 +35,18 @@ public class AmpersandController : PlayerController {
 
     base.Update();
 
-    // Emit feeler pointer on left-click.
-    if (Input.GetMouseButtonDown(0)) {
-      if (caster != null) {
-        StopCoroutine(caster);
-      }
-      caster = StartCoroutine(CastPointer());
-    }
-
-    // Cancel pointer on right-click.
-    if (Input.GetMouseButtonDown(1)) {
-      Depoint();
-    }
+//    // Emit feeler pointer on left-click.
+//    if (Input.GetMouseButtonDown(0)) {
+//      if (caster != null) {
+//        StopCoroutine(caster);
+//      }
+//      caster = StartCoroutine(CastPointer());
+//    }
+//
+//    // Cancel pointer on right-click.
+//    if (Input.GetMouseButtonDown(1)) {
+//      Depoint();
+//    }
 
     // Only update pointer if we're not currently sending out a feeler ray.
     if (IsPointerAttached()) {
@@ -56,18 +56,18 @@ public class AmpersandController : PlayerController {
 
       // If our ray hits a different object than it did before, that means some
       // other object got in the way.
-      if (hit.collider.gameObject != targetCell.gameObject &&
-          (targetCell.pointer == null || hit.collider.gameObject != targetCell.pointer.gameObject)) {
-        Depoint();
-      }
-      else {
+//      if (hit.collider.gameObject != targetCell.gameObject &&
+//          (targetCell.pointer == null || hit.collider.gameObject != targetCell.pointer.gameObject)) {
+//        Depoint();
+//      }
+//      else {
         Vector2 perp = new Vector3(-diff.y, diff.x);
         lineRenderer.SetPosition(0, (Vector2)transform.position + diff * 0.3f);
         leftBarbRenderer.SetPosition(0, targetPosition + barbLength * (perp - 1.5f * diff));
         rightBarbRenderer.SetPosition(0, targetPosition - barbLength * (perp + 1.5f * diff));
 
 
-      }
+//      }
     }
 
     if (Input.GetButtonDown("Attach")) {

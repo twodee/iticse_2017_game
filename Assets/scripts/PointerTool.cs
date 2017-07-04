@@ -35,7 +35,7 @@ public class PointerTool : Tool {
 //      }
 //      else {
         Vector2 perp = new Vector3(-diff.y, diff.x);
-        lineRenderer.SetPosition(0, (Vector2)transform.position + diff * 0.3f);
+        lineRenderer.SetPosition(0, (Vector2)transform.position);// + diff * 0.3f);
         leftBarbRenderer.SetPosition(0, targetPosition + barbLength * (perp - 1.5f * diff));
         rightBarbRenderer.SetPosition(0, targetPosition - barbLength * (perp + 1.5f * diff));
 
@@ -88,7 +88,7 @@ public class PointerTool : Tool {
     Vector2 diff = position - (Vector2) transform.position;
     diff.Normalize();
     Vector2 perp = new Vector3(-diff.y, diff.x);
-    lineRenderer.SetPosition(0, (Vector2) transform.position + diff * 0.3f);
+    lineRenderer.SetPosition(0, (Vector2) transform.position);// + diff * 0.3f);
     leftBarbRenderer.SetPosition(0, position + barbLength * (perp - 1.5f * diff));
     rightBarbRenderer.SetPosition(0, position - barbLength * (perp + 1.5f * diff));
     lineRenderer.SetPosition(1, position);

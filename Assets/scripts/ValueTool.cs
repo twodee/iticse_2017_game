@@ -39,7 +39,7 @@ public class ValueTool : Tool {
 
   protected IEnumerator PutValue() {
     GameObject payload = Instantiate(player.Loot);
-    GameObject cell = player.targetCell.gameObject.transform.Find("loot").gameObject;
+    GameObject cell = player.targetCell.GetLootObject();
 
     payload.transform.SetParent(cell.transform);
     payload.transform.position = player.LootPosition;

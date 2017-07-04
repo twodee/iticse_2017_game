@@ -6,12 +6,14 @@ public class CellController : CellBehavior {
   
   private Text loot;
   private SpriteRenderer lootSprite;
+  private GameObject lootObject;
 
   override protected void Awake() {
     base.Awake();
 
     loot = transform.Find("loot/canvas/text").GetComponent<Text>();
-    lootSprite = transform.Find("loot").GetComponent<SpriteRenderer>();
+    lootObject = transform.Find("loot").gameObject;
+    lootSprite = lootObject.GetComponent<SpriteRenderer>();
 
   }
 
@@ -33,4 +35,8 @@ public class CellController : CellBehavior {
   override public string GetLoot() {
     return Loot;
   }
+  override public GameObject GetLootObject() {
+    return lootObject;
+  }
+
 }

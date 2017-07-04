@@ -47,4 +47,13 @@ public class PointerController : CellBehavior
     }
   }
 
+  override public GameObject GetLootObject() {
+    if (targetCell != null) {
+      return targetCell.GetLootObject();
+    }
+    else {
+      return null;
+    }
+  }
+
 }

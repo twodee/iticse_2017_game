@@ -27,6 +27,7 @@ public abstract class CellBehavior : MonoBehaviour {
 
   abstract public void SetLoot(string text);
   abstract public string GetLoot();
+  abstract public GameObject GetLootObject();
 
   public int Blocked {
     get {

@@ -273,7 +273,7 @@ public class LevelLoader : MonoBehaviour {
       GameObject pointer = findAt(x1, y1);
       GameObject target = findAt(x2, y2);
       PointerController pc = pointer.GetComponent<PointerController>();
-      CellController cc = target.GetComponent<CellController>();
+      CellBehavior cc = target.GetComponent<CellBehavior>();
       pc.Target = cc;
     }
 
@@ -304,7 +304,7 @@ public class LevelLoader : MonoBehaviour {
       GameObject pointer = findAt(x1, y1);
       GameObject target = findAt(x2, y2);
       PointerController pc = pointer.GetComponent<PointerController>();
-      CellController cc = target.GetComponent<CellController>();
+      CellBehavior cc = target.GetComponent<CellBehavior>();
       endLevelCondition.Add(new LinkTargetEndLevelCondition(pc, cc));
     }
 

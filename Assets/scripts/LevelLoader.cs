@@ -23,13 +23,14 @@ public class LevelLoader : MonoBehaviour {
   private LevelController progressController;
   private ConsoleController consoleController;
 
-  private ArrayList levels; // string
-  private Dictionary<string, TextAsset> levelAssets;
+  private int currentWorld;
   private int currentLevel;
 
   private int valueType; // 0 = images only, 1 = text only, 2 = both
 
   private Dictionary<long, GameObject> objects;
+
+  public WorldLoader worldLoader;
 
   // Use this for initialization
   void Awake() {
@@ -38,16 +39,15 @@ public class LevelLoader : MonoBehaviour {
     progressController = gameObject.GetComponent<LevelController>();
     consoleController = GameObject.Find("HUD/Console").GetComponent<ConsoleController>();
     objects = new Dictionary<long, GameObject>();
-    levelAssets = new Dictionary<string, TextAsset>();
   }
 
   void Start () {
-    LoadAllLevelNames();
-    currentLevel = PlayerPrefs.GetInt("currentLevel")-2;
+    currentWorld = PlayerPrefs.GetInt("currentWorld");
+    currentLevel = PlayerPrefs.GetInt("currentLevel");
+
     valueType = PlayerPrefs.GetInt("valueType", 0);
 
-//    currentLevel = 3;
-    LoadNextLevel();
+    LoadLevel(currentWorld, currentLevel);
   }
 
   void EmptyLevel() {
@@ -110,50 +110,25 @@ public class LevelLoader : MonoBehaviour {
     setDisplayTypeOnObject(star.gameObject);
   }
 
-  void LoadAllLevelNames() {
-    levels = new ArrayList();
-    int level = 0;
-    int sublevel = 0;
-    bool hasMoreLevels = true;
-    while (hasMoreLevels) {
-      bool hasMoreSublevels = true;
-      sublevel = 0;
-      while (hasMoreSublevels) {
-        string name = "level" + level + "-" + sublevel;
-        TextAsset ta = Resources.Load<TextAsset>("levels/"+name);
-        if (ta == null) {
-          hasMoreSublevels = false;
-        }
-        else {
-          levels.Add(name);
-          levelAssets[name] = ta;
-          sublevel++;
-        }
-      }
-      if (sublevel == 0) {
-        hasMoreLevels = false;
-      }
-      else {
-        level++;
-      }
-    }
-  }
 
   public void LoadNextLevel() {
     currentLevel++;
-    if (currentLevel == levels.Count) {
+    if (currentLevel == worldLoader.worlds[currentWorld]) {
       currentLevel = 0;
+      currentWorld++;
     }
-    LoadLevel(currentLevel);
-    PlayerPrefs.SetInt("currentLevel", currentLevel+1);
+    LoadLevel(currentWorld, currentLevel);
+    PlayerPrefs.SetInt("currentWorld", currentWorld);
+    PlayerPrefs.SetInt("currentLevel", currentLevel);
   }
 
-  void LoadLevel(int index) {
+  void LoadLevel(int world, int level) {
     EmptyLevel();
+    int index = worldLoader.GetIndex(world, level);
 
     // Read the data from the file in assets
-    string levelName = (string)levels[index];
-    TextAsset textFile = (TextAsset)levelAssets[levelName];
+    string levelName = (string)worldLoader.levels[index];
+    TextAsset textFile = (TextAsset)worldLoader.levelAssets[levelName];
     string text = textFile.text;
 
     Regex replaceComment = new Regex("[ ]*;.*\n");

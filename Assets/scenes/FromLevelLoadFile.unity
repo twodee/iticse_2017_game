@@ -757,6 +757,7 @@ GameObject:
   - component: {fileID: 1840282445}
   - component: {fileID: 1840282444}
   - component: {fileID: 1840282446}
+  - component: {fileID: 1840282447}
   m_Layer: 0
   m_Name: TheLevel
   m_TagString: Untagged
@@ -783,6 +784,7 @@ MonoBehaviour:
     type: 2}
   counter: {fileID: 1115845925437742, guid: c99c08b8ae3e64992881ea002ce0fbdd, type: 2}
   cabinet: {fileID: 1869421373860356, guid: 758b9cea2fb154be8a0e45e83d7e788c, type: 2}
+  worldLoader: {fileID: 1840282447}
 --- !u!4 &1840282445
 Transform:
   m_ObjectHideFlags: 0
@@ -811,6 +813,17 @@ MonoBehaviour:
   - {fileID: 21300014, guid: 9e12d7be9677f4145ad87fe7624aaef7, type: 3}
   - {fileID: 21300016, guid: 9e12d7be9677f4145ad87fe7624aaef7, type: 3}
   - {fileID: 21300018, guid: 9e12d7be9677f4145ad87fe7624aaef7, type: 3}
+--- !u!114 &1840282447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1840282443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b18ce0b5bd594bdea5c114d372d7bd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1862827813
 Prefab:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ public abstract class PlayerController : MonoBehaviour {
   protected new Rigidbody2D rigidbody;
   protected PlayerController otherPlayer;
 //  public bool isBurden;
-  private int otherMask;
+//  private int otherMask;
   protected bool isLocked;
   private float oomph;
 
@@ -82,6 +82,8 @@ public abstract class PlayerController : MonoBehaviour {
       activeTool = inactiveTool;
       inactiveTool = temp;
       repositionTools();
+      inactiveTool.InActive();
+      activeTool.Active();
     }
   }
   void repositionTools() {
@@ -277,6 +279,9 @@ public abstract class PlayerController : MonoBehaviour {
         isAirborne = false;
       }
     }
+    if (collision.gameObject.tag == "cell" || collision.gameObject.tag == "pointer") {
+      activeTool.Enter(collision.gameObject.GetComponent<CellBehavior>());
+    }
       // If we land on top of the other people, let's reduce our mass to 0 so we
       // don't impede that player's jump.
 //      if ((1 << collision.gameObject.layer) == otherMask) {
@@ -289,6 +294,9 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   void OnCollisionExit2D(Collision2D collision) {
+    if (collision.gameObject.tag == "cell" || collision.gameObject.tag == "pointer") {
+      activeTool.Exit(collision.gameObject.GetComponent<CellBehavior>());
+    }
 //    if (!isSquishing) {
 //      if (collision.gameObject == otherPlayer.gameObject) {
 //        rigidbody.mass = 1;
@@ -305,11 +313,11 @@ public abstract class PlayerController : MonoBehaviour {
 
     set {
       type = value;
-      if (type == "D") {
-        otherMask = Utilities.PLAYER_R_MASK;
-      } else {
-        otherMask = Utilities.PLAYER_D_MASK;
-      }
+//      if (type == "D") {
+//        otherMask = Utilities.PLAYER_R_MASK;
+//      } else {
+//        otherMask = Utilities.PLAYER_D_MASK;
+//      }
     }
   }
 }

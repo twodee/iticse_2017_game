@@ -88,5 +88,9 @@ public class ValueTool : Tool {
     Destroy(payload);
 
   }
+
+  override public void InActive() {
+    player.LootText = "";
+  }
 }
 

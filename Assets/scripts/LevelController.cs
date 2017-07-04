@@ -8,16 +8,16 @@ public class LevelController : MonoBehaviour {
   private ConsoleController consoleController;
   private LevelLoader loader;
 
-  private PlayerController player1;
-  private PlayerController player2;
+//  private PlayerController player1;
+//  private PlayerController player2;
 
   public Sprite[] food;
 
   // Use this for initialization
    void Awake() {
     consoleController = GameObject.Find("/HUD/Console").GetComponent<ConsoleController>();
-    player1 = GameObject.Find("/players/star").GetComponent<StarController>();
-    player2 = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
+//    player1 = GameObject.Find("/players/star").GetComponent<StarController>();
+//    player2 = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
 
     loader = gameObject.GetComponent<LevelLoader>();
 	}

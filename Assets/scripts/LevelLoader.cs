@@ -35,6 +35,7 @@ public class LevelLoader : MonoBehaviour {
   private Tool pointerTool;
   private Tool valueTool;
   private Tool incrementTool;
+  private Tool offsetTool;
 
   private ArrayList tools;
 
@@ -45,6 +46,8 @@ public class LevelLoader : MonoBehaviour {
     pointerTool = GameObject.Find("/pointerTool").GetComponent<Tool>();
     valueTool = GameObject.Find("/valueTool").GetComponent<Tool>();
     incrementTool = GameObject.Find("/incrementTool").GetComponent<Tool>();
+    offsetTool = GameObject.Find("/offsetTool").GetComponent<Tool>();
+
     levelController = gameObject.GetComponent<LevelController>();
     consoleController = GameObject.Find("HUD/Console").GetComponent<ConsoleController>();
     objects = new Dictionary<long, GameObject>();
@@ -324,6 +327,7 @@ public class LevelLoader : MonoBehaviour {
     }
     else if (world >= 3) {
       ampersand.ActiveTool = MakeTool(pointerTool);
+      ampersand.InActiveTool = MakeTool(offsetTool);
       star.ActiveTool = MakeTool(valueTool);
       star.InActiveTool = MakeTool(incrementTool);
     }

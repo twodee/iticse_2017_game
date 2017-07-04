@@ -35,6 +35,8 @@ public class LevelLoader : MonoBehaviour {
   private Tool pointerTool;
   private Tool valueTool;
 
+  private ArrayList tools;
+
   // Use this for initialization
   void Awake() {
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
@@ -44,6 +46,7 @@ public class LevelLoader : MonoBehaviour {
     levelController = gameObject.GetComponent<LevelController>();
     consoleController = GameObject.Find("HUD/Console").GetComponent<ConsoleController>();
     objects = new Dictionary<long, GameObject>();
+    tools = new ArrayList();
   }
 
   void Start () {
@@ -64,10 +67,14 @@ public class LevelLoader : MonoBehaviour {
       c.SetParent(null); // become Batman
       Destroy(c.gameObject); // become The Joker
     }
-
+    foreach (Tool tool in tools) {
+      tool.gameObject.transform.SetParent(null);
+      Destroy(tool.gameObject);
+    }
+    tools.Clear();
     // de-loot the players
-    ampersand.LootText = "";
-    star.LootText = "";
+    ampersand.Reset();
+    star.Reset();
   }
 
   static long Key(int x, int y) {
@@ -302,7 +309,7 @@ public class LevelLoader : MonoBehaviour {
 
   Tool MakeTool(Tool proto) {
     Tool made = Instantiate(proto);
-    made.transform.SetParent(this.transform);
+    tools.Add(made);
     return made;
   }
 

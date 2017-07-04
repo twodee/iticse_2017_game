@@ -63,6 +63,8 @@ public abstract class PlayerController : MonoBehaviour {
     {
       activeTool = value;
       activeTool.Player = this;
+      activeTool.gameObject.transform.SetParent(this.transform);
+      repositionTools();
     }
   }
   public Tool InActiveTool {
@@ -70,12 +72,29 @@ public abstract class PlayerController : MonoBehaviour {
     {
       inactiveTool = value;
       inactiveTool.Player = this;
+      inactiveTool.gameObject.transform.SetParent(this.transform);
+      repositionTools();
     }
   }
   public void SwapTool() {
-    Tool temp = activeTool;
-    activeTool = inactiveTool;
-    inactiveTool = temp;
+    if (inactiveTool != null) {
+      Tool temp = activeTool;
+      activeTool = inactiveTool;
+      inactiveTool = temp;
+      repositionTools();
+    }
+  }
+  void repositionTools() {
+    activeTool.gameObject.transform.position = new Vector3(transform.position.x + 0.5f, transform.position.y + 0.25f, -0.1f);
+    if (inactiveTool != null) {
+      inactiveTool.gameObject.transform.position = new Vector3(transform.position.x-0.5f, transform.position.y-0.25f, -0.1f);
+    }
+  }
+
+  public void Reset() {
+    LootText = "";
+    activeTool = null;
+    inactiveTool = null;
   }
 
   virtual public void Start() {
@@ -94,6 +113,7 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   protected void Interact(bool squish) {
+    Lock();
     if (squish) {
       StartCoroutine(SquishAndInteract());
     }

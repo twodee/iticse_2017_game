@@ -54,7 +54,7 @@ public class PointerTool : Tool {
       if (player.targetCell == null) {
         // pick up the targetCell from pointer if it exists
         player.targetCell = sourcePointer.Target;
-        if (player.targetCell) {
+        if (player.targetCell != null) {
           // need to draw the line
           lineRenderer.enabled = true;
           leftBarbRenderer.enabled = true;
@@ -74,7 +74,7 @@ public class PointerTool : Tool {
         }
       }
     }
-
+    player.UnLock();
   }
 
   void Depoint() {

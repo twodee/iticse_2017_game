@@ -35,38 +35,39 @@ public class AmpersandController : PlayerController {
 
     base.Update();
 
-    // Emit feeler pointer on left-click.
-    if (Input.GetMouseButtonDown(0)) {
-      if (caster != null) {
-        StopCoroutine(caster);
-      }
-      caster = StartCoroutine(CastPointer());
-    }
-
-    // Cancel pointer on right-click.
-    if (Input.GetMouseButtonDown(1)) {
-      Depoint();
-    }
+//    // Emit feeler pointer on left-click.
+//    if (Input.GetMouseButtonDown(0)) {
+//      if (caster != null) {
+//        StopCoroutine(caster);
+//      }
+//      caster = StartCoroutine(CastPointer());
+//    }
+//
+//    // Cancel pointer on right-click.
+//    if (Input.GetMouseButtonDown(1)) {
+//      Depoint();
+//    }
 
     // Only update pointer if we're not currently sending out a feeler ray.
     if (IsPointerAttached()) {
-      Vector2 diff = targetPosition - (Vector2) transform.position;
+      Vector2 diff = targetPosition - (Vector2)transform.position;
       diff.Normalize();
       RaycastHit2D hit = Physics2D.Raycast(transform.position, diff, Mathf.Infinity, Utilities.GROUND_MASK);
 
       // If our ray hits a different object than it did before, that means some
       // other object got in the way.
-      if (hit.collider.gameObject != targetCell.gameObject &&
-        (targetCell.pointer == null || hit.collider.gameObject != targetCell.pointer.gameObject)) {
-        Depoint();
-      } else {
+//      if (hit.collider.gameObject != targetCell.gameObject &&
+//          (targetCell.pointer == null || hit.collider.gameObject != targetCell.pointer.gameObject)) {
+//        Depoint();
+//      }
+//      else {
         Vector2 perp = new Vector3(-diff.y, diff.x);
         lineRenderer.SetPosition(0, (Vector2)transform.position + diff * 0.3f);
         leftBarbRenderer.SetPosition(0, targetPosition + barbLength * (perp - 1.5f * diff));
         rightBarbRenderer.SetPosition(0, targetPosition - barbLength * (perp + 1.5f * diff));
 
 
-      }
+//      }
     }
 
     if (Input.GetButtonDown("Attach")) {
@@ -76,11 +77,27 @@ public class AmpersandController : PlayerController {
       }
       if (p != null) {
         PointerController sourcePointer = p.GetComponent<PointerController>();
-        sourcePointer.Target = targetCell;
-        levelController.OnAttach();
+        if (targetCell == null) {
+          // pick up the targetCell from pointer if it exists
+          targetCell = sourcePointer.Target;
+          if (targetCell) {
+            // need to draw the line
+            lineRenderer.enabled = true;
+            leftBarbRenderer.enabled = true;
+            rightBarbRenderer.enabled = true;
+            caster = null;
+            Vector3 pos = targetCell.gameObject.transform.position;
+            targetPosition = pos;
+            PointAt(pos);//new Vector2(pos.x, pos.y - 0.5f));
+          }
+        }
+        else {
+          sourcePointer.Target = targetCell;
+          levelController.OnAttach();
 
-        if (IsPointerAttached()) {
-          Depoint();
+          if (IsPointerAttached()) {
+            Depoint();
+          }
         }
       }
     } 
@@ -174,12 +191,13 @@ public class AmpersandController : PlayerController {
   override public void LevelEnd() {
     Depoint();
     loot.text = "";
+    lootSprite.sprite = null;
   }
   override public void LevelStart() {
   }
 
   override public bool IsTransmittable() {
-    return IsPointerAttached() || targetCell != null;
+    return IsPointerAttached() || (targetCell != null && !(loot.text == "" && targetCell.Loot == ""));
   }
 
   override public IEnumerator Transmit() {

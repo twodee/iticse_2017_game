@@ -23,12 +23,15 @@ public abstract class PlayerController : MonoBehaviour {
   protected CellController targetCell;
   protected LevelController levelController;
 
+  protected SpriteRenderer lootSprite;
+
 
   virtual public void Start() {
     rigidbody = GetComponent<Rigidbody2D>();
     foot = transform.Find("foot").GetComponent<FootController>();
-    loot = transform.Find("canvas/loot").GetComponent<Text>();
+    loot = transform.Find("loot/canvas/text").GetComponent<Text>();
     loot.text = "";
+    lootSprite = transform.Find("loot").GetComponent<SpriteRenderer>();
     levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
     head = transform.Find("head").GetComponent<FootController>();
 
@@ -94,61 +97,62 @@ public abstract class PlayerController : MonoBehaviour {
 
     if (IsTransmittable()) {
       yield return StartCoroutine(Transmit());
+      levelController.OnTransmit();
     }
 
-    levelController.OnTransmit();
     rigidbody.constraints = RigidbodyConstraints2D.None;
     isLocked = false;
   }
 
   protected IEnumerator PutValue() {
-    GameObject payload = Instantiate(loot.gameObject);
-    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
-    payload.transform.position = gameObject.transform.position;
+    GameObject payload = Instantiate(lootSprite.gameObject);
+    GameObject cell = targetCell.gameObject.transform.Find("loot").gameObject;
+
+    payload.transform.SetParent(cell.transform);
+    payload.transform.position = lootSprite.gameObject.transform.position;
     string value = loot.text;
     loot.text = "";
+    lootSprite.sprite = null;
 
-    Vector2 startPosition = gameObject.transform.position;
-    Vector2 endPosition = targetCell.gameObject.transform.position;
+    Vector3 startPosition = lootSprite.gameObject.transform.position;
+    Vector3 endPosition = cell.gameObject.transform.position;
 
     float startTime = Time.time;
-    float targetTime = (endPosition-startPosition).magnitude / 5.0f;
+    float targetTime = ((Vector2)endPosition-(Vector2)startPosition).magnitude / 5.0f;
     float elapsedTime = 0.0f;
 
     while (elapsedTime <= targetTime) {
-      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      payload.transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / targetTime);
       yield return null;
       elapsedTime = Time.time - startTime;
     }
 
     Destroy(payload);
-    targetCell.Label = value;
-    targetCell.GetComponentInChildren<Text>().enabled = true;
+    targetCell.Loot = value;
 
 
   }
 
   protected IEnumerator GetValue() {
-    GameObject cell = targetCell.gameObject.transform.Find("canvas/text").gameObject;
+    GameObject cell = targetCell.gameObject.transform.Find("loot").gameObject;
     GameObject payload = Instantiate(cell);
-    payload.GetComponentInChildren<Text>().enabled = true;
-    payload.transform.SetParent(targetCell.gameObject.transform.Find("canvas"));
+    payload.transform.SetParent(cell.transform);
     payload.transform.position = cell.transform.position;
 
-    Vector2 startPosition = payload.transform.position;
-    Vector2 endPosition = gameObject.transform.position;
+    Vector3 startPosition = payload.transform.position;
+    Vector3 endPosition = lootSprite.transform.position;
 
     float startTime = Time.time;
-    float targetTime = (endPosition-startPosition).magnitude / 5.0f;
+    float targetTime = ((Vector2)endPosition-(Vector2)startPosition).magnitude / 5.0f;
     float elapsedTime = 0.0f;
 
     while (elapsedTime <= targetTime) {
-      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      payload.transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / targetTime);
       yield return null;
       elapsedTime = Time.time - startTime;
     }
 
-    Acquire(targetCell.Label);
+    Acquire(targetCell.Loot);
     Destroy(payload);
 
   }
@@ -156,6 +160,9 @@ public abstract class PlayerController : MonoBehaviour {
   public void Acquire(string label) {
     loot.text = label;
     levelController.OnCollect(label);
+
+    Sprite s = levelController.GetSprite(label);
+    lootSprite.sprite = s;
   }
 
   void LateUpdate() {
@@ -171,17 +178,15 @@ public abstract class PlayerController : MonoBehaviour {
   abstract public void LevelStart();
 
   public GameObject GetOnCell() {
-    Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
+    GameObject go = GetOnCell(foot, CellBehavior.UP);
+    return go != null ? go : GetOnCell(head, CellBehavior.DOWN);
+  }
+
+  public GameObject GetOnCell(FootController test, int direction) {
+    Collider2D hit = Physics2D.OverlapBox(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
     if (hit != null && hit.gameObject.tag == "cell") {
       CellController cc = hit.gameObject.GetComponent<CellController>();
-      if (!cc.IsBlocked(CellController.UP)) {
-        return hit.gameObject;
-      }
-    }
-    hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
-    if (hit != null && hit.gameObject.tag == "cell") {
-      CellController cc = hit.gameObject.GetComponent<CellController>();
-      if (!cc.IsBlocked(CellController.DOWN)) {
+      if (!cc.IsBlocked(direction)) {
         return hit.gameObject;
       }
     }
@@ -212,13 +217,16 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   virtual public GameObject GetOnPointer() {
-    return GetOnPointer(foot);
+    return GetOnPointer(foot, CellBehavior.UP);
   }
 
-  public GameObject GetOnPointer(FootController test) {
+  public GameObject GetOnPointer(FootController test, int direction) {
     Collider2D hit = Physics2D.OverlapBox(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
     if (hit != null && hit.gameObject.tag == "pointer") {
-      return hit.gameObject;
+      CellBehavior cc = hit.gameObject.GetComponent<CellBehavior>();
+      if (!cc.IsBlocked(direction)) {
+        return hit.gameObject;
+      }
     }
     else if (hit != null && hit.gameObject.tag == "cell") {
       // does it have a parent that is a linked cell?
@@ -230,9 +238,7 @@ public abstract class PlayerController : MonoBehaviour {
         return null;
       }
     }
-    else {
-      return null;
-    }
+    return null;
   }
 
   virtual public bool IsConnectedToOther() {

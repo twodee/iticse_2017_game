@@ -23,10 +23,14 @@ public class LevelLoader : MonoBehaviour {
   private LevelController progressController;
   private ConsoleController consoleController;
 
-  private ArrayList levels;
+  private int currentWorld;
   private int currentLevel;
 
+  private int valueType; // 0 = images only, 1 = text only, 2 = both
+
   private Dictionary<long, GameObject> objects;
+
+  public WorldLoader worldLoader;
 
   // Use this for initialization
   void Awake() {
@@ -38,10 +42,12 @@ public class LevelLoader : MonoBehaviour {
   }
 
   void Start () {
-    LoadAllLevelNames();
-    currentLevel = PlayerPrefs.GetInt("currentLevel")-2;
-//    currentLevel = 3;
-    LoadNextLevel();
+    currentWorld = PlayerPrefs.GetInt("currentWorld");
+    currentLevel = PlayerPrefs.GetInt("currentLevel");
+
+    valueType = PlayerPrefs.GetInt("valueType", 0);
+
+    LoadLevel(currentWorld, currentLevel);
   }
 
   void EmptyLevel() {
@@ -84,33 +90,45 @@ public class LevelLoader : MonoBehaviour {
     }
   }
 
-  void LoadAllLevelNames() {
-    levels = new ArrayList();
-    string[] fileEntries = Directory.GetFiles(Application.dataPath + "/Resources/levels/");
-    foreach (string file in fileEntries) {
-      if (file.EndsWith(".txt")) {
-        int start = Application.dataPath.Length+"/Resources/".Length;
-        levels.Add(file.Substring(start, file.Length-start-4));
+  void setDisplayTypeOnObject(GameObject go) {
+    if (go.tag == "cell" || go.tag == "player") {
+      if (valueType == 0) {
+        go.transform.Find("loot/canvas").gameObject.SetActive(false);
+      }
+      else if (valueType == 1) {
+        go.transform.Find("loot").gameObject.SetActive(false);
       }
     }
-    levels.Sort();
   }
+  void setDisplayTypeOnObjects() {
+    // change type of display here
+    for (int i = 0; i < transform.childCount; i++) {
+      Transform c = transform.GetChild(i);
+      setDisplayTypeOnObject(c.gameObject);
+    }
+    setDisplayTypeOnObject(ampersand.gameObject);
+    setDisplayTypeOnObject(star.gameObject);
+  }
+
 
   public void LoadNextLevel() {
     currentLevel++;
-    if (currentLevel == levels.Count) {
+    if (currentLevel == worldLoader.worlds[currentWorld]) {
       currentLevel = 0;
+      currentWorld++;
     }
-    LoadLevel(currentLevel);
-    PlayerPrefs.SetInt("currentLevel", currentLevel+1);
+    LoadLevel(currentWorld, currentLevel);
+    PlayerPrefs.SetInt("currentWorld", currentWorld);
+    PlayerPrefs.SetInt("currentLevel", currentLevel);
   }
 
-  void LoadLevel(int index) {
+  void LoadLevel(int world, int level) {
     EmptyLevel();
+    int index = worldLoader.GetIndex(world, level);
 
     // Read the data from the file in assets
-    string filePath = (string)levels[index];
-    TextAsset textFile = Resources.Load(filePath) as TextAsset;
+    string levelName = (string)worldLoader.levels[index];
+    TextAsset textFile = (TextAsset)worldLoader.levelAssets[levelName];
     string text = textFile.text;
 
     Regex replaceComment = new Regex("[ ]*;.*\n");
@@ -127,7 +145,7 @@ public class LevelLoader : MonoBehaviour {
     cam.transform.position = new Vector3((float)Convert.ToDouble(lines[2]), (float)Convert.ToDouble(lines[3]), -WORLD_HEIGHT);
 
     AndAllEndLevelCondition endLevelCondition = new AndAllEndLevelCondition();
-    progressController.Current = new Level(filePath, lines[4].Trim(), endLevelCondition);
+    progressController.Current = new Level(levelName, lines[4].Trim(), endLevelCondition);
     endLevelCondition.Add(new CollectEndLevelCondition(progressController.Current, lines[5].Trim()));
     int offset = 6;
     ArrayList blockedCells = new ArrayList();
@@ -144,19 +162,18 @@ public class LevelLoader : MonoBehaviour {
         if (c >= 'A' && c <= 'Z') {
           GameObject go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
-          Text t = go.GetComponentInChildren<Text>();
-          t.text = c.ToString();
           CellController cc = go.GetComponent<CellController>();
           if (y < MIDDLE_BAR_Y) {
             cc.immutable = true;
           }
+          cc.Loot = c.ToString();
         }
         else if (c >= 'a' && c <= 'z') {
           GameObject go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
-          Text t = go.GetComponentInChildren<Text>();
-          t.text = "";//c.ToString().ToUpper();
-          t.enabled = false;
+      
+          CellController cc = go.GetComponent<CellController>();
+          cc.Loot = "";
         }
         else if (c == '▔') {
           blockedCells.Add(new int[]{ (int)x, (int)y + 1, CellController.DOWN });
@@ -244,9 +261,13 @@ public class LevelLoader : MonoBehaviour {
 
     foreach (int[] blockedCell in blockedCells) {
       GameObject go = findAt(blockedCell[0], blockedCell[1]);
-      CellController cc = go.GetComponent<CellController>();
-      cc.Blocked |= blockedCell[2];
+      if (go.tag == "cell" || go.tag == "pointer") {
+        CellBehavior cc = go.GetComponent<CellBehavior>();
+        cc.Blocked |= blockedCell[2];
+      }
     }
+
+    setDisplayTypeOnObjects();
   }
 
 	// Update is called once per frame

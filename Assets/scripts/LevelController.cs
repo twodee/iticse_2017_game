@@ -11,6 +11,7 @@ public class LevelController : MonoBehaviour {
   private PlayerController player1;
   private PlayerController player2;
 
+  public Sprite[] food;
 
   // Use this for initialization
    void Awake() {
@@ -20,6 +21,17 @@ public class LevelController : MonoBehaviour {
 
     loader = gameObject.GetComponent<LevelLoader>();
 	}
+
+  public Sprite GetSprite(string text) {
+    if (text.Length == 1) {
+      char c = text[0];
+      int distance = c - 'A';
+      if (distance < food.Length) {
+        return food[distance];
+      }
+    }
+    return null;
+  }
 	
 	// Update is called once per frame
 	void Update() {

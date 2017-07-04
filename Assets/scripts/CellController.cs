@@ -2,24 +2,17 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class CellController : MonoBehaviour {
-  public static int UP = 1;
-  public static int DOWN = 2;
-  public static int LEFT = 4;
-  public static int RIGHT = 8;
-
-  private Text label;
+public class CellController : CellBehavior {
+  
+  private Text loot;
+  private SpriteRenderer lootSprite;
   public PointerController pointer;
-  public bool immutable;
-  private int blocked;
 
-  private SpriteRenderer upBarrier;
-  private SpriteRenderer downBarrier;
+  protected void Awake() {
+    base.Awake();
 
-  void Awake() {
-    label = transform.Find("canvas/text").GetComponent<Text>();
-    upBarrier = transform.Find("UpBarrier").GetComponent<SpriteRenderer>();
-    downBarrier = transform.Find("DownBarrier").GetComponent<SpriteRenderer>();
+    loot = transform.Find("loot/canvas/text").GetComponent<Text>();
+    lootSprite = transform.Find("loot").GetComponent<SpriteRenderer>();
 
     if (transform.parent != null && transform.parent.gameObject.tag == "linkedCell") {
       pointer = transform.parent.GetComponentInChildren<PointerController>();
@@ -29,29 +22,16 @@ public class CellController : MonoBehaviour {
     }
   }
 
-  public string Label {
+  public string Loot {
     get {
-      return label.text;
+      return loot.text;
     }
 
     set {
-      label.text = value;
+      loot.text = value;
+      Sprite s = levelController.GetSprite(value);
+      lootSprite.sprite = s;
     }
   }
 
-  public int Blocked {
-    get {
-      return blocked;
-    }
-
-    set {
-      blocked = value;
-      upBarrier.enabled = IsBlocked(UP);
-      downBarrier.enabled = IsBlocked(DOWN);
-    }
-  }
-
-  public bool IsBlocked(int direction) {
-    return (blocked & direction) > 0;
-  }
 }

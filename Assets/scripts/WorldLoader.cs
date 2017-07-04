@@ -30,7 +30,7 @@ public class WorldLoader : MonoBehaviour {
     while (hasMoreWorlds) {
       bool hasMoreLevels = true;
       level = 0;
-      worlds[world] = 0;
+      int levelsThisWorld = 0;
       while (hasMoreLevels) {
         string name = "level" + world + "-" + level;
         TextAsset ta = Resources.Load<TextAsset>("levels/"+name);
@@ -40,7 +40,7 @@ public class WorldLoader : MonoBehaviour {
         else {
           levels.Add(name);
           levelAssets[name] = ta;
-          worlds[world]++;
+          levelsThisWorld++;
           level++;
         }
       }
@@ -48,6 +48,7 @@ public class WorldLoader : MonoBehaviour {
         hasMoreWorlds = false;
       }
       else {
+        worlds[world] = levelsThisWorld;
         world++;
       }
     }

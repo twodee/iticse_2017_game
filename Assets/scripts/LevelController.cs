@@ -38,6 +38,9 @@ public class LevelController : MonoBehaviour {
     if (Input.GetButtonDown("NextLevel")) {
       loader.LoadNextLevel();
     }
+    if (Input.GetButtonDown("ResetLevel")) {
+      loader.ResetLevel();
+    }
 	}
 
   public void OnCollect(string loot) {
@@ -65,13 +68,9 @@ public class LevelController : MonoBehaviour {
     }
     set {
       if (current != null) {
-        player1.LevelEnd();
-        player2.LevelEnd();
         consoleController.LevelEnd();
       }
       current = value;
-      player1.LevelStart();
-      player2.LevelStart();
       consoleController.LevelStart();
     }
   }

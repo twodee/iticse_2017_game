@@ -8,7 +8,7 @@ public class CellController : CellBehavior {
   private SpriteRenderer lootSprite;
   public PointerController pointer;
 
-  protected void Awake() {
+  override protected void Awake() {
     base.Awake();
 
     loot = transform.Find("loot/canvas/text").GetComponent<Text>();

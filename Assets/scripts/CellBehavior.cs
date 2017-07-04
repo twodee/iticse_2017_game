@@ -14,7 +14,7 @@ public class CellBehavior : MonoBehaviour {
 
   protected LevelController levelController;
 
-  protected void Awake() {
+  virtual protected void Awake() {
 
     upBarrier = transform.Find("UpBarrier").GetComponent<SpriteRenderer>();
     downBarrier = transform.Find("DownBarrier").GetComponent<SpriteRenderer>();

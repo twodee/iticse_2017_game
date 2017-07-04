@@ -8,7 +8,7 @@ public class PointerController : CellBehavior
   private CellController targetCell;
   private LineRenderer lineRenderer;
 
-  protected void Awake() {
+  override protected void Awake() {
     base.Awake();
     lineRenderer = GetComponent<LineRenderer>();
     targetCell = null;

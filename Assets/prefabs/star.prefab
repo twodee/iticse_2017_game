@@ -314,6 +314,8 @@ MonoBehaviour:
   speed: 5
   isAirborne: 0
   isBurden: 0
+  targetCell: {fileID: 0}
+  levelController: {fileID: 0}
 --- !u!212 &212680226743223876
 SpriteRenderer:
   m_ObjectHideFlags: 1

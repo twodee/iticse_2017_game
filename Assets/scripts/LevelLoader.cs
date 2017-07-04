@@ -20,7 +20,7 @@ public class LevelLoader : MonoBehaviour {
   private AmpersandController ampersand;
   private StarController star;
 
-  private LevelController progressController;
+  private LevelController levelController;
   private ConsoleController consoleController;
 
   private int currentWorld;
@@ -32,11 +32,16 @@ public class LevelLoader : MonoBehaviour {
 
   public WorldLoader worldLoader;
 
+  private Tool pointerTool;
+  private Tool valueTool;
+
   // Use this for initialization
   void Awake() {
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
     star = GameObject.Find("/players/star").GetComponent<StarController>();
-    progressController = gameObject.GetComponent<LevelController>();
+    pointerTool = GameObject.Find("/pointerTool").GetComponent<Tool>();
+    valueTool = GameObject.Find("/valueTool").GetComponent<Tool>();
+    levelController = gameObject.GetComponent<LevelController>();
     consoleController = GameObject.Find("HUD/Console").GetComponent<ConsoleController>();
     objects = new Dictionary<long, GameObject>();
   }
@@ -59,6 +64,10 @@ public class LevelLoader : MonoBehaviour {
       c.SetParent(null); // become Batman
       Destroy(c.gameObject); // become The Joker
     }
+
+    // de-loot the players
+    ampersand.LootText = "";
+    star.LootText = "";
   }
 
   static long Key(int x, int y) {
@@ -110,6 +119,9 @@ public class LevelLoader : MonoBehaviour {
     setDisplayTypeOnObject(star.gameObject);
   }
 
+  public void ResetLevel() {
+    LoadLevel(currentWorld, currentLevel);
+  }
 
   public void LoadNextLevel() {
     currentLevel++;
@@ -117,10 +129,14 @@ public class LevelLoader : MonoBehaviour {
       currentLevel = 0;
       currentWorld++;
     }
+    if (currentWorld == worldLoader.worlds.Count) {
+      currentWorld = 0;
+    }
     LoadLevel(currentWorld, currentLevel);
     PlayerPrefs.SetInt("currentWorld", currentWorld);
     PlayerPrefs.SetInt("currentLevel", currentLevel);
   }
+
 
   void LoadLevel(int world, int level) {
     EmptyLevel();
@@ -131,9 +147,11 @@ public class LevelLoader : MonoBehaviour {
     TextAsset textFile = (TextAsset)worldLoader.levelAssets[levelName];
     string text = textFile.text;
 
+    Regex replaceR = new Regex("\r");
     Regex replaceComment = new Regex("[ ]*;.*\n");
     Regex replaceLine = new Regex("[\n]*\n");
     Regex replaceBegin = new Regex("^\n");
+    text = replaceR.Replace(text, "");
     text = replaceComment.Replace(text, "\n");
     text = replaceLine.Replace(text, "\n");
     text = replaceBegin.Replace(text, "");
@@ -145,8 +163,8 @@ public class LevelLoader : MonoBehaviour {
     cam.transform.position = new Vector3((float)Convert.ToDouble(lines[2]), (float)Convert.ToDouble(lines[3]), -WORLD_HEIGHT);
 
     AndAllEndLevelCondition endLevelCondition = new AndAllEndLevelCondition();
-    progressController.Current = new Level(levelName, lines[4].Trim(), endLevelCondition);
-    endLevelCondition.Add(new CollectEndLevelCondition(progressController.Current, lines[5].Trim()));
+    levelController.Current = new Level(levelName, lines[4].Trim(), endLevelCondition);
+    endLevelCondition.Add(new CollectEndLevelCondition(levelController.Current, lines[5].Trim()));
     int offset = 6;
     ArrayList blockedCells = new ArrayList();
 
@@ -268,6 +286,24 @@ public class LevelLoader : MonoBehaviour {
     }
 
     setDisplayTypeOnObjects();
+
+    // set tools by default based on world number for now, eventually need
+    // addy = pointer, offset
+    // val = value, inc/dec
+    if (world == 0) {
+      ampersand.ActiveTool = MakeTool(valueTool);
+      star.ActiveTool = MakeTool(valueTool);
+    }
+    else {
+      ampersand.ActiveTool = MakeTool(pointerTool);
+      star.ActiveTool = MakeTool(valueTool);
+    }
+  }
+
+  Tool MakeTool(Tool proto) {
+    Tool made = Instantiate(proto);
+    made.transform.SetParent(this.transform);
+    return made;
   }
 
 	// Update is called once per frame

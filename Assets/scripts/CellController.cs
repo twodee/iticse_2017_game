@@ -6,7 +6,6 @@ public class CellController : CellBehavior {
   
   private Text loot;
   private SpriteRenderer lootSprite;
-  public PointerController pointer;
 
   override protected void Awake() {
     base.Awake();
@@ -14,12 +13,6 @@ public class CellController : CellBehavior {
     loot = transform.Find("loot/canvas/text").GetComponent<Text>();
     lootSprite = transform.Find("loot").GetComponent<SpriteRenderer>();
 
-    if (transform.parent != null && transform.parent.gameObject.tag == "linkedCell") {
-      pointer = transform.parent.GetComponentInChildren<PointerController>();
-    }
-    else {
-      pointer = null;
-    }
   }
 
   public string Loot {
@@ -34,4 +27,10 @@ public class CellController : CellBehavior {
     }
   }
 
+  override public void SetLoot(string text) {
+    Loot = text;
+  }
+  override public string GetLoot() {
+    return Loot;
+  }
 }

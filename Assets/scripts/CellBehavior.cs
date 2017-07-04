@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class CellBehavior : MonoBehaviour {
+public abstract class CellBehavior : MonoBehaviour {
   public static int UP = 1;
   public static int DOWN = 2;
   public static int LEFT = 4;
@@ -14,6 +14,9 @@ public class CellBehavior : MonoBehaviour {
 
   protected LevelController levelController;
 
+  public CellArray owningArray;
+  public int arrayIndex;
+
   virtual protected void Awake() {
 
     upBarrier = transform.Find("UpBarrier").GetComponent<SpriteRenderer>();
@@ -22,6 +25,8 @@ public class CellBehavior : MonoBehaviour {
     levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
   }
 
+  abstract public void SetLoot(string text);
+  abstract public string GetLoot();
 
   public int Blocked {
     get {

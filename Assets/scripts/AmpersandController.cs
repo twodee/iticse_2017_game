@@ -18,32 +18,32 @@ public class AmpersandController : PlayerController {
     otherPlayer = star;
   }
 
-  override public void Update() {
-    if (isLocked) {
-      return;
-    }
-
-    base.Update();
-
-//    // Emit feeler pointer on left-click.
-//    if (Input.GetMouseButtonDown(0)) {
-//      if (caster != null) {
-//        StopCoroutine(caster);
-//      }
-//      caster = StartCoroutine(CastPointer());
+//  override public void Update() {
+//    if (isLocked) {
+//      return;
 //    }
 //
-//    // Cancel pointer on right-click.
-//    if (Input.GetMouseButtonDown(1)) {
-//      Depoint();
-//    }
-
-
-
-    if (Input.GetButtonDown("Attach")) {
-      Interact(true);
-    } 
-  }
+//    base.Update();
+//
+////    // Emit feeler pointer on left-click.
+////    if (Input.GetMouseButtonDown(0)) {
+////      if (caster != null) {
+////        StopCoroutine(caster);
+////      }
+////      caster = StartCoroutine(CastPointer());
+////    }
+////
+////    // Cancel pointer on right-click.
+////    if (Input.GetMouseButtonDown(1)) {
+////      Depoint();
+////    }
+//
+//
+//
+//    if (Input.GetButtonDown("Attach")) {
+//      Interact(true);
+//    } 
+//  }
 
 
   override protected void Jump (){
@@ -103,10 +103,10 @@ public class AmpersandController : PlayerController {
 //    caster = null;
 //  }
 
-  public CellController Target {
-    get {
-      return targetCell;
-    }
-  }
+//  public CellController Target {
+//    get {
+//      return targetCell;
+//    }
+//  }
 
 }

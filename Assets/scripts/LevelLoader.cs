@@ -34,6 +34,7 @@ public class LevelLoader : MonoBehaviour {
 
   private Tool pointerTool;
   private Tool valueTool;
+  private Tool incrementTool;
 
   private ArrayList tools;
 
@@ -43,6 +44,7 @@ public class LevelLoader : MonoBehaviour {
     star = GameObject.Find("/players/star").GetComponent<StarController>();
     pointerTool = GameObject.Find("/pointerTool").GetComponent<Tool>();
     valueTool = GameObject.Find("/valueTool").GetComponent<Tool>();
+    incrementTool = GameObject.Find("/incrementTool").GetComponent<Tool>();
     levelController = gameObject.GetComponent<LevelController>();
     consoleController = GameObject.Find("HUD/Console").GetComponent<ConsoleController>();
     objects = new Dictionary<long, GameObject>();
@@ -178,14 +180,16 @@ public class LevelLoader : MonoBehaviour {
     for (int i = 0; i < height; i++) {
       float y = height - (i) - 1 + 0.5f;
       string s = lines[i + offset];
+      int lastCell = -2; // prevent creating right away
+      CellBehavior lastCellBehaviour = null;
       for (int j = 0; j < s.Length && j < width; j++) {
         float x = j + 0.5f;
-
+        GameObject go = null;
         char c = s[j];
         Vector3 pos = new Vector3(x, y, 0);
 
         if (c >= 'A' && c <= 'Z') {
-          GameObject go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
+          go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
           CellController cc = go.GetComponent<CellController>();
           if (y < MIDDLE_BAR_Y) {
@@ -194,7 +198,7 @@ public class LevelLoader : MonoBehaviour {
           cc.Loot = c.ToString();
         }
         else if (c >= 'a' && c <= 'z') {
-          GameObject go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
+          go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
       
           CellController cc = go.GetComponent<CellController>();
@@ -207,24 +211,24 @@ public class LevelLoader : MonoBehaviour {
           blockedCells.Add(new int[]{ (int)x, (int)y - 1, CellController.UP });
         }
         else if (c == '-') {
-          GameObject go = (GameObject)Instantiate(cabinet, pos, Quaternion.identity);
+          go = (GameObject)Instantiate(cabinet, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
         }
         else if (c == '+') {
-          GameObject go = (GameObject)Instantiate(counter, pos, Quaternion.identity);
+          go = (GameObject)Instantiate(counter, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
         }
         else if (c == '.') {
-          GameObject go = (GameObject)Instantiate(pointerCell, pos, Quaternion.identity);
+          go = (GameObject)Instantiate(pointerCell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
         }
         else if (c == '@') {
-          GameObject go = (GameObject)Instantiate(linkedCell, pos, Quaternion.identity);
+          go = (GameObject)Instantiate(linkedCell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
           j++;
         }
         else if (c == '#') {
-          GameObject go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
+          go = (GameObject)Instantiate(cell, pos, Quaternion.identity);
           go.transform.SetParent(this.transform);
         }
         else if (c == '&') {
@@ -232,6 +236,23 @@ public class LevelLoader : MonoBehaviour {
         }
         else if (c == '*') {
           star.transform.position = pos;
+        }
+
+        if (go != null && (go.tag == "cell" || go.tag == "pointer")) {
+          CellBehavior cb = go.GetComponent<CellBehavior>();
+          if (lastCell == j - 1) {
+            if (lastCellBehaviour.owningArray == null) {
+              // must create
+              lastCellBehaviour.owningArray = new CellArray();
+              lastCellBehaviour.owningArray.Add(lastCellBehaviour.gameObject);
+              lastCellBehaviour.arrayIndex = 0;
+            }
+            cb.owningArray = lastCellBehaviour.owningArray;
+            cb.owningArray.Add(go);
+            cb.arrayIndex = lastCellBehaviour.arrayIndex + 1;
+          }
+          lastCell = j;
+          lastCellBehaviour = cb;
         }
       }
     }
@@ -300,6 +321,11 @@ public class LevelLoader : MonoBehaviour {
     if (world == 0) {
       ampersand.ActiveTool = MakeTool(valueTool);
       star.ActiveTool = MakeTool(valueTool);
+    }
+    else if (world >= 3) {
+      ampersand.ActiveTool = MakeTool(pointerTool);
+      star.ActiveTool = MakeTool(valueTool);
+      star.InActiveTool = MakeTool(incrementTool);
     }
     else {
       ampersand.ActiveTool = MakeTool(pointerTool);

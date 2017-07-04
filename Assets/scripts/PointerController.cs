@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PointerController : CellBehavior
 {
-  private CellController targetCell;
+  private CellBehavior targetCell;
   private LineRenderer lineRenderer;
 
   override protected void Awake() {
@@ -14,7 +14,7 @@ public class PointerController : CellBehavior
     targetCell = null;
   }
   
-  public CellController Target {
+  public CellBehavior Target {
     get {
       return targetCell;
     }
@@ -29,6 +29,21 @@ public class PointerController : CellBehavior
         lineRenderer.SetPosition(0, new Vector3(transform.position.x, transform.position.y, -0.1f));
         lineRenderer.SetPosition(1, new Vector3(targetCell.transform.position.x, targetCell.transform.position.y, -0.1f));
       }
+    }
+  }
+
+  override public void SetLoot(string text) {
+    if (targetCell != null) {
+      targetCell.SetLoot(text);
+    }
+  }
+
+  override public string GetLoot() {
+    if (targetCell != null) {
+      return targetCell.GetLoot();
+    }
+    else {
+      return null;
     }
   }
 

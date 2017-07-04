@@ -15,8 +15,6 @@ public class ValueTool : Tool {
       player.targetCell = pointer.GetComponent<PointerController>().Target;
     }
 
-    player.Lock();
-
     StartCoroutine(TransmitAndUnlock());
   }
 
@@ -62,7 +60,7 @@ public class ValueTool : Tool {
     }
 
     Destroy(payload);
-    player.targetCell.Loot = value;
+    player.targetCell.SetLoot(value);
 
 
   }
@@ -86,7 +84,7 @@ public class ValueTool : Tool {
       elapsedTime = Time.time - startTime;
     }
 
-    player.Acquire(player.targetCell.Loot);
+    player.Acquire(player.targetCell.GetLoot());
     Destroy(payload);
 
   }

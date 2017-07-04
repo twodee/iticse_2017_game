@@ -21,7 +21,7 @@ public abstract class PlayerController : MonoBehaviour {
   protected Text loot;
   protected SpriteRenderer lootSprite;
 
-  public CellController targetCell;
+  public CellBehavior targetCell;
   public LevelController levelController;
 
   protected Tool activeTool;
@@ -183,6 +183,10 @@ public abstract class PlayerController : MonoBehaviour {
       }
     }
 
+    if (Input.GetButtonDown("SwapTool" + type)) {
+      SwapTool();
+    }
+
     if (!isAirborne && Input.GetButtonDown("Transmit" + type)) {
       Interact(true);
     }
@@ -205,7 +209,7 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   virtual public bool IsTransmittable() {
-    return targetCell != null && !(loot.text == "" && targetCell.Loot == "");
+    return targetCell != null && !(loot.text == "" && targetCell.GetLoot() == "");
   }
 
   public GameObject GetOnCell() {

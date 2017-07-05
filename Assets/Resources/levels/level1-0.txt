@@ -16,7 +16,7 @@ A ; console target
 -- &              --
 --+++++++.++++++++--
 --                --
-p-- *              --
+-- *              --
 ---------A----------
 1 ; number of links
 9 3 9 8 ; source xy, target xy (lower left origin)

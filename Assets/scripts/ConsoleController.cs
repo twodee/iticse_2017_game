@@ -31,11 +31,13 @@ public class ConsoleController : MonoBehaviour {
   public void LevelStart() {
     text.text = "";
     statusText.text = "";
-    instructionText.text = levelController.Current.instructions;
+    instructionText.text = levelController.Current.world.ToString()+"-"
+      +levelController.Current.level.ToString()+": " + levelController.Current.instructions;
   }
 
   public void LevelEnd() {
-    instructionText.text = "Press = for next level!";
+    instructionText.text = levelController.Current.world.ToString()+"-"
+      +levelController.Current.level.ToString()+": Press = for next level!";
   }
 
   public void Status(string text) {

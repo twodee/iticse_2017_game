@@ -161,7 +161,7 @@ public class LevelLoader : MonoBehaviour {
     cam.transform.position = new Vector3((float)Convert.ToDouble(lines[2]), (float)Convert.ToDouble(lines[3]), -WORLD_HEIGHT);
 
     AndAllEndLevelCondition endLevelCondition = new AndAllEndLevelCondition();
-    levelController.Current = new Level(levelName, lines[4].Trim(), endLevelCondition);
+    levelController.Current = new Level(levelName, lines[4].Trim(), endLevelCondition, world, level);
     endLevelCondition.Add(new CollectEndLevelCondition(levelController.Current, lines[5].Trim()));
     int offset = 6;
     ArrayList blockedCells = new ArrayList();

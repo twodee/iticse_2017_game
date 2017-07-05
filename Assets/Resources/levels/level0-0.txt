@@ -42,3 +42,4 @@ begin
 val = 'A';
 a = val;
 end
+

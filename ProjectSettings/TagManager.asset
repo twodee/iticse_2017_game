@@ -9,6 +9,8 @@ TagManager:
   - linkedCell
   - cell
   - ground
+  - counter
+  - cabinet
   layers:
   - Default
   - TransparentFX

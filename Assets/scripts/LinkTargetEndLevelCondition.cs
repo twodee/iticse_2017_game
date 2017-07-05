@@ -1,7 +1,7 @@
 public class LinkTargetEndLevelCondition : EndLevelCondition {
   private PointerController pointer;
-  private CellController target;
-  public LinkTargetEndLevelCondition(PointerController pc, CellController cc) {
+  private CellBehavior target;
+  public LinkTargetEndLevelCondition(PointerController pc, CellBehavior cc) {
     pointer = pc;
     target = cc;
   }

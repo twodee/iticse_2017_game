@@ -28,7 +28,7 @@ public class UIcontroller : MonoBehaviour {
 	private Text levelCompleteText;
 
 	[SerializeField]
-	public GameObject PanelWorldSelect, PanelLevelSelect, loadingPanel, LevelPopUpPanel;
+	public GameObject PanelLevelSelect, loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo;
 
 	[SerializeField]
 	public GameObject UICanvas;
@@ -60,7 +60,7 @@ public class UIcontroller : MonoBehaviour {
 		int levelCount = 1;
 		for (int i = 0; i < PanelLevelSelect.transform.childCount; i++)
 		{
-			Debug.Log("currentLevel is " + currentLevel);
+			//Debug.Log("currentLevel is " + currentLevel);
 
 			if (PanelLevelSelect.transform.GetChild(i).name.Contains("Level"))
 			{
@@ -70,50 +70,28 @@ public class UIcontroller : MonoBehaviour {
 				{ PanelLevelSelect.transform.GetChild(i).GetComponent<Button>().interactable=false; }
 			}		
 		}
-
-
 	}
 
 	void Start()
 	{
-		/* string sceneName = SceneManager.GetActiveScene().name;     // "level 0-1" for example
-
-		if (sceneName.Length >= 5 && sceneName.Substring(0,5).Equals("level"))
-		{
-			sceneName = sceneName.Remove(0,5);					// Left with "0-1"
-			string[] sceneLocale = sceneName.Split ('-'); 
-			currentWorld = int.Parse (sceneLocale[0]);
-			currentLevel = int.Parse (sceneLocale[1]);
-			AudioClip clipToPlay;
-
-			switch(currentWorld)
-			{
-			case 1: clipToPlay = worldMusic[0]; break;
-			case 2: clipToPlay = worldMusic[1]; break;
-			case 3: clipToPlay = worldMusic[2]; break;
-			case 4: clipToPlay = worldMusic[3]; break;
-			case 5: clipToPlay = worldMusic[4]; break;
-			case 6: clipToPlay = worldMusic[5]; break;
-			default: clipToPlay = worldMusic[0]; break;
-			}
-			AudioManager.instance.PlayNewMusic(clipToPlay);
-		}
-		else
-		{
-//			AudioManager.instance.PlaySingle(false, worldVictorySFX);
-//			AudioManager.instance.PlayNewMusic(worldVictoryMusic);
-		}
-		*/
 	}
 
 	#endregion
 
 	#region Public Functions
 	//Pauses the game and timescale
-	public void pauseGame()     {   Time.timeScale = 0.0001F;  }
+	public void pauseGame()     
+	{
+		Time.timeScale = 0.0001F; 
+		PanelPause.SetActive(true);
+	}
 
 	//resumes the game from the paused state
-	public void resumeGame()     {  Time.timeScale = 1;  }
+	public void resumeGame()    
+	{
+		Time.timeScale = 1;  
+		PanelPause.SetActive(false);
+	}
 
 	//goes to main menu
 	public void goToMainMenu()
@@ -125,12 +103,15 @@ public class UIcontroller : MonoBehaviour {
 	//restarts the level
 	public void restartLevel()
 	{
-		//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		GameObject.Find("TheLevel").GetComponent<LevelLoader>().ResetLevel();
 	}
-
-	public void goToWorldSelect()  {  goToGeneric("World");  }
-
-	public void goToLevelSelect()  {  goToGeneric("Level");  }
+		
+	public void goToLevelSelect()  
+	{ 
+		// Create the buttons on the screen
+		int levelNum = 1;
+		goToGeneric("Level");  
+	}
 
 	public void goToAbout()        {  goToGeneric("About");  }
 
@@ -139,74 +120,28 @@ public class UIcontroller : MonoBehaviour {
 	{
 		for (int i = 0; i < UICanvas.transform.childCount; i++)
 		{
-			Debug.Log("i is " + i);
 			if (UICanvas.transform.GetChild(i).name.Contains(panelName))
 			{ UICanvas.transform.GetChild(i).gameObject.SetActive(true); }
 			else { UICanvas.transform.GetChild(i).gameObject.SetActive(false); };
 		}
-		//SceneManager.LoadScene("mainMenu");
 	}
 
-	//advances scene to the next level
-	public void goToNextLevel(int levelNum)
+	//advances scene to the specified level
+	public void goToLevel(Button buttonSelected)
 	{
-		StopAllCoroutines();
-		PlayerPrefs.SetInt("currentLevel", levelNum);
+		string buttonName = buttonSelected.name;
+		buttonName = buttonName.Remove(0,5);					// Left with "0-1"
+		string[] sceneLocale = buttonName.Split ('-'); 
+
+		currentWorld = int.Parse (sceneLocale[0]);
+		currentLevel = int.Parse (sceneLocale[1]);
+
+		//Debug.Log(currentWorld + " " + currentLevel);
+		PlayerPrefs.SetInt("currentLevel", currentLevel);
+		PlayerPrefs.SetInt("currentWorld", currentWorld);
 		SceneManager.LoadScene("FromLevelLoadFile");
-		/*
-		int nextLevel;
-		int nextWorld;
-
-		string sceneName = SceneManager.GetActiveScene().name;     // "level 0-1" for example
-
-		if (sceneName.Substring(0,5).Equals("world"))
-		{
-			// We are in the world complete scene
-
-			if (currentWorld == 7)
-			{
-				SceneManager.LoadScene("all worlds complete");
-			}
-			else 
-			{
-				nextWorld = currentWorld + 1;
-				nextLevel = 1;
-				// Debug.Log ("About to load world " + nextWorld + "-" + nextLevel);
-				// SceneManager.LoadScene("level " + nextWorld + "-" + nextLevel);
-				// SceneManager.LoadScene("level " + nextWorld + "-" + nextLevel);
-				goToWorldSelect();
-			}
-		}
-		else 
-		{
-			sceneName = sceneName.Remove(0,5);					// Left with "0-1"
-			string[] sceneLocale = sceneName.Split ('-'); 
-
-			currentWorld = int.Parse (sceneLocale[0]);
-			currentLevel = int.Parse (sceneLocale[1]);
-
-			if (currentLevel <= 14)
-			{
-				nextWorld = currentWorld;
-				nextLevel = currentLevel+1;
-				SceneManager.LoadScene("level " + nextWorld + "-" + nextLevel);
-			}
-			else if (currentLevel == 15)
-			{
-
-				if (currentWorld == 7)
-				{
-					SceneManager.LoadScene("all worlds complete");
-				}
-				else
-				{
-					SceneManager.LoadScene("world " + currentWorld + " complete");
-					PlayerPrefs.SetInt ("newWorldUnlocked", 1); // 1 = true
-				}
-			}
-		}
-		*/
 	}
+
 
 
 	public void callNextLevel()

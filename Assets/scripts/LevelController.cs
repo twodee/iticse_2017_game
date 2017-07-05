@@ -142,7 +142,8 @@ public class LevelController : MonoBehaviour {
 
   public void CheckProgress() {
     if (current.endLevelCondition.Check()) {
-      loader.LoadNextLevel();
+//      loader.LoadNextLevel();
+//      consoleController
     }
   }
 

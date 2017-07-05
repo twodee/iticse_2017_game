@@ -13,7 +13,7 @@ public class ConsoleController : MonoBehaviour {
   // Use this for initialization
   void Start() {
     text = GetComponent<Text>();
-    instructionText = GameObject.Find("/HUD/Instructions").GetComponent<Text>();
+    instructionText = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
     statusText = GameObject.Find("/HUD/Status").GetComponent<Text>();
     text.text = "";
     statusText.text = "";

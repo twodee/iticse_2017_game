@@ -28,7 +28,7 @@ public class UIcontroller : MonoBehaviour {
 	private Text levelCompleteText;
 
 	[SerializeField]
-	public GameObject PanelLevelSelect, loadingPanel, LevelPopUpPanel;
+	public GameObject PanelLevelSelect, loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo;
 
 	[SerializeField]
 	public GameObject UICanvas;
@@ -80,10 +80,18 @@ public class UIcontroller : MonoBehaviour {
 
 	#region Public Functions
 	//Pauses the game and timescale
-	public void pauseGame()     {   Time.timeScale = 0.0001F;  }
+	public void pauseGame()     
+	{
+		Time.timeScale = 0.0001F; 
+		PanelPause.SetActive(true);
+	}
 
 	//resumes the game from the paused state
-	public void resumeGame()     {  Time.timeScale = 1;  }
+	public void resumeGame()    
+	{
+		Time.timeScale = 1;  
+		PanelPause.SetActive(false);
+	}
 
 	//goes to main menu
 	public void goToMainMenu()
@@ -95,7 +103,7 @@ public class UIcontroller : MonoBehaviour {
 	//restarts the level
 	public void restartLevel()
 	{
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		GameObject.Find("TheLevel").GetComponent<LevelLoader>().ResetLevel();
 	}
 		
 	public void goToLevelSelect()  

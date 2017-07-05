@@ -19,7 +19,9 @@ public class WorldLoader : MonoBehaviour {
     levelAssets = new Dictionary<string, TextAsset>();
     worlds = new Dictionary<int, int>();
     LoadWorlds();
-	LoadLevelSelect();
+    if (ScrollViewContent != null) {
+	    LoadLevelSelect();
+    }
   }
 
   // translates from 2-3 to 13 if there are 5 sublevels per world starting at 0
@@ -39,9 +41,9 @@ public class WorldLoader : MonoBehaviour {
     while (hasMoreWorlds) {
       bool hasMoreLevels = true;
       level = 0;
-      worlds[world] = 0;
-      while (hasMoreLevels) {	
-		string name = "level" + world + "-" + level;
+      int levelsThisWorld = 0;
+      while (hasMoreLevels) {
+        string name = "level" + world + "-" + level;
         TextAsset ta = Resources.Load<TextAsset>("levels/"+name);
         if (ta == null) {
           hasMoreLevels = false;
@@ -49,7 +51,7 @@ public class WorldLoader : MonoBehaviour {
         else {
           levels.Add(name);
           levelAssets[name] = ta;
-          worlds[world]++;
+          levelsThisWorld++;
           level++;
         }
       }
@@ -57,6 +59,7 @@ public class WorldLoader : MonoBehaviour {
         hasMoreWorlds = false;
       }
       else {
+        worlds[world] = levelsThisWorld;
         world++;
       }
     }

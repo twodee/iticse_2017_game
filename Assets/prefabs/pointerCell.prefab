@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   immutable: 0
+  arrayIndex: 0
 --- !u!120 &120127307993410762
 LineRenderer:
   m_ObjectHideFlags: 1

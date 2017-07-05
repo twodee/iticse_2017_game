@@ -1,21 +1,11 @@
 ; Copy value from heap to stack.
-; 1. Addy creates pointer from stack to A
-; 2. Val dereferences pointer to copy A to empty stack value.
-; // initial code
-; char *p;
-; char *q = new char[1];
-; char a;
-; q[0] = 'A';
-; // solution code
-; p = q;
-; a = *p;
 
-; Header
+; Level Settings
 20 ; width
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Copy A to counter ; instructions
+Put Coffee on the Counter ; instructions
 A ; console target
 
 ; Initial Layout
@@ -28,17 +18,30 @@ A ; console target
 --     ▔          --
 -- *              --
 --------------------
-1 ; number of initial links
-7 3 9 8
+1 ; number of links
+7 3 9 8 ; source xy, target xy (lower left origin)
 
 ; Target Layout
 --       ?        --
 --                --
 --                --
 --                --
--- &              --
+--                --
 --+++++.+.+A++++++--
 --     ▔          --
--- *              --
+--                --
 --------------------
-0 ; number links
+0 ; number of links
+
+; Player Settings
+addy pointerTool ; addy's available tools
+val valueTool ; val's available tools
+par 4 ; maximum number of actions required for full reward
+
+; Solution Code
+begin
+addy = p;
+q = addy;
+val = *p;
+a = val;
+end

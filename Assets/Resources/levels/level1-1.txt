@@ -1,13 +1,11 @@
 ; Copy value from heap without existing pointer.
-; 1. Addy creates pointer from stack to heap.
-; 2. Val copies A from source to pointer in stack which copies the value to the heap.
 
-; Header
+; Level Settings
 20 ; width
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Copy A to table ; instructions
+Put a coffee on the Table ; instructions
 A ; console target
 
 ; Initial Layout
@@ -20,8 +18,8 @@ A ; console target
 --      ▔         --
 -- *              --
 ---------A----------
-1 ; number of fixed links
-8 3 9 8
+1 ; number of links
+8 3 9 8 ; source xy, target xy (lower left origin)
 
 ; Target Layout
 --       A        --
@@ -29,9 +27,21 @@ A ; console target
 --                --
 --                --
 --                --
---+++++++.++++++++--
+--++++++.++.++++++--
 --      ▔         --
 --                --
 ---------?----------
-1 ; number of fixed links
-8 3 9 8
+0 ; number of links
+
+; Player Settings
+addy pointerTool ; addy's available tools
+val valueTool ; val's available tools
+par 4 ; maximum number of actions required for full reward
+
+; Solution Code
+begin
+addy = p;
+q = addy;
+val = 'A';
+*q = val;
+end

@@ -1,12 +1,11 @@
-; Copy value to heap using existing pointer.
-; 1. Val copies A from source to pointer in stack which copies the value to the heap (Addy does nothing)
+; Copy value to heap using an existing pointer.
 
-; Header
+; Level Settings
 20 ; width
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Copy A to table ; instructions
+Put a Coffee on the Table ; instructions
 A ; console target
 
 ; Initial Layout
@@ -17,9 +16,9 @@ A ; console target
 -- &              --
 --+++++++.++++++++--
 --                --
--- *              --
+p-- *              --
 ---------A----------
-1 ; number of fixed links
+1 ; number of links
 9 3 9 8 ; source xy, target xy (lower left origin)
 
 ; Target Layout
@@ -32,5 +31,15 @@ A ; console target
 --                --
 --                --
 ---------?----------
-1 ; number of fixed links
-9 3 9 8 ; source xy, target xy (lower left origin)
+0 ; number of links
+
+; Player Settings
+addy pointerTool ; addy's available tools
+val valueTool ; val's available tools
+par 2 ; maximum number of actions required for full reward
+
+; Solution Code
+begin
+val = 'A';
+*p = val;
+end

@@ -142,8 +142,7 @@ public class LevelController : MonoBehaviour {
 
   public void CheckProgress() {
     if (current.endLevelCondition.Check()) {
-//      loader.LoadNextLevel();
-//      consoleController
+      consoleController.LevelEnd();
     }
   }
 
@@ -218,9 +217,7 @@ public class LevelController : MonoBehaviour {
       return current;
     }
     set {
-      if (current != null) {
-        consoleController.LevelEnd();
-      }
+
       current = value;
       consoleController.LevelStart();
     }

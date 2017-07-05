@@ -14,7 +14,7 @@ public class ConsoleController : MonoBehaviour {
   void Start() {
     text = GetComponent<Text>();
     instructionText = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
-    statusText = GameObject.Find("/HUD/Status").GetComponent<Text>();
+    statusText = GameObject.Find("/canvasHUD2/PanelHUD/PanelCode/Text").GetComponent<Text>();
     text.text = "";
     statusText.text = "";
 
@@ -35,7 +35,7 @@ public class ConsoleController : MonoBehaviour {
   }
 
   public void LevelEnd() {
-
+    instructionText.text = "Press = for next level!";
   }
 
   public void Status(string text) {

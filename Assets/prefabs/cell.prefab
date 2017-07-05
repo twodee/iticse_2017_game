@@ -290,6 +290,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   immutable: 0
   arrayIndex: 0
+  heap: 0
+  variableName: 0
+  reachable: 0
 --- !u!114 &114622276607588286
 MonoBehaviour:
   m_ObjectHideFlags: 1

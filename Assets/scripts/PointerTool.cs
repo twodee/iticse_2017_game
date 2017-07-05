@@ -46,9 +46,6 @@ public class PointerTool : Tool {
 
   override public void Interact() {
     GameObject p = player.GetOnPointer();
-    if (p == null && player.IsConnectedToOther()) {
-//      p = star.GetOnPointer();
-    }
     if (p != null) {
       PointerController sourcePointer = p.GetComponent<PointerController>();
       if (player.targetCell == null) {
@@ -56,16 +53,7 @@ public class PointerTool : Tool {
         player.targetCell = sourcePointer.Target;
         player.levelController.OnAttach(sourcePointer, player.avatar, true);
 
-        if (player.targetCell != null) {
-          // need to draw the line
-          lineRenderer.enabled = true;
-          leftBarbRenderer.enabled = true;
-          rightBarbRenderer.enabled = true;
-          caster = null;
-          Vector3 pos = player.targetCell.gameObject.transform.position;
-          targetPosition = pos;
-          PointAt(pos);//new Vector2(pos.x, pos.y - 0.5f));
-        }
+        Point();
       }
       else {
         sourcePointer.Target = player.targetCell;
@@ -76,7 +64,27 @@ public class PointerTool : Tool {
         }
       }
     }
+    else {
+      GameObject c = player.GetOnCell();
+      if (c != null) {
+        player.targetCell = c.GetComponent<CellBehavior>();
+        Point();
+      }
+    }
     player.UnLock();
+  }
+
+  void Point() {
+    if (player.targetCell != null) {
+      // need to draw the line
+      lineRenderer.enabled = true;
+      leftBarbRenderer.enabled = true;
+      rightBarbRenderer.enabled = true;
+      caster = null;
+      Vector3 pos = player.targetCell.gameObject.transform.position;
+      targetPosition = pos;
+      PointAt(pos);//new Vector2(pos.x, pos.y - 0.5f));
+    }
   }
 
   void Depoint() {

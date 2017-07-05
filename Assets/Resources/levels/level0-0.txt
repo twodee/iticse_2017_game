@@ -32,3 +32,10 @@ A ; console target
 --                --
 -------?------------
 0 ; number of fixed links
+par 2
+;addy valueTool
+begin
+val = 'A';
+a = val;
+end
+;val valueTool

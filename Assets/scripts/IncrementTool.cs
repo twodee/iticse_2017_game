@@ -9,7 +9,7 @@ public class IncrementTool : Tool {
   Text text;
 
   void Awake() {
-    text = gameObject.transform.Find("canvas/text").GetComponent<Text>();
+    text = gameObject.transform.Find("mod/canvas/text").GetComponent<Text>();
   }
 
   int IncrementValue {

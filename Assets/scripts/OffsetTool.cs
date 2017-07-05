@@ -11,7 +11,7 @@ public class OffsetTool : Tool {
   Text text;
 
   void Awake() {
-    text = gameObject.transform.Find("canvas/text").GetComponent<Text>();
+    text = gameObject.transform.Find("mod/canvas/text").GetComponent<Text>();
     offset = 0;
     originalTarget = null;
   }

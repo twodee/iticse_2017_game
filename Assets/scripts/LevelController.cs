@@ -15,6 +15,9 @@ public class LevelController : MonoBehaviour {
   private char variableValue;
   private char variablePointer;
 
+  public int par;
+  public ArrayList solutionCode;
+
 //  private PlayerController player1;
 //  private PlayerController player2;
 
@@ -30,6 +33,7 @@ public class LevelController : MonoBehaviour {
     objects = new Dictionary<long, GameObject>();
     stack = new Dictionary<char, GameObject>();
     heap = new Dictionary<long, GameObject>();
+    solutionCode = new ArrayList();
     Reset();
 	}
 
@@ -39,6 +43,8 @@ public class LevelController : MonoBehaviour {
     heap.Clear();
     variableValue = 'a';
     variablePointer = 'p';
+    solutionCode.Clear();
+    par = 0;
   }
 
   static long Key(int x, int y) {
@@ -196,8 +202,8 @@ public class LevelController : MonoBehaviour {
   int ReachArray(CellBehavior cb) {
     if (cb.owningArray != null) {
       int reached = 0;
-      foreach (CellBehavior sibling in cb.owningArray.objects) {
-        reached += MarkReachable(sibling);
+      foreach (GameObject sibling in cb.owningArray.objects) {
+        reached += MarkReachable(sibling.GetComponent<CellBehavior>());
       }
       return reached;
     }

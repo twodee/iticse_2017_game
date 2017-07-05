@@ -23,7 +23,9 @@ public class ConsoleController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    text.text = levelController.Current.collected;
+    if (levelController.Current != null) {
+      text.text = levelController.Current.collected;
+    }
   }
 
   public void LevelStart() {

@@ -221,10 +221,10 @@ public class LevelLoader : MonoBehaviour {
           go.transform.SetParent(this.transform);
         }
         else if (c == '&') {
-          ampersand.transform.position = pos;
+          ampersand.transform.position = new Vector3(pos.x, pos.y, -5);
         }
         else if (c == '*') {
-          star.transform.position = pos;
+          star.transform.position = new Vector3(pos.x, pos.y, -5);
         }
 
         if (go != null && (go.tag == "cell" || go.tag == "pointer")) {
@@ -305,43 +305,64 @@ public class LevelLoader : MonoBehaviour {
     }
 
     setDisplayTypeOnObjects();
+    int remaining = lines.Length - offset;
+    int tools = 0;
+    bool code = false;
+    for (int i = 0; i < remaining; i++) {
+      string[] line = Regex.Split(lines[offset+i], "[\\s,]+");
+      string keyword = line[0];
+      if (keyword == "end") {
+        code = false;
+      }
+      else if (code) {
+        levelController.solutionCode.Add(lines[offset+i]+";");
+      }
+      else if (keyword == "begin") {
+        code = true;
+      }
+      else if (keyword == "addy") {
+        ampersand.ActiveTool = MakeTool(GetToolProto(line[1]));
+        if (line.Length >= 3) {
+          ampersand.InActiveTool = MakeTool(GetToolProto(line[2]));
+        }
+        tools += 1;
+      }
+      else if (keyword == "val") {
+        star.ActiveTool = MakeTool(GetToolProto(line[1]));
+        if (line.Length >= 3) {
+          star.InActiveTool = MakeTool(GetToolProto(line[2]));
+        }
+        tools += 2;
+      }
+      else if (keyword == "par") {
+        levelController.par = Int32.Parse(line[1]);
+      }
+    }
 
-    if (offset+1 >= lines.Length) {
-      // set tools by default based on world number for now, eventually need
-      // addy = pointer, offset
-      // val = value, inc/dec
+    if ((tools & 1) == 0) {
       if (world == 0) {
         ampersand.ActiveTool = MakeTool(valueTool);
-        star.ActiveTool = MakeTool(valueTool);
       }
       else if (world >= 3) {
         ampersand.ActiveTool = MakeTool(pointerTool);
-//        ampersand.InActiveTool = MakeTool(offsetTool);
+      }
+      else {
+        ampersand.ActiveTool = MakeTool(pointerTool);
+      }
+    }
+    if ((tools & 2) == 0) {
+      if (world == 0) {
+        star.ActiveTool = MakeTool(valueTool);
+      }
+      else if (world >= 3) {
         star.ActiveTool = MakeTool(valueTool);
         star.InActiveTool = MakeTool(incrementTool);
       }
       else {
-        ampersand.ActiveTool = MakeTool(pointerTool);
         star.ActiveTool = MakeTool(valueTool);
       }
     }
-    else {
-      // next two lines should be addy and then val
-      string[] addy = Regex.Split(lines[offset], "[\\s,]+");
-      if (addy[0] == "addy") {
-        ampersand.ActiveTool = MakeTool(GetToolProto(addy[1]));
-        if (addy.Length >= 3) {
-          ampersand.InActiveTool = MakeTool(GetToolProto(addy[2]));
-        }
-      }
-      string[] val = Regex.Split(lines[offset + 1], "[\\s,]+");
-      if (val[0] == "val") {
-        star.ActiveTool = MakeTool(GetToolProto(val[1]));
-        if (val.Length >= 3) {
-          star.InActiveTool = MakeTool(GetToolProto(val[2]));
-        }
-      }
-    }
+
   }
 
   Tool GetToolProto(string name) {

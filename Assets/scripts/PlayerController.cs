@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public abstract class PlayerController : MonoBehaviour {
   public float speed;
+  public string avatar;
 
   protected FootController foot;
   protected FootController head;
@@ -194,6 +195,10 @@ public abstract class PlayerController : MonoBehaviour {
     }
   }
 
+  protected void Bump() {
+    activeTool.Bump();
+  }
+
   virtual protected void Jump (){
     rigidbody.AddForce(Vector2.up * 300);
 	}
@@ -280,7 +285,10 @@ public abstract class PlayerController : MonoBehaviour {
       }
     }
     if (collision.gameObject.tag == "cell" || collision.gameObject.tag == "pointer") {
-      activeTool.Enter(collision.gameObject.GetComponent<CellBehavior>());
+      Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
+      if (hit != null && hit.gameObject == collision.gameObject) {
+        activeTool.Enter(collision.gameObject.GetComponent<CellBehavior>());
+      }
     }
       // If we land on top of the other people, let's reduce our mass to 0 so we
       // don't impede that player's jump.

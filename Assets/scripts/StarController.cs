@@ -76,12 +76,16 @@ public class StarController : PlayerController {
     if (!isLocked) {
       base.OnCollisionEnter2D(collision);
       string collisionTag = collision.gameObject.tag;
-      if (collisionTag == "cell" || collisionTag == "pointer") {
+      if (collisionTag == "cell" || collisionTag == "pointer" || 
+        collisionTag == "counter" || collisionTag == "cabinet") {
         // check to see if it is the head that has hit a cell
         Collider2D hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
-        if (hit != null) {
+        if (hit != null && hit.gameObject == collision.gameObject) {
           if (hit.gameObject.tag == "cell" || hit.gameObject.tag == "pointer") {
             Interact(false);
+          }
+          else if (hit.gameObject.tag == "counter" || hit.gameObject.tag == "cabinet") {
+            Bump();
           }
         }
       }

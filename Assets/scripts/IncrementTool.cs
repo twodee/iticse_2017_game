@@ -1,10 +1,24 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 
 public class IncrementTool : Tool {
+  int incrementValue = 1;
+  Text text;
+
   void Awake() {
+    text = gameObject.transform.Find("canvas/text").GetComponent<Text>();
   }
+
+  int IncrementValue {
+    set {
+      incrementValue = value;
+      text.text = incrementValue == 1 ? "++" : "--";
+    }
+  }
+
   override public void Interact() {
     player.targetCell = null;
 
@@ -14,16 +28,25 @@ public class IncrementTool : Tool {
       CellBehavior target = controller.Target;
       // find the next object in the controller's array
       if (target != null && target.owningArray != null) {
-        int index = target.arrayIndex+1;
-        if (index == target.owningArray.Count) {
+        int index = target.arrayIndex + incrementValue;
+        if (index < 0) {
           index = 0;
+        }
+        else if (index == target.owningArray.Count) {
+          index = target.owningArray.Count - 1;
         }
         controller.Target = target.owningArray.Get(index).GetComponent<CellBehavior>();
       }
-
+    }
+    else {
+      Bump();
     }
 
     player.UnLock();
+  }
+
+  override public void Bump() {
+    IncrementValue = -1 * incrementValue;
   }
 }
 

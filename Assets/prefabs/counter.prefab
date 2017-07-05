@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 212317491522885240}
   m_Layer: 8
   m_Name: counter
-  m_TagString: ground
+  m_TagString: counter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

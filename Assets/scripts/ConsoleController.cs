@@ -8,13 +8,16 @@ public class ConsoleController : MonoBehaviour {
   public Text text;
   LevelController levelController;
   private Text instructionText;
+  private Text statusText;
 
   // Use this for initialization
   void Start() {
     text = GetComponent<Text>();
     instructionText = GameObject.Find("/HUD/Instructions").GetComponent<Text>();
-
+    statusText = GameObject.Find("/HUD/Status").GetComponent<Text>();
     text.text = "";
+    statusText.text = "";
+
     levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
   }
 
@@ -25,10 +28,15 @@ public class ConsoleController : MonoBehaviour {
 
   public void LevelStart() {
     text.text = "";
+    statusText.text = "";
     instructionText.text = levelController.Current.instructions;
   }
 
   public void LevelEnd() {
 
+  }
+
+  public void Status(string text) {
+    statusText.text = text;
   }
 }

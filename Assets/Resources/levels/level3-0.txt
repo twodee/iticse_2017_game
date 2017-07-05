@@ -43,3 +43,5 @@ B ; console target
 -- *              --
 --------------------
 0 ; number links
+addy pointerTool offsetTool
+val valueTool incrementTool

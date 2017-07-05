@@ -312,6 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  avatar: val
   targetCell: {fileID: 0}
   levelController: {fileID: 0}
 --- !u!212 &212680226743223876

@@ -16,6 +16,9 @@ public abstract class Tool : MonoBehaviour {
   }
 
   abstract public void Interact();
+  virtual public void Bump() {
+  }
+
   virtual public void Enter(CellBehavior cell) {
   }
   virtual public void Exit(CellBehavior cell) {

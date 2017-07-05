@@ -28,7 +28,6 @@ public class LevelLoader : MonoBehaviour {
 
   private int valueType; // 0 = images only, 1 = text only, 2 = both
 
-  private Dictionary<long, GameObject> objects;
 
   public WorldLoader worldLoader;
 
@@ -50,7 +49,6 @@ public class LevelLoader : MonoBehaviour {
 
     levelController = gameObject.GetComponent<LevelController>();
     consoleController = GameObject.Find("HUD/Console").GetComponent<ConsoleController>();
-    objects = new Dictionary<long, GameObject>();
     tools = new ArrayList();
   }
 
@@ -65,7 +63,8 @@ public class LevelLoader : MonoBehaviour {
 
   void EmptyLevel() {
     // Find all of our children and...eliminate them.
-    objects.Clear();
+
+    levelController.Reset();
 
     while (transform.childCount > 0) {
       Transform c = transform.GetChild(0);
@@ -82,31 +81,18 @@ public class LevelLoader : MonoBehaviour {
     star.Reset();
   }
 
-  static long Key(int x, int y) {
-    //implicit conversion of left to a long
-    long res = x;
 
-    //shift the bits creating an empty space on the right
-    // ex: 0x0000CFFF becomes 0xCFFF0000
-    res = (res << 32);
-
-    //combine the bits on the right with the previous value
-    // ex: 0xCFFF0000 | 0x0000ABCD becomes 0xCFFFABCD
-    res = res | (long)(uint)y; //uint first to prevent loss of signed bit
-
-    //return the combined result
-    return res;
-  }
 
   GameObject findAt(int x, int y) {
-    return objects[Key(x, y)];
+    return levelController.FindAt(x, y);
   }
 
   void loadObjects() {
     for (int i = 0; i < transform.childCount; i++) {
       Transform c = transform.GetChild(i);
       if (c.gameObject.tag != "ground") {
-        objects[Key((int)c.gameObject.transform.position.x, (int)c.gameObject.transform.position.y)] = c.gameObject;
+        levelController.AddAt((int)c.gameObject.transform.position.x,
+         (int)c.gameObject.transform.position.y, c.gameObject);
       }
     }
   }
@@ -289,6 +275,7 @@ public class LevelLoader : MonoBehaviour {
         if (c >= 'A' && c <= 'Z') {
           GameObject go = findAt(x, y);
           endLevelCondition.Add(new CellValueEndLevelCondition(go.GetComponentInChildren<Text>(), c.ToString()));
+          go.GetComponent<CellController>().SetExpected(levelController.GetSprite(c.ToString()));
         }
       }
     }
@@ -307,6 +294,7 @@ public class LevelLoader : MonoBehaviour {
       CellBehavior cc = target.GetComponent<CellBehavior>();
       endLevelCondition.Add(new LinkTargetEndLevelCondition(pc, cc));
     }
+    offset += targetLinks;
 
     foreach (int[] blockedCell in blockedCells) {
       GameObject go = findAt(blockedCell[0], blockedCell[1]);
@@ -318,23 +306,46 @@ public class LevelLoader : MonoBehaviour {
 
     setDisplayTypeOnObjects();
 
-    // set tools by default based on world number for now, eventually need
-    // addy = pointer, offset
-    // val = value, inc/dec
-    if (world == 0) {
-      ampersand.ActiveTool = MakeTool(valueTool);
-      star.ActiveTool = MakeTool(valueTool);
-    }
-    else if (world >= 3) {
-      ampersand.ActiveTool = MakeTool(pointerTool);
-      ampersand.InActiveTool = MakeTool(offsetTool);
-      star.ActiveTool = MakeTool(valueTool);
-      star.InActiveTool = MakeTool(incrementTool);
+    if (offset+1 >= lines.Length) {
+      // set tools by default based on world number for now, eventually need
+      // addy = pointer, offset
+      // val = value, inc/dec
+      if (world == 0) {
+        ampersand.ActiveTool = MakeTool(valueTool);
+        star.ActiveTool = MakeTool(valueTool);
+      }
+      else if (world >= 3) {
+        ampersand.ActiveTool = MakeTool(pointerTool);
+//        ampersand.InActiveTool = MakeTool(offsetTool);
+        star.ActiveTool = MakeTool(valueTool);
+        star.InActiveTool = MakeTool(incrementTool);
+      }
+      else {
+        ampersand.ActiveTool = MakeTool(pointerTool);
+        star.ActiveTool = MakeTool(valueTool);
+      }
     }
     else {
-      ampersand.ActiveTool = MakeTool(pointerTool);
-      star.ActiveTool = MakeTool(valueTool);
+      // next two lines should be addy and then val
+      string[] addy = Regex.Split(lines[offset], "[\\s,]+");
+      if (addy[0] == "addy") {
+        ampersand.ActiveTool = MakeTool(GetToolProto(addy[1]));
+        if (addy.Length >= 3) {
+          ampersand.InActiveTool = MakeTool(GetToolProto(addy[2]));
+        }
+      }
+      string[] val = Regex.Split(lines[offset + 1], "[\\s,]+");
+      if (val[0] == "val") {
+        star.ActiveTool = MakeTool(GetToolProto(val[1]));
+        if (val.Length >= 3) {
+          star.InActiveTool = MakeTool(GetToolProto(val[2]));
+        }
+      }
     }
+  }
+
+  Tool GetToolProto(string name) {
+    return GameObject.Find("/"+name).GetComponent<Tool>();
   }
 
   Tool MakeTool(Tool proto) {

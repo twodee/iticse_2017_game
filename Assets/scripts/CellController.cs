@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -7,6 +8,9 @@ public class CellController : CellBehavior {
   private Text loot;
   private SpriteRenderer lootSprite;
   private GameObject lootObject;
+  private SpriteRenderer expectedSprite;
+  private Color expectedColor;
+  private bool hasExpected;
 
   override protected void Awake() {
     base.Awake();
@@ -14,7 +18,15 @@ public class CellController : CellBehavior {
     loot = transform.Find("loot/canvas/text").GetComponent<Text>();
     lootObject = transform.Find("loot").gameObject;
     lootSprite = lootObject.GetComponent<SpriteRenderer>();
+    expectedSprite = transform.Find("expected").GetComponent<SpriteRenderer>();
 
+  }
+
+  void Update() {
+    if (hasExpected) {
+      expectedColor.a = Math.Abs(1.5f - (Time.time % 3.0f)) / 2.0f;
+      expectedSprite.color = expectedColor;
+    }
   }
 
   public string Loot {
@@ -39,4 +51,10 @@ public class CellController : CellBehavior {
     return lootObject;
   }
 
+  public void SetExpected(Sprite sprite) {
+    expectedSprite.sprite = sprite;
+    expectedColor = new Color(1f, 1f, 1f, 0f);
+    expectedSprite.color = expectedColor;
+    hasExpected = true;
+  }
 }

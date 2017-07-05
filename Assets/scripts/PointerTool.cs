@@ -54,6 +54,8 @@ public class PointerTool : Tool {
       if (player.targetCell == null) {
         // pick up the targetCell from pointer if it exists
         player.targetCell = sourcePointer.Target;
+        player.levelController.OnAttach(sourcePointer, player.avatar, true);
+
         if (player.targetCell != null) {
           // need to draw the line
           lineRenderer.enabled = true;
@@ -67,7 +69,7 @@ public class PointerTool : Tool {
       }
       else {
         sourcePointer.Target = player.targetCell;
-        player.levelController.OnAttach();
+        player.levelController.OnAttach(sourcePointer, player.avatar, false);
 
         if (IsPointerAttached()) {
           Depoint();
@@ -96,5 +98,8 @@ public class PointerTool : Tool {
     rightBarbRenderer.SetPosition(1, position);
   }
 
+  override public void InActive() {
+    Depoint();
+  }
 }
 

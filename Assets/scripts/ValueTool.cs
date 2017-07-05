@@ -21,7 +21,6 @@ public class ValueTool : Tool {
   protected IEnumerator TransmitAndUnlock() {
     if (player.IsTransmittable()) {
       yield return StartCoroutine(Transmit());
-      player.levelController.OnTransmit();
     }
 
     player.UnLock();
@@ -61,6 +60,7 @@ public class ValueTool : Tool {
 
     Destroy(payload);
     player.targetCell.SetLoot(value);
+    player.levelController.OnTransmit(player.targetCell, player.avatar, false);
 
 
   }
@@ -85,6 +85,8 @@ public class ValueTool : Tool {
     }
 
     player.Acquire(player.targetCell.GetLoot());
+    player.levelController.OnTransmit(player.targetCell, player.avatar, true);
+
     Destroy(payload);
 
   }

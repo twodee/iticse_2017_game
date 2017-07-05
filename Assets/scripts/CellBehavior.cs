@@ -17,12 +17,18 @@ public abstract class CellBehavior : MonoBehaviour {
   public CellArray owningArray;
   public int arrayIndex;
 
+  public bool heap;
+  public char variableName;
+
+  public bool reachable;
+
   virtual protected void Awake() {
 
     upBarrier = transform.Find("UpBarrier").GetComponent<SpriteRenderer>();
     downBarrier = transform.Find("DownBarrier").GetComponent<SpriteRenderer>();
 
     levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
+    reachable = false;
   }
 
   abstract public void SetLoot(string text);

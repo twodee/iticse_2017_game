@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,22 +8,39 @@ public class OffsetTool : Tool {
   int offset;
   CellBehavior originalTarget;
   PointerController originalPointer;
+  Text text;
 
   void Awake() {
+    text = gameObject.transform.Find("canvas/text").GetComponent<Text>();
     offset = 0;
     originalTarget = null;
   }
+
+  int Offset {
+    set
+    {
+      offset = value;
+      text.text = offset.ToString();
+    }
+  }
+
   override public void Interact() {
     player.targetCell = null;
-    offset++;
+    Offset = offset + 1;
     if (originalPointer != null) {
       if (ReTarget()) {
-        offset = 0;
+        Offset = 0;
       }
+    }
+    else {
+      Bump();
     }
     player.UnLock();
   }
 
+  override public void Bump() {
+    Offset = 0;
+  }
 
   override public void Active() {
     originalTarget = null;
@@ -41,8 +59,12 @@ public class OffsetTool : Tool {
   }
 
   override public void InActive() {
-    originalTarget = null;
-    originalPointer = null;
+    if (originalPointer != null) {
+      originalPointer.Target = originalTarget;
+
+      originalTarget = null;
+      originalPointer = null;
+    }
   }
 
   bool ReTarget() {

@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 public class CellArray {
-  ArrayList objects;
+  public ArrayList objects;
   public CellArray() {
     objects = new ArrayList();
   }

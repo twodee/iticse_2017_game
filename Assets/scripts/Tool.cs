@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Tool : MonoBehaviour {
+  public String id;
   protected PlayerController player;
   public PlayerController Player {
     get {

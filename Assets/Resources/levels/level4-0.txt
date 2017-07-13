@@ -40,3 +40,4 @@ A ; console target
 -- *              --
 ---------A----------
 0 ; number links
+par 2

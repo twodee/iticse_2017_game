@@ -161,8 +161,8 @@ public class LevelLoader : MonoBehaviour {
     cam.transform.position = new Vector3((float)Convert.ToDouble(lines[2]), (float)Convert.ToDouble(lines[3]), -WORLD_HEIGHT);
 
     AndAllEndLevelCondition endLevelCondition = new AndAllEndLevelCondition();
-    levelController.Current = new Level(levelName, lines[4].Trim(), endLevelCondition, world, level);
-    endLevelCondition.Add(new CollectEndLevelCondition(levelController.Current, lines[5].Trim()));
+    Level loaded = new Level(levelName, lines[4].Trim(), endLevelCondition, world, level);
+    endLevelCondition.Add(new CollectEndLevelCondition(loaded, lines[5].Trim()));
     int offset = 6;
     ArrayList blockedCells = new ArrayList();
 
@@ -275,7 +275,7 @@ public class LevelLoader : MonoBehaviour {
         if (c >= 'A' && c <= 'Z') {
           GameObject go = findAt(x, y);
           endLevelCondition.Add(new CellValueEndLevelCondition(go.GetComponentInChildren<Text>(), c.ToString()));
-          go.GetComponent<CellController>().SetExpected(levelController.GetSprite(c.ToString()));
+          go.GetComponent<CellController>().SetExpected(c.ToString());
         }
       }
     }
@@ -315,7 +315,7 @@ public class LevelLoader : MonoBehaviour {
         code = false;
       }
       else if (code) {
-        levelController.solutionCode.Add(lines[offset+i]+";");
+        loaded.solutionCode.Add(lines[offset+i]+";");
       }
       else if (keyword == "begin") {
         code = true;
@@ -335,7 +335,7 @@ public class LevelLoader : MonoBehaviour {
         tools += 2;
       }
       else if (keyword == "par") {
-        levelController.par = Int32.Parse(line[1]);
+        loaded.par = Int32.Parse(line[1]);
       }
     }
 
@@ -363,6 +363,7 @@ public class LevelLoader : MonoBehaviour {
       }
     }
 
+    levelController.Current = loaded;
   }
 
   Tool GetToolProto(string name) {

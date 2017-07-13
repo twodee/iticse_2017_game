@@ -9,6 +9,7 @@ public class IncrementTool : Tool {
   Text text;
 
   void Awake() {
+    id = "I";
     text = gameObject.transform.Find("mod/canvas/text").GetComponent<Text>();
   }
 
@@ -35,7 +36,11 @@ public class IncrementTool : Tool {
         else if (index == target.owningArray.Count) {
           index = target.owningArray.Count - 1;
         }
-        controller.Target = target.owningArray.Get(index).GetComponent<CellBehavior>();
+        CellBehavior newTarget = target.owningArray.Get(index).GetComponent<CellBehavior>();
+        if (newTarget != controller.Target) {
+          controller.Target = newTarget;
+          player.levelController.OnIncrement(controller, player, incrementValue);
+        }
       }
     }
     else {

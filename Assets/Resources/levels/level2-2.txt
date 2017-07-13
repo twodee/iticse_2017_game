@@ -6,7 +6,7 @@
 10 ; camera x
 4.5 ; camera y
 Put Coffee on the Table ; instructions
-AA ; console target
+A ; console target
 
 ; Initial Layout
 --      A x       --

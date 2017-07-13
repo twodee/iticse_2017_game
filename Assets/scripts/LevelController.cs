@@ -15,8 +15,6 @@ public class LevelController : MonoBehaviour {
   private char variableValue;
   private char variablePointer;
 
-  public int par;
-  public ArrayList solutionCode;
 
 //  private PlayerController player1;
 //  private PlayerController player2;
@@ -33,7 +31,6 @@ public class LevelController : MonoBehaviour {
     objects = new Dictionary<long, GameObject>();
     stack = new Dictionary<char, GameObject>();
     heap = new Dictionary<long, GameObject>();
-    solutionCode = new ArrayList();
     Reset();
 	}
 
@@ -43,8 +40,6 @@ public class LevelController : MonoBehaviour {
     heap.Clear();
     variableValue = 'a';
     variablePointer = 'p';
-    solutionCode.Clear();
-    par = 0;
   }
 
   static long Key(int x, int y) {
@@ -110,34 +105,84 @@ public class LevelController : MonoBehaviour {
     CheckProgress();
   }
 
-  public void OnTransmit(CellBehavior cb, string player, bool read) {
-    string dereferences = "";
+  public void OnTransmit(CellBehavior cb, PointerController bp, PlayerController pc, bool read) {
+    string player = pc.avatar;
+    if (pc.CountTools() > 1) {
+      player += pc.ActiveTool.id;
+    }
     string variable = cb.variableName.ToString();
-    if (cb.variableName == 0) {
+    if (bp != null) {
+      variable = bp.variableName.ToString();
+      cb = bp;
+    }
+    else if (cb.variableName == 0) {
       // might have come from permanent memory
       variable = "'" + cb.GetLoot() + "'";
     }
+
     while (cb.gameObject.tag == "pointer") {
-      PointerController pc = (PointerController)cb;
-      cb = pc.Target;
-      dereferences += "*";
+      PointerController pointer = (PointerController)cb;
+      cb = pointer.Target;
+      // was it an array access using an offset or a "direct" dereference?
+      if (pointer.CurrentOffset == null) {
+        variable = "*" + variable;
+      }
+      else {
+        string offsetVariable = pointer.CurrentOffset.Player.avatar + pointer.CurrentOffset.id;
+        variable = variable + "[" + offsetVariable + "]";
+      }
+
     }
 
     if (read) {
-      consoleController.Status(player + " = " + dereferences + variable + ";");
+      consoleController.Status(player + " = " + variable + ";");
     }
     else {
-      consoleController.Status(dereferences + variable + " = " + player + ";");
+      consoleController.Status(variable + " = " + player + ";");
     }
     CheckProgress();
   }
 
-  public void OnAttach(PointerController cb, string player, bool read) {
+  public void OnAttach(PointerController bp, PlayerController pc, bool read) {
+    string player = pc.avatar;
+    if (pc.CountTools() > 1) {
+      player += pc.ActiveTool.id;
+    }
+    string variable = bp.variableName.ToString();
+
+    if (read) {
+      consoleController.Status(player + " = " + variable + ";");
+    }
+    else {
+      consoleController.Status(variable + " = " + player + ";");
+    }
+
     CheckProgress();
     CheckReachable();
   }
 
-  public void OnIncrement() {
+  public void OnIncrement(PointerController bp, PlayerController pc, int value) {
+    string player = pc.avatar;
+    string variable = bp.variableName.ToString();
+
+    string av = Mathf.Abs(value).ToString();
+    string inc = value == 1 ? "++" : value == -1 ? "--" : (value < 0 ? " -= " : " += ") + av;
+    consoleController.Status(variable + inc + ";");
+  }
+
+  public void OnOffsetChange(PlayerController pc, OffsetTool offsetTool, int value, bool increment) {
+    string player = pc.avatar + offsetTool.id;
+    string av = Mathf.Abs(value).ToString();
+    string rhs;
+    if (increment) {
+      rhs = value == 1 ? "++" : value == -1 ? "--" : (value < 0 ? " -= " : " += ") + av;
+    }
+    else {
+      rhs = " = " + value;
+    }
+    consoleController.Status(player + rhs + ";");
+
+    
   }
 
   public void CheckProgress() {

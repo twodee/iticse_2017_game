@@ -7,6 +7,7 @@ public class PointerController : CellBehavior
 {
   private CellBehavior targetCell;
   private LineRenderer lineRenderer;
+  private OffsetTool currentOffset;
 
   override protected void Awake() {
     base.Awake();
@@ -29,6 +30,16 @@ public class PointerController : CellBehavior
         lineRenderer.SetPosition(0, new Vector3(transform.position.x, transform.position.y, -0.1f));
         lineRenderer.SetPosition(1, new Vector3(targetCell.transform.position.x, targetCell.transform.position.y, -0.1f));
       }
+    }
+  }
+
+  public OffsetTool CurrentOffset {
+    get {
+      return currentOffset;
+    }
+    set
+    {
+      currentOffset = value;
     }
   }
 

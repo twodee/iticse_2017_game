@@ -11,6 +11,7 @@ public class PointerTool : Tool {
   private Vector2 targetPosition;
 
   void Awake() {
+    id = "P";
     lineRenderer = GetComponent<LineRenderer>();
     leftBarbRenderer = transform.Find("leftbarb").GetComponent<LineRenderer>();
     rightBarbRenderer = transform.Find("rightbarb").GetComponent<LineRenderer>();
@@ -51,13 +52,13 @@ public class PointerTool : Tool {
       if (player.targetCell == null) {
         // pick up the targetCell from pointer if it exists
         player.targetCell = sourcePointer.Target;
-        player.levelController.OnAttach(sourcePointer, player.avatar, true);
+        player.levelController.OnAttach(sourcePointer, player, true);
 
         Point();
       }
       else {
         sourcePointer.Target = player.targetCell;
-        player.levelController.OnAttach(sourcePointer, player.avatar, false);
+        player.levelController.OnAttach(sourcePointer, player, false);
 
         if (IsPointerAttached()) {
           Depoint();

@@ -11,13 +11,17 @@ public class OffsetTool : Tool {
   Text text;
 
   void Awake() {
+    id = "O";
     text = gameObject.transform.Find("mod/canvas/text").GetComponent<Text>();
     offset = 0;
     originalTarget = null;
   }
 
-  int Offset {
-    set
+  public int Offset {
+    get {
+      return offset;
+    }
+    private set
     {
       offset = value;
       text.text = offset.ToString();
@@ -35,6 +39,8 @@ public class OffsetTool : Tool {
     else {
       Bump();
     }
+    player.levelController.OnOffsetChange(player, this, offset, false);
+
     player.UnLock();
   }
 
@@ -53,6 +59,8 @@ public class OffsetTool : Tool {
       if (target != null && target.owningArray != null) {
         originalTarget = target;
         originalPointer = controller;
+        originalPointer.CurrentOffset = this;
+
         ReTarget();
       }
     }
@@ -61,6 +69,7 @@ public class OffsetTool : Tool {
   override public void InActive() {
     if (originalPointer != null) {
       originalPointer.Target = originalTarget;
+      originalPointer.CurrentOffset = null;
 
       originalTarget = null;
       originalPointer = null;
@@ -68,6 +77,7 @@ public class OffsetTool : Tool {
   }
 
   bool ReTarget() {
+//    Debug.Log("retargetted " + originalTarget.gameObject.tag + " at " + (originalTarget.arrayIndex+offset));
     int index = originalTarget.arrayIndex+offset;
     if (index >= originalTarget.owningArray.Count) {
       index = 0;
@@ -77,27 +87,36 @@ public class OffsetTool : Tool {
   }
 
   override public void Enter(CellBehavior cell) {
-    GameObject pointer = player.GetOnPointer();
-    if (pointer != null) {
-//      Debug.Log("entered while on Pointer");
-      PointerController controller = pointer.GetComponent<PointerController>();
-      CellBehavior target = controller.Target;
-      // find the next object in the controller's array
-      if (target != null && target.owningArray != null) {
-        originalTarget = target;
-        originalPointer = controller;
+    if (cell.GetType() == typeof(PointerController)) {
+      GameObject pointer = player.GetOnPointer();
+      if (pointer != null) {
+        //      Debug.Log("entered while on Pointer");
+        PointerController controller = pointer.GetComponent<PointerController>();
+        CellBehavior target = controller.Target;
+        // find the next object in the controller's array
+        if (target != null && target.owningArray != null) {
+          originalTarget = target;
+          originalPointer = controller;
 
-        ReTarget();
+          originalPointer.CurrentOffset = this;
+
+
+          ReTarget();
+        }
       }
     }
   }
 
   override public void Exit(CellBehavior cell) {
-    if (originalPointer != null && originalTarget != null) {
+    if (cell.GetType() == typeof(PointerController)) {
+
+      if (originalPointer != null && originalTarget != null) {
 //      Debug.Log("exited with original Pointer");
-      originalPointer.Target = originalTarget;
-      originalPointer = null;
-      originalTarget = null;
+        originalPointer.Target = originalTarget;
+        originalPointer.CurrentOffset = null;
+        originalPointer = null;
+        originalTarget = null;
+      }
     }
   }
 }

@@ -277,8 +277,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26c71dc35a48848449979df2cf2038d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 0
-  height: 0
+  width: 0.2
+  height: 0.1
 --- !u!114 &114670379047207006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -306,8 +306,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26c71dc35a48848449979df2cf2038d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 0
-  height: 0
+  width: 0.2
+  height: 0.1
 --- !u!114 &114831592936558254
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -343,6 +343,7 @@ MonoBehaviour:
   speed: 5
   avatar: val
   targetCell: {fileID: 0}
+  basePointer: {fileID: 0}
   levelController: {fileID: 0}
 --- !u!212 &212680226743223876
 SpriteRenderer:

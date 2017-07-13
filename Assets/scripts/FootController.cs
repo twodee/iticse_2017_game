@@ -11,4 +11,12 @@ public class FootController : MonoBehaviour {
       return gameObject.transform.position;
     }
   }
+//  virtual protected void OnCollisionEnter2D(Collision2D collision) {
+////    if (!isLocked) {
+//    // If the player's foot touches the ground, we want to be able to jump
+//    // again.
+//    if (collision.gameObject.tag == "cell" || collision.gameObject.tag == "pointer") {
+//      Debug.Log("foot hit " + collision.gameObject.tag);
+//    }
+//  }
 }

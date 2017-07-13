@@ -35,6 +35,9 @@ public class LevelLoader : MonoBehaviour {
   private Tool valueTool;
   private Tool incrementTool;
   private Tool offsetTool;
+  private Tool freeTool;
+  private Tool mallocTool;
+
 
   private ArrayList tools;
 
@@ -46,6 +49,8 @@ public class LevelLoader : MonoBehaviour {
     valueTool = GameObject.Find("/valueTool").GetComponent<Tool>();
     incrementTool = GameObject.Find("/incrementTool").GetComponent<Tool>();
     offsetTool = GameObject.Find("/offsetTool").GetComponent<Tool>();
+    freeTool = GameObject.Find("/freeTool").GetComponent<Tool>();
+    mallocTool = GameObject.Find("/mallocTool").GetComponent<Tool>();
 
     levelController = gameObject.GetComponent<LevelController>();
     consoleController = GameObject.Find("HUD/Console").GetComponent<ConsoleController>();
@@ -273,9 +278,12 @@ public class LevelLoader : MonoBehaviour {
         char c = s[j];
 
         if (c >= 'A' && c <= 'Z') {
+          endLevelCondition.Add(new CellValueEndLevelCondition(levelController, x, y, c.ToString()));
+        }
+        else if (c == '/') {
           GameObject go = findAt(x, y);
-          endLevelCondition.Add(new CellValueEndLevelCondition(go.GetComponentInChildren<Text>(), c.ToString()));
-          go.GetComponent<CellController>().SetExpected(c.ToString());
+          endLevelCondition.Add(new CellFreedEndLevelCondition(go.GetComponent<CellBehavior>()));
+
         }
       }
     }
@@ -309,16 +317,19 @@ public class LevelLoader : MonoBehaviour {
     int tools = 0;
     bool code = false;
     for (int i = 0; i < remaining; i++) {
-      string[] line = Regex.Split(lines[offset+i], "[\\s,]+");
+      string[] line = Regex.Split(lines[offset + i], "[\\s,]+");
       string keyword = line[0];
       if (keyword == "end") {
         code = false;
       }
       else if (code) {
-        loaded.solutionCode.Add(lines[offset+i]+";");
+        loaded.solutionCode.Add(lines[offset + i] + ";");
       }
       else if (keyword == "begin") {
         code = true;
+      }
+      else if (keyword == "heapArea") {
+        loaded.heapArea = new int[]{Int32.Parse(line[1]),Int32.Parse(line[2]),Int32.Parse(line[3]),Int32.Parse(line[4])};
       }
       else if (keyword == "addy") {
         ampersand.ActiveTool = MakeTool(GetToolProto(line[1]));

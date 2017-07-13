@@ -62,6 +62,10 @@ public class LevelController : MonoBehaviour {
     return objects[Key(x, y)];
   }
 
+  public bool HasAt(int x, int y) {
+    return objects.ContainsKey(Key(x, y));
+  }
+
   public void AddAt(int x, int y, GameObject go) {
     long key = Key(x, y); 
     objects[key] = go;
@@ -77,6 +81,42 @@ public class LevelController : MonoBehaviour {
         cb.heap = true;
       }
     }
+  }
+
+  public GameObject Malloc(int count, bool pointer) {
+    // search entire heap for contiguous
+    int startX = current.heapArea[0];
+    int endX = current.heapArea[2];
+    int startY = current.heapArea[1];
+    int endY = current.heapArea[3];
+    for (int y = startY; y <= endY; y++) {
+      for (int x = startX; x < endX; x++) {
+        if (x + count <= endX) {
+          bool canAlloc = true;
+          for (int i = -1; i <= count; i++) {
+            if (HasAt(x+i, y)) {
+              canAlloc = false;
+            }
+          }
+          if (canAlloc) {
+            GameObject go = null;
+            for (int i = count - 1; i >= 0; i--) {
+              Vector3 pos = new Vector3(x+i, y, 0);
+
+              go = (GameObject)Instantiate(loader.cell, pos, Quaternion.identity);
+              go.transform.SetParent(loader.transform);
+          
+              CellController cc = go.GetComponent<CellController>();
+              cc.Loot = "";
+
+              AddAt(x+i, y, go);
+            }
+            return go;
+          }
+        }
+      }
+    }
+    return null;
   }
 
   public Sprite GetSprite(string text) {
@@ -157,8 +197,23 @@ public class LevelController : MonoBehaviour {
       consoleController.Status(variable + " = " + player + ";");
     }
 
-    CheckProgress();
     CheckReachable();
+    CheckProgress();
+  }
+
+  public void OnMalloc(MallocTool mallocTool, PlayerController pc, bool isValue, bool isArray, int count) {
+    string player = pc.avatar + mallocTool.id;
+    string op = isArray ? "new char["+count+"]" : "new char()";
+    consoleController.Status(player + " = " + op + ";");
+  }
+
+  public void OnFree(PointerController bp, PlayerController pc, bool isArray) {
+    string variable = bp.variableName.ToString();
+    string op = isArray ? "delete[] " : "delete ";
+    consoleController.Status(op + variable + ";");
+
+    CheckReachable();
+    CheckProgress();
   }
 
   public void OnIncrement(PointerController bp, PlayerController pc, int value) {

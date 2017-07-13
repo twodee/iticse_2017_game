@@ -8,6 +8,7 @@ public class Level {
   public int level;
   public int par;
   public ArrayList solutionCode;
+  public int[] heapArea;
 
   public Level(string filePath, string instructions, EndLevelCondition endLevelCondition, int world, int level) {
     this.filePath = filePath;

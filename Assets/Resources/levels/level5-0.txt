@@ -1,0 +1,53 @@
+﻿; Free table from the heap.
+; 1. Addy uses the pointer tool to copy a pointer
+; 2. Val frees the table pointed to by the pointer
+; // initial code
+; char *p = new char[1];
+; *p = 'A';
+; char *q;
+; // solution code
+; q = p;
+; delete[] q;
+
+; Header
+20 ; width
+9 ; height
+10 ; camera x
+4.5 ; camera y
+Clear the table with the Coffee ; instructions
+x ; console target
+
+; Initial Layout
+--      A         --
+--                --
+--                --
+--                --
+-- &              --
+--+++++.+.++++++++--
+--     ▔          --
+-- *              --
+--------------------
+1 ; number of initial links
+7 3 8 8
+
+; Target Layout
+--      /         --
+--                --
+--                --
+--                --
+-- &              --
+--+++++.+.++++++++--
+--     ▔          --
+-- *              --
+--------------------
+0 ; number links
+par 3
+
+addy pointerTool
+val freeTool
+; Solution Code
+begin
+addy = p;
+q = addy;
+delete[] q;
+end

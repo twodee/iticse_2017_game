@@ -10,14 +10,14 @@ public class PointerTool : Tool {
   private Coroutine caster;
   private Vector2 targetPosition;
 
-  void Awake() {
+  virtual protected void Awake() {
     id = "P";
     lineRenderer = GetComponent<LineRenderer>();
     leftBarbRenderer = transform.Find("leftbarb").GetComponent<LineRenderer>();
     rightBarbRenderer = transform.Find("rightbarb").GetComponent<LineRenderer>();
   }
 
-  bool IsPointerAttached() {
+  protected bool IsPointerAttached() {
     return caster == null && lineRenderer.enabled;
   }
 
@@ -71,11 +71,17 @@ public class PointerTool : Tool {
         player.targetCell = c.GetComponent<CellBehavior>();
         Point();
       }
+      else {
+        InteractNonCell();
+      }
     }
     player.UnLock();
   }
 
-  void Point() {
+  virtual protected void InteractNonCell() {
+  }
+
+  protected void Point() {
     if (player.targetCell != null) {
       // need to draw the line
       lineRenderer.enabled = true;

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class UIcontroller : MonoBehaviour {
+public class MainMenuController : MonoBehaviour {
 
 	#region Variables
 
@@ -25,15 +25,10 @@ public class UIcontroller : MonoBehaviour {
 	private int achievedWorld;
 
 	[SerializeField]
-	private Text levelCompleteText;
-
-	[SerializeField]
-	public GameObject PanelLevelSelect, loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo;
+	public GameObject PanelLevelSelect, loadingPanel;
 
 	[SerializeField]
 	public GameObject UICanvas;
-
-	private string[] levelCompleteFeedback = { "Excellent!", "Good job!", "You did it!", "Fantastic!", "Very good!", "Superb!", "Splendid!"};
 
 	//private LevelManager levelManager;
 	#endregion
@@ -79,27 +74,6 @@ public class UIcontroller : MonoBehaviour {
 	#endregion
 
 	#region Public Functions
-	//Pauses the game and timescale
-	public void pauseGame()     
-	{
-		Time.timeScale = 0.0001F; 
-		PanelPause.SetActive(true);
-	}
-
-	//resumes the game from the paused state
-	public void resumeGame()    
-	{
-		Time.timeScale = 1;  
-		PanelPause.SetActive(false);
-	}
-
-	//goes to main menu
-	public void goToMainMenu()
-	{
-		// loadingPanel.SetActive (true);
-		SceneManager.LoadScene("mainMenu");
-	}
-
 	//restarts the level
 	public void restartLevel()
 	{
@@ -141,16 +115,7 @@ public class UIcontroller : MonoBehaviour {
 		PlayerPrefs.SetInt("currentWorld", currentWorld);
 		SceneManager.LoadScene("FromLevelLoadFile");
 	}
-
-
-
-	public void callNextLevel()
-	{
-		levelCompleteText.text = levelCompleteFeedback[Random.Range(0, levelCompleteFeedback.Length)];
-		//StartCoroutine(displayFeedback());
-		AudioManager.instance.PlaySingle(false, levelVictory);
-	}
-
+		
 	public void closePanel()
 	{
 		goToGeneric("Main");

@@ -1,15 +1,11 @@
 ; Copy two values from stack to heap using one pointer.
-; 1. Addy creates a pointer from stack to heap.
-; 2. Val copies A from source to pointer in stack.
-; 3. Addy overwrites pointer to refer to the empty value in heap.
-; 4. Val copies B from source to pointer in stack.
 
-; Header
+; Level Settings
 20 ; width
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Copy A and B to tables ; instructions
+Put a Coffee and a Cake on the Table ; instructions
 AB ; console target
 
 ; Initial Layout
@@ -22,8 +18,8 @@ AB ; console target
 --     ▔   ▔      --
 -- *              --
 --------A-B---------
-2 ; number of fixed links
-7 3 8 8
+2 ; number of links
+7 3 8 8 ; source xy, target xy (lower left origin)
 11 3 10 8
 
 ; Target Layout
@@ -36,6 +32,21 @@ AB ; console target
 --     ▔   ▔      --
 --                --
 --------?-?---------
-2 ; number of fixed links
-7 3 8 8
-11 3 10 8
+0 ; number of links
+
+; Player Settings
+addy pointerTool ; addy's available tools
+val valueTool ; val's available tools
+par 8 ; maximum number of actions required for full reward
+
+; Solution Code
+begin
+addy = p;
+q = addy;
+val = 'A';
+*q = val;
+addy = r;
+q = addy;
+val = 'B';
+*q = val;
+end

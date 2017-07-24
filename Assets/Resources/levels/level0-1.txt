@@ -1,12 +1,11 @@
-; One source value, A, and two empty stack values (one is blocked from Val)
-; Val copies A from source to stack, Addy copies A to blocked location
+; Copy value from one stack variable to another stack variable.
 
-; Header
+; Level Settings
 20 ; width
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Copy Two A's to Counter ; instructions
+Put Two Coffees on the Counter ; instructions
 AA ; console target
 
 ; Initial Layout
@@ -19,7 +18,7 @@ AA ; console target
 --      ▔         --
 -- *              --
 -------A------------
-0 ; number of fixed links
+0 ; number of links
 
 ; Target Layout
 --                --
@@ -31,4 +30,17 @@ AA ; console target
 --                --
 --                --
 -------?------------
-0 ; number of fixed links
+0 ; number of links
+
+; Player Settings
+addy valueTool ; addy's available tools
+val valueTool ; val's available tools
+par 4 ; maximum number of actions required for full reward
+
+; Solution Code
+begin
+val = 'A';
+a = val;
+addy = a;
+b = addy;
+end

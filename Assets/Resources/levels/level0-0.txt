@@ -1,12 +1,11 @@
-; One source value, A, and one empty stack value
-; Val copies A from source to stack, Addy does nothing
+; Assign a value to a variable in the stack.
 
-; Header
+; Level Settings
 20 ; width
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Copy One A to Counter ; instructions
+Put a Coffee on the Counter ; instructions
 A ; console target
 
 ; Initial Layout
@@ -19,7 +18,7 @@ A ; console target
 --                --
 -- *              --
 -------A------------
-0 ; number of fixed links
+0 ; number of links
 
 ; Target Layout
 --                --
@@ -31,11 +30,16 @@ A ; console target
 --                --
 --                --
 -------?------------
-0 ; number of fixed links
-par 2
-;addy valueTool
+0 ; number of links
+
+; Player Settings
+addy valueTool ; addy's available tools
+val valueTool ; val's available tools
+par 2 ; maximum number of actions required for full reward
+
+; Solution Code
 begin
 val = 'A';
 a = val;
 end
-;val valueTool
+

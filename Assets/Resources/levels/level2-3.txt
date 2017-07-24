@@ -1,36 +1,11 @@
 ; Swap two values in heap using a temporary stack value.
-; 1. Addy creates a pointer from stack to A.
-; 2. Val dereferences pointer to copy A to the empty stack value.
-; 3. Addy overwrites the pointer to refer to B.
-; 4. Val dereferences pointer to copy B.
-; 5. Addy overwrites the pointer to refer to A.
-; 6. Val overwrites A with a copy of B (both heap values are B).
-; 7. Addy overwrites the pointer to refer to the other heap value.
-; 8. Val copies the value A from the stack to the pointer which overwrites B with A.
-; // initial code
-; register char val;
-; char *p = new char[1];
-; char *q;
-; char a;
-; char *r = new char[1];
-; p[0] = 'A';
-; r[0] = 'B';
-; // solution code
-; q = p;
-; a = *q;
-; q = r;
-; val = *q;
-; q = p;
-; *q = val;
-; q = r;
-; *q = a;
 
-; Header
+; Level Settings
 20 ; width
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Swap A and B ; instructions
+Swap the Coffee and Cake ; instructions
 BA ; console target
 
 ; Initial Layout
@@ -43,8 +18,8 @@ BA ; console target
 --    ▔     ▔     --
 -- *              --
 --------------------
-2 ; number of initial links
-6 3 8 8
+2 ; number of links
+6 3 8 8 ; source xy, target xy (lower left origin)
 12 3 10 8
 
 ; Target Layout
@@ -53,8 +28,31 @@ BA ; console target
 --                --
 --                --
 --                --
---++++.+.+?+.++++++--
+--++++.+.+?+.+++++--
 --    ▔     ▔     --
 --                --
 --------------------
 0 ; number of links
+
+; Player Settings
+addy pointerTool ; addy's available tools
+val valueTool ; val's available tools
+par 14 ; maximum number of actions required for full reward
+
+; Solution Code
+begin
+addy = p;
+q = addy;
+val = *q;
+a = val;
+addy = r;
+q = addy;
+val = *q;
+addy = p;
+q = addy;
+*q = val;
+addy = r;
+q = addy;
+val = a;
+*q = val;
+end

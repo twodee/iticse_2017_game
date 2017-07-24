@@ -13,9 +13,11 @@ public class CollectEndLevelCondition : EndLevelCondition {
 
   static void getCounts(string s, Dictionary<char, int> counts) {
     foreach (char c in s) {
-      int currentCount;
-      counts.TryGetValue(c, out currentCount);
-      counts[c] = currentCount + 1;
+      if (c != 'x') {
+        int currentCount;
+        counts.TryGetValue(c, out currentCount);
+        counts[c] = currentCount + 1;
+      }
     }
   }
 

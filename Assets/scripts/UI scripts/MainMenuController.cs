@@ -34,37 +34,39 @@ public class MainMenuController : MonoBehaviour {
 	#endregion
 
 	#region Unity Event Functions
-	void Awake()
-	{
-		Time.timeScale = 1;
+	void Awake() {
+    Time.timeScale = 1;
 
-		// Get saved world and level or assign initial world and level
-		if (!(PlayerPrefs.HasKey("achievedWorld"))) 
-		{
-			PlayerPrefs.SetInt("achievedWorld", 1);
-			PlayerPrefs.SetInt("achievedLevel", 1);
-		}
-		achievedWorld = PlayerPrefs.GetInt("achievedWorld");
-		achievedLevel = PlayerPrefs.GetInt("achievedLevel");
-		currentWorld = 1;
-		currentLevel = 1;
+    // Get saved world and level or assign initial world and level
+    if (!(PlayerPrefs.HasKey("achievedWorld"))) {
+      PlayerPrefs.SetInt("achievedWorld", 1);
+      PlayerPrefs.SetInt("achievedLevel", 1);
+    }
+    achievedWorld = PlayerPrefs.GetInt("achievedWorld");
+    achievedLevel = PlayerPrefs.GetInt("achievedLevel");
+    currentWorld = 1;
+    currentLevel = 1;
 
-		string sceneName = SceneManager.GetActiveScene().name;     // "level 0-1" for example
+    string sceneName = SceneManager.GetActiveScene().name;     // "level 0-1" for example
 
-		// Set all levels to disabled
-		int levelCount = 1;
-		for (int i = 0; i < PanelLevelSelect.transform.childCount; i++)
-		{
-			//Debug.Log("currentLevel is " + currentLevel);
+    if (PanelLevelSelect != null) {
+      // Set all levels to disabled
+      int levelCount = 1;
+      for (int i = 0; i < PanelLevelSelect.transform.childCount; i++) {
+        //Debug.Log("currentLevel is " + currentLevel);
 
-			if (PanelLevelSelect.transform.GetChild(i).name.Contains("Level"))
-			{
-				if (currentLevel >= levelCount)
-				{ PanelLevelSelect.transform.GetChild(i).GetComponent<Button>().interactable=true; levelCount++;}
-				else
-				{ PanelLevelSelect.transform.GetChild(i).GetComponent<Button>().interactable=false; }
-			}		
-		}
+        if (PanelLevelSelect.transform.GetChild(i).name.Contains("Level")) {
+          if (currentLevel >= levelCount) {
+            PanelLevelSelect.transform.GetChild(i).GetComponent<Button>().interactable = true;
+            levelCount++;
+          }
+          else {
+            PanelLevelSelect.transform.GetChild(i).GetComponent<Button>().interactable = false;
+          }
+        }		
+      }
+    }
+
 	}
 
 	void Start()

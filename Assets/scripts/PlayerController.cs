@@ -23,6 +23,7 @@ public abstract class PlayerController : MonoBehaviour {
   protected SpriteRenderer lootSprite;
 
   public CellBehavior targetCell;
+  public PointerController basePointer;
   public LevelController levelController;
 
   protected Tool activeTool;
@@ -60,6 +61,9 @@ public abstract class PlayerController : MonoBehaviour {
 
   // tool related
   public Tool ActiveTool {
+    get {
+      return activeTool;
+    }
     set
     {
       activeTool = value;
@@ -93,6 +97,10 @@ public abstract class PlayerController : MonoBehaviour {
       inactiveTool.gameObject.transform.position = new Vector3(transform.position.x-0.5f, transform.position.y-0.25f, -0.1f);
     }
   }
+  public int CountTools() {
+    return (inactiveTool != null) ? 2 : 1;
+  }
+
 
   public void Reset() {
     LootText = "";
@@ -110,6 +118,7 @@ public abstract class PlayerController : MonoBehaviour {
     head = transform.Find("head").GetComponent<FootController>();
 
     targetCell = null;
+    basePointer = null;
 
     isAirborne = false;
     isLocked = false;
@@ -129,8 +138,8 @@ public abstract class PlayerController : MonoBehaviour {
 //    isSquishing = true;
 
     // Squat
-    Vector2 startPosition = gameObject.transform.position;
-    Vector2 endPosition = (Vector2)gameObject.transform.position - Vector2.up * 0.1f;
+    Vector3 startPosition = gameObject.transform.position;
+    Vector3 endPosition = gameObject.transform.position - Vector3.up * 0.1f;
     Vector3 startScale = gameObject.transform.localScale;
     Vector3 endScale = new Vector3(1.2f, 0.8f, 1.0f);
 
@@ -140,7 +149,7 @@ public abstract class PlayerController : MonoBehaviour {
 
     // Squat down and widen.
     while (elapsedTime < targetTime) {
-      gameObject.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
+      gameObject.transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / targetTime);
       gameObject.transform.localScale = Vector3.Lerp(startScale, endScale, elapsedTime / targetTime);
       yield return null;
       elapsedTime = Time.time - startTime;
@@ -150,7 +159,7 @@ public abstract class PlayerController : MonoBehaviour {
     startTime = Time.time;
     elapsedTime = 0.0f;
     while (elapsedTime < targetTime) {
-      gameObject.transform.position = Vector2.Lerp(endPosition, startPosition, elapsedTime / targetTime);
+      gameObject.transform.position = Vector3.Lerp(endPosition, startPosition, elapsedTime / targetTime);
       gameObject.transform.localScale = Vector3.Lerp(endScale, startScale, elapsedTime / targetTime);
       yield return null;
       elapsedTime = Time.time - startTime;
@@ -225,11 +234,13 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   public GameObject GetOnCell(FootController test, int direction) {
-    Collider2D hit = Physics2D.OverlapBox(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
-    if (hit != null && hit.gameObject.tag == "cell") {
-      CellController cc = hit.gameObject.GetComponent<CellController>();
-      if (!cc.IsBlocked(direction)) {
-        return hit.gameObject;
+    Collider2D[] hits = Physics2D.OverlapBoxAll(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
+    foreach (Collider2D hit in hits) {
+      if (hit != null && hit.gameObject.tag == "cell") {
+        CellController cc = hit.gameObject.GetComponent<CellController>();
+        if (!cc.IsBlocked(direction)) {
+          return hit.gameObject;
+        }
       }
     }
     return null;
@@ -245,21 +256,27 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   public GameObject GetOnPointer(FootController test, int direction) {
-    Collider2D hit = Physics2D.OverlapBox(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
-    if (hit != null && hit.gameObject.tag == "pointer") {
-      CellBehavior cc = hit.gameObject.GetComponent<CellBehavior>();
-      if (!cc.IsBlocked(direction)) {
-        return hit.gameObject;
+    Collider2D[] hits = Physics2D.OverlapBoxAll(test.position, new Vector2(test.width, test.height), 0, Utilities.GROUND_MASK);
+    foreach (Collider2D hit in hits) {
+      if (hit != null && hit.gameObject.tag == "pointer") {
+        CellBehavior cc = hit.gameObject.GetComponent<CellBehavior>();
+        if (!cc.IsBlocked(direction)) {
+          return hit.gameObject;
+        }
       }
     }
-    else if (hit != null && hit.gameObject.tag == "cell") {
-      // does it have a parent that is a linked cell?
-      Transform parentTransform = hit.gameObject.transform.parent;
-      if (parentTransform != null && parentTransform.gameObject.tag == "linkedCell") {
-        return parentTransform.GetComponentInChildren<PointerController>().gameObject;
-      }
-      else {
-        return null;
+
+    foreach (Collider2D hit in hits) {
+
+      if (hit != null && hit.gameObject.tag == "cell") {
+        // does it have a parent that is a linked cell?
+        Transform parentTransform = hit.gameObject.transform.parent;
+        if (parentTransform != null && parentTransform.gameObject.tag == "linkedCell") {
+          return parentTransform.GetComponentInChildren<PointerController>().gameObject;
+        }
+        else {
+          return null;
+        }
       }
     }
     return null;
@@ -278,6 +295,8 @@ public abstract class PlayerController : MonoBehaviour {
 //    if (!isLocked) {
     // If the player's foot touches the ground, we want to be able to jump
     // again.
+//    Debug.Log("player enter " + collision.gameObject.tag);
+
     if (isAirborne) {
       Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
       if (hit != null) {
@@ -285,10 +304,12 @@ public abstract class PlayerController : MonoBehaviour {
       }
     }
     if (collision.gameObject.tag == "cell" || collision.gameObject.tag == "pointer") {
-      Collider2D hit = Physics2D.OverlapBox(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
-      if (hit != null && hit.gameObject == collision.gameObject) {
-        activeTool.Enter(collision.gameObject.GetComponent<CellBehavior>());
-      }
+//      Collider2D[] hits = Physics2D.OverlapBoxAll(foot.position, new Vector2(foot.width, foot.height), 0, Utilities.GROUND_MASK);
+//      foreach (Collider2D hit in hits) {
+//        if (hit != null && hit.gameObject == collision.gameObject) {
+          activeTool.Enter(collision.gameObject.GetComponent<CellBehavior>());
+//        }
+//      }
     }
       // If we land on top of the other people, let's reduce our mass to 0 so we
       // don't impede that player's jump.
@@ -302,6 +323,8 @@ public abstract class PlayerController : MonoBehaviour {
   }
 
   void OnCollisionExit2D(Collision2D collision) {
+//    Debug.Log("player exit " + collision.gameObject.tag);
+
     if (collision.gameObject.tag == "cell" || collision.gameObject.tag == "pointer") {
       activeTool.Exit(collision.gameObject.GetComponent<CellBehavior>());
     }

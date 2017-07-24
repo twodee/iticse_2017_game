@@ -1,27 +1,12 @@
 ; Copy value in heap to another location in the heap with only one pointer.
-; 1. Addy creates pointer from stack to A.
-; 2. Val dereferences pointer to copy A.
-; 3. Addy overwrites pointer to refer to the empty heap value.
-; 4. Val moves copy of A to stack pointer and place value in empty heap value.
-; // initial code
-; register char val;
-; char *p = new char[1];
-; char *q;
-; char *r = new char[1];
-; p[0] = 'A';
-; // solution code
-; q = p;
-; val = *q;
-; q = r;
-; *q = val;
 
-; Header
+; Level Settings
 20 ; width
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Copy A to table ; instructions
-AA ; console target
+Put Coffee on the Table ; instructions
+A ; console target
 
 ; Initial Layout
 --      A x       --
@@ -33,8 +18,8 @@ AA ; console target
 --     ▔   ▔      --
 -- *              --
 --------------------
-2 ; number of initial links
-7 3 8 8
+2 ; number of links
+7 3 8 8 ; source xy, target xy (lower left origin)
 11 3 10 8
 
 ; Target Layout
@@ -42,9 +27,24 @@ AA ; console target
 --                --
 --                --
 --                --
--- &              --
+--                --
 --+++++.+.+.++++++--
 --     ▔   ▔      --
--- *              --
+--                --
 --------------------
-0 ; number links
+0 ; number of links
+
+; Player Settings
+addy pointerTool ; addy's available tools
+val valueTool ; val's available tools
+par 6 ; maximum number of actions required for full reward
+
+; Solution Code
+begin
+addy = p;
+q = addy;
+val = *q;
+addy = r
+q = addy
+*q = val;
+end

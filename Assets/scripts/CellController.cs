@@ -9,6 +9,7 @@ public class CellController : CellBehavior {
   private SpriteRenderer lootSprite;
   private GameObject lootObject;
   private SpriteRenderer expectedSprite;
+  private string expectedValue;
   private Color expectedColor;
   private bool hasExpected;
 
@@ -24,7 +25,12 @@ public class CellController : CellBehavior {
 
   void Update() {
     if (hasExpected) {
-      expectedColor.a = Math.Abs(1.5f - (Time.time % 3.0f)) / 2.0f;
+      if (loot.text == expectedValue) {
+        expectedColor.a = 0;
+      }
+      else {
+        expectedColor.a = Math.Abs(1.5f - (Time.time % 3.0f)) / 2.0f;
+      }
       expectedSprite.color = expectedColor;
     }
   }
@@ -51,8 +57,9 @@ public class CellController : CellBehavior {
     return lootObject;
   }
 
-  public void SetExpected(Sprite sprite) {
-    expectedSprite.sprite = sprite;
+  public void SetExpected(string expectedValue) {
+    this.expectedValue = expectedValue;
+    expectedSprite.sprite = levelController.GetSprite(expectedValue);
     expectedColor = new Color(1f, 1f, 1f, 0f);
     expectedSprite.color = expectedColor;
     hasExpected = true;

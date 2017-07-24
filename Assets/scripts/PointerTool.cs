@@ -10,13 +10,14 @@ public class PointerTool : Tool {
   private Coroutine caster;
   private Vector2 targetPosition;
 
-  void Awake() {
+  virtual protected void Awake() {
+    id = "P";
     lineRenderer = GetComponent<LineRenderer>();
     leftBarbRenderer = transform.Find("leftbarb").GetComponent<LineRenderer>();
     rightBarbRenderer = transform.Find("rightbarb").GetComponent<LineRenderer>();
   }
 
-  bool IsPointerAttached() {
+  protected bool IsPointerAttached() {
     return caster == null && lineRenderer.enabled;
   }
 
@@ -51,13 +52,13 @@ public class PointerTool : Tool {
       if (player.targetCell == null) {
         // pick up the targetCell from pointer if it exists
         player.targetCell = sourcePointer.Target;
-        player.levelController.OnAttach(sourcePointer, player.avatar, true);
+        player.levelController.OnAttach(sourcePointer, player, true);
 
         Point();
       }
       else {
         sourcePointer.Target = player.targetCell;
-        player.levelController.OnAttach(sourcePointer, player.avatar, false);
+        player.levelController.OnAttach(sourcePointer, player, false);
 
         if (IsPointerAttached()) {
           Depoint();
@@ -70,11 +71,17 @@ public class PointerTool : Tool {
         player.targetCell = c.GetComponent<CellBehavior>();
         Point();
       }
+      else {
+        InteractNonCell();
+      }
     }
     player.UnLock();
   }
 
-  void Point() {
+  virtual protected void InteractNonCell() {
+  }
+
+  protected void Point() {
     if (player.targetCell != null) {
       // need to draw the line
       lineRenderer.enabled = true;

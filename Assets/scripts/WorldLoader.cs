@@ -10,7 +10,7 @@ public class WorldLoader : MonoBehaviour {
 	private int world;
 
   [SerializeField]
-  private GameObject levelButton, worldText;
+  private GameObject levelButton, worldPanel, worldText;
 
   [SerializeField]
 	public GameObject ScrollViewContent;
@@ -69,25 +69,29 @@ public class WorldLoader : MonoBehaviour {
 	public void LoadLevelSelect() {
 		int level = 0;
 		int worldY = 0;
+		GameObject[] worldPanels = new GameObject[worlds.Count-1];
 		for (int i=0; i<worlds.Count-1; i++)
 		{
+			// Create a panel
+			worldPanels[i] = Instantiate(worldPanel) as GameObject;
+			worldPanels[i].transform.SetParent(ScrollViewContent.transform, false);
+
 			GameObject newText = Instantiate(worldText) as GameObject;
-			newText.transform.SetParent(ScrollViewContent.transform, false);
+			newText.transform.SetParent(worldPanels[i].transform, false);
 			newText.name = "worldText"+i;
 			newText.GetComponent<Text>().text = "World " + (i+1);
 			worldY = 50-(100*i);
-			Vector2	newTextPos = new Vector2(0,worldY);
-			newText.transform.position = Camera.main.ScreenToWorldPoint(newTextPos);  
+			Vector2	newTextPos = new Vector2(-375,0);
+			newText.transform.localPosition = newTextPos;  
 
 			for (int j=0; j<worlds[i]; j++)
 			{
-				//string name = "level" + i + "-" + level;
 				GameObject newButton = Instantiate(levelButton) as GameObject;
-				newButton.transform.SetParent(ScrollViewContent.transform, false);
+				newButton.transform.SetParent(worldPanels[i].transform, false);
 				newButton.name = levels[j].ToString();
 				newButton.GetComponentInChildren<Text>().text = (j+1)+"";
-				Vector2	newButtonPos = new Vector2(100*(j+1),worldY);
-				newButton.transform.position = Camera.main.ScreenToWorldPoint(newButtonPos);
+				Vector2	newButtonPos = new Vector2(175*j-200,0);
+				newButton.transform.localPosition = newButtonPos;
 			}
 		}
 	}

@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 223544178519568414}
   - component: {fileID: 114452219668158496}
   - component: {fileID: 114586557338566930}
-  - component: {fileID: 114572666183180818}
+  - component: {fileID: 114528784838984676}
   m_Layer: 0
   m_Name: canvasHUD2
   m_TagString: Untagged
@@ -538,7 +538,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114572666183180818}
+      - m_Target: {fileID: 0}
         m_MethodName: restartLevel
         m_Mode: 1
         m_Arguments:
@@ -635,6 +635,29 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &114528784838984676
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1461835243732336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85ce57d7d3a214576bb762153135b349, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldMusic: []
+  worldVictorySFX: {fileID: 0}
+  levelVictory: {fileID: 0}
+  simpleButtonSFX: {fileID: 0}
+  currentLevel: 1
+  levelCompleteText: {fileID: 0}
+  loadingPanel: {fileID: 0}
+  LevelPopUpPanel: {fileID: 1529632313096316}
+  PanelPause: {fileID: 1893653974857368}
+  PanelInfo: {fileID: 1989462801679358}
+  PanelToggle: {fileID: 0}
+  ButtonToggleCode: {fileID: 0}
 --- !u!114 &114530660758591380
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -734,7 +757,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114572666183180818}
+      - m_Target: {fileID: 0}
         m_MethodName: pauseGame
         m_Mode: 1
         m_Arguments:
@@ -786,7 +809,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114572666183180818}
+      - m_Target: {fileID: 0}
         m_MethodName: resumeGame
         m_Mode: 1
         m_Arguments:
@@ -838,7 +861,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114572666183180818}
+      - m_Target: {fileID: 0}
         m_MethodName: pauseGame
         m_Mode: 1
         m_Arguments:
@@ -851,29 +874,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114572666183180818
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1461835243732336}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb8a666ab16034d6bb89d053225b0bde, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldMusic: []
-  worldVictorySFX: {fileID: 0}
-  levelVictory: {fileID: 0}
-  simpleButtonSFX: {fileID: 0}
-  currentLevel: 1
-  levelCompleteText: {fileID: 0}
-  PanelLevelSelect: {fileID: 0}
-  loadingPanel: {fileID: 0}
-  LevelPopUpPanel: {fileID: 0}
-  PanelPause: {fileID: 1893653974857368}
-  PanelInfo: {fileID: 1989462801679358}
-  UICanvas: {fileID: 0}
 --- !u!114 &114582299097805090
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -983,7 +983,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114572666183180818}
+      - m_Target: {fileID: 0}
         m_MethodName: restartLevel
         m_Mode: 1
         m_Arguments:
@@ -1116,7 +1116,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114572666183180818}
+      - m_Target: {fileID: 0}
         m_MethodName: resumeGame
         m_Mode: 1
         m_Arguments:

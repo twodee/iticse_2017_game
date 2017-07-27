@@ -88,10 +88,10 @@ MonoBehaviour:
       - m_Target: {fileID: 114612287033844016, guid: 5bb1fd2d9c1f542cc9567826cc677125,
           type: 2}
         m_MethodName: goToLevel
-        m_Mode: 5
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 114239109895544332}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
           m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: EventSystem.current.currentSelectedGameObject.name

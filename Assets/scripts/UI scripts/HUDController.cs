@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class UIcontroller : MonoBehaviour {
+public class HUDController : MonoBehaviour {
 
 	#region Variables
 
@@ -28,10 +28,7 @@ public class UIcontroller : MonoBehaviour {
 	private Text levelCompleteText;
 
 	[SerializeField]
-	public GameObject PanelLevelSelect, loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo;
-
-	[SerializeField]
-	public GameObject UICanvas;
+	public GameObject loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo, PanelToggle, ButtonToggleCode;
 
 	private string[] levelCompleteFeedback = { "Excellent!", "Good job!", "You did it!", "Fantastic!", "Very good!", "Superb!", "Splendid!"};
 
@@ -39,39 +36,18 @@ public class UIcontroller : MonoBehaviour {
 	#endregion
 
 	#region Unity Event Functions
-	void Awake() {
-    Time.timeScale = 1;
+	void Awake()
+	{
+		Time.timeScale = 1;
 
-    // Get saved world and level or assign initial world and level
-    if (!(PlayerPrefs.HasKey("achievedWorld"))) {
-      PlayerPrefs.SetInt("achievedWorld", 1);
-      PlayerPrefs.SetInt("achievedLevel", 1);
-    }
-    achievedWorld = PlayerPrefs.GetInt("achievedWorld");
-    achievedLevel = PlayerPrefs.GetInt("achievedLevel");
-    currentWorld = 1;
-    currentLevel = 1;
-
-    string sceneName = SceneManager.GetActiveScene().name;     // "level 0-1" for example
-
-    if (PanelLevelSelect != null) {
-      // Set all levels to disabled
-      int levelCount = 1;
-      for (int i = 0; i < PanelLevelSelect.transform.childCount; i++) {
-        //Debug.Log("currentLevel is " + currentLevel);
-
-        if (PanelLevelSelect.transform.GetChild(i).name.Contains("Level")) {
-          if (currentLevel >= levelCount) {
-            PanelLevelSelect.transform.GetChild(i).GetComponent<Button>().interactable = true;
-            levelCount++;
-          }
-          else {
-            PanelLevelSelect.transform.GetChild(i).GetComponent<Button>().interactable = false;
-          }
-        }		
-      }
-    }
-
+		// Get saved world and level or assign initial world and level
+		if (!(PlayerPrefs.HasKey("achievedWorld"))) 
+		{
+			PlayerPrefs.SetInt("achievedWorld", 1);
+			PlayerPrefs.SetInt("achievedLevel", 1);
+		}
+		achievedWorld = PlayerPrefs.GetInt("achievedWorld");
+		achievedLevel = PlayerPrefs.GetInt("achievedLevel");
 	}
 
 	void Start()
@@ -107,26 +83,7 @@ public class UIcontroller : MonoBehaviour {
 	{
 		GameObject.Find("TheLevel").GetComponent<LevelLoader>().ResetLevel();
 	}
-		
-	public void goToLevelSelect()  
-	{ 
-		// Create the buttons on the screen
-		int levelNum = 1;
-		goToGeneric("Level");  
-	}
 
-	public void goToAbout()        {  goToGeneric("About");  }
-
-	//goes to the world select screen
-	public void goToGeneric(string panelName)
-	{
-		for (int i = 0; i < UICanvas.transform.childCount; i++)
-		{
-			if (UICanvas.transform.GetChild(i).name.Contains(panelName))
-			{ UICanvas.transform.GetChild(i).gameObject.SetActive(true); }
-			else { UICanvas.transform.GetChild(i).gameObject.SetActive(false); };
-		}
-	}
 
 	//advances scene to the specified level
 	public void goToLevel(Button buttonSelected)
@@ -143,9 +100,7 @@ public class UIcontroller : MonoBehaviour {
 		PlayerPrefs.SetInt("currentWorld", currentWorld);
 		SceneManager.LoadScene("FromLevelLoadFile");
 	}
-
-
-
+		
 	public void callNextLevel()
 	{
 		levelCompleteText.text = levelCompleteFeedback[Random.Range(0, levelCompleteFeedback.Length)];
@@ -155,7 +110,7 @@ public class UIcontroller : MonoBehaviour {
 
 	public void closePanel()
 	{
-		goToGeneric("Main");
+	//	goToGeneric("Main");
 	}
 
 	#endregion
@@ -172,6 +127,24 @@ public class UIcontroller : MonoBehaviour {
 
 	public void goToPrivacy()
 	{
+	}
+
+	public void toggleCodePanel(bool position)
+	{
+		if (position)
+		{
+			// slide it out
+			//Vector3 slideOutPosition = new Vector3(PanelToggle.transform.up(new Vector3 (0, -100, 0)));
+			//PanelToggle.transform.Translate.Ler
+			// set rotation
+			ButtonToggleCode.transform.Rotate(180,0,0);
+			position = false;
+		}
+		else
+		{
+			ButtonToggleCode.transform.Rotate(180,0,0);
+			position = true;
+		}
 	}
 
 	#endregion

@@ -15,7 +15,10 @@ public class ConsoleController : MonoBehaviour {
   private GameObject panelAllCode;
 
   private ArrayList allCode;
+	private string[] positiveAffirmations = new string[] {"Great work!", "Excellent!", "Order Up!", "Smooth Server!"};
+
   public bool condensedCode;
+	public GameObject PanelPopUp, HeaderPopUp, BodyPopUp; 
 
   // Use this for initialization
   void Start() {
@@ -30,6 +33,7 @@ public class ConsoleController : MonoBehaviour {
     statusText.text = "";
     code.text = "";
     instructionCount = 0;
+
 
     condensedCode = false;
 
@@ -61,8 +65,10 @@ public class ConsoleController : MonoBehaviour {
   }
 
   public void LevelEnd() {
-    instructionText.text = levelController.Current.world.ToString() + "-"
-    + levelController.Current.level.ToString() + ": Press = for next level!";
+		PanelPopUp.SetActive(true);
+		HeaderPopUp.GetComponent<Text>().text = positiveAffirmations[Random.Range(0,positiveAffirmations.Length)];
+		instructionText.text = ""; //levelController.Current.world.ToString() + "-"
+   			 //+ levelController.Current.level.ToString() + ": Press = for next level!";
 
     if (condensedCode) {
       // condense

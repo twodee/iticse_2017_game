@@ -71,6 +71,21 @@ public class HUDController : MonoBehaviour {
 		PanelPause.SetActive(false);
 	}
 
+	//Pauses the game and timescale
+	public void showPanelInfo()     
+	{
+		Time.timeScale = 0.0001F; 
+		PanelInfo.SetActive(true);
+	}
+
+	//resumes the game from the paused state
+	public void closePanelInfo()    
+	{
+		Time.timeScale = 1;  
+		PanelInfo.SetActive(false);
+	}
+
+
 	//goes to main menu
 	public void goToMainMenu()
 	{
@@ -83,6 +98,7 @@ public class HUDController : MonoBehaviour {
 	{
 		GameObject.Find("TheLevel").GetComponent<LevelLoader>().ResetLevel();
 	}
+
 
 
 	//advances scene to the specified level

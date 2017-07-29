@@ -5,7 +5,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Put a Coffee on the Counter ; instructions
+Addy needs to move one cup of coffee from the preparation area to Val at the counter. ; instructions
 A ; console target
 
 ; Initial Layout

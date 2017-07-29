@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ConsoleController : MonoBehaviour {
   public Text text;
   LevelController levelController;
-	private Text instructionText, statusText;
+	private Text instructionText, instructionTextOld, instructionHeaderText, statusText;
  // private InputField statusText;
   public Text code;
   private Text scoreText;
@@ -23,7 +23,10 @@ public class ConsoleController : MonoBehaviour {
   // Use this for initialization
   void Start() {
     text = GetComponent<Text>();
-    instructionText = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
+    instructionTextOld = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
+	instructionHeaderText = GameObject.Find("/canvasHUD2/PanelInfo/Panel/TextHeader").GetComponent<Text>();
+	instructionText = GameObject.Find("/canvasHUD2/PanelInfo/Panel/TextBody").GetComponent<Text>();
+
     statusText = GameObject.Find("/canvasHUD2/PanelHUD/PanelCode/Text").GetComponent<Text>();
     panelAllCode = GameObject.Find("/canvasHUD2/PanelHUD/PanelAllCode");
     allCode = new ArrayList();
@@ -56,8 +59,10 @@ public class ConsoleController : MonoBehaviour {
     statusText.text = "";
     code.text = "";
     instructionCount = 0;
-    instructionText.text = levelController.Current.world.ToString()+"-"
-      +levelController.Current.level.ToString()+": " + levelController.Current.instructions;
+		instructionHeaderText.text = "World " + (levelController.Current.world+1) + ", Level " + (levelController.Current.level+1);
+
+    instructionText.text = levelController.Current.instructions;
+		instructionTextOld.text = instructionText.text;
     panelAllCode.SetActive(false);
     allCode.Clear();
     updateScoreText();

@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class ConsoleController : MonoBehaviour {
   public Text text;
   LevelController levelController;
-  private Text instructionText;
-  private InputField statusText;
+	private Text instructionText, statusText;
+ // private InputField statusText;
   public Text code;
   private Text scoreText;
   private int instructionCount;
@@ -24,7 +24,7 @@ public class ConsoleController : MonoBehaviour {
   void Start() {
     text = GetComponent<Text>();
     instructionText = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
-    statusText = GameObject.Find("/canvasHUD2/PanelHUD/PanelCode").GetComponent<InputField>();
+    statusText = GameObject.Find("/canvasHUD2/PanelHUD/PanelCode/Text").GetComponent<Text>();
     panelAllCode = GameObject.Find("/canvasHUD2/PanelHUD/PanelAllCode");
     allCode = new ArrayList();
     code = GameObject.Find("/canvasHUD2/PanelHUD/PanelAllCode/Text").GetComponent<Text>();

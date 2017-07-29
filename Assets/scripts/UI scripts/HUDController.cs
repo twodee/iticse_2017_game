@@ -9,7 +9,7 @@ public class HUDController : MonoBehaviour {
 
 	// Audio
 	[SerializeField]
-	private AudioClip[] worldMusic;
+	private AudioClip   worldMusic;
 	private AudioClip   worldVictoryMusic;
 	[SerializeField]
 	private AudioClip   worldVictorySFX;
@@ -115,13 +115,14 @@ public class HUDController : MonoBehaviour {
 		PlayerPrefs.SetInt("currentLevel", currentLevel);
 		PlayerPrefs.SetInt("currentWorld", currentWorld);
 		SceneManager.LoadScene("FromLevelLoadFile");
+		AudioManager.instance.PlayNewMusic(worldMusic);
 	}
 		
 	public void callNextLevel()
 	{
 		levelCompleteText.text = levelCompleteFeedback[Random.Range(0, levelCompleteFeedback.Length)];
 		//StartCoroutine(displayFeedback());
-		AudioManager.instance.PlaySingle(false, levelVictory);
+		//AudioManager.instance.PlaySingle(false, levelVictory);
 	}
 
 	public void closePanel()
@@ -134,7 +135,7 @@ public class HUDController : MonoBehaviour {
 	#region Private Functions
 
 	public void playButtonSound(){
-		AudioManager.instance.PlaySingle(false, simpleButtonSFX);
+		AudioManager.instance.PlaySingle(/*false, */simpleButtonSFX);
 	}
 		
 	public void goToEULA()

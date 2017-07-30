@@ -7,21 +7,27 @@ using UnityEngine.UI;
 public class ConsoleController : MonoBehaviour {
   public Text text;
   LevelController levelController;
-  private Text instructionText;
-  private InputField statusText;
+	private Text instructionText, instructionTextOld, instructionHeaderText, statusText;
+ // private InputField statusText;
   public Text code;
   private Text scoreText;
   private int instructionCount;
   private GameObject panelAllCode;
 
   private ArrayList allCode;
+	private string[] positiveAffirmations = new string[] {"Great work!", "Excellent!", "Order Up!", "Smooth Server!"};
+
   public bool condensedCode;
+	public GameObject PanelPopUp, HeaderPopUp, BodyPopUp; 
 
   // Use this for initialization
   void Start() {
     text = GetComponent<Text>();
-    instructionText = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
-    statusText = GameObject.Find("/canvasHUD2/PanelHUD/PanelCode").GetComponent<InputField>();
+    instructionTextOld = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
+	instructionHeaderText = GameObject.Find("/canvasHUD2/PanelInfo/Panel/TextHeader").GetComponent<Text>();
+	instructionText = GameObject.Find("/canvasHUD2/PanelInfo/Panel/TextBody").GetComponent<Text>();
+
+    statusText = GameObject.Find("/canvasHUD2/PanelHUD/PanelCode/Text").GetComponent<Text>();
     panelAllCode = GameObject.Find("/canvasHUD2/PanelHUD/PanelAllCode");
     allCode = new ArrayList();
     code = GameObject.Find("/canvasHUD2/PanelHUD/PanelAllCode/Text").GetComponent<Text>();
@@ -30,6 +36,7 @@ public class ConsoleController : MonoBehaviour {
     statusText.text = "";
     code.text = "";
     instructionCount = 0;
+
 
     condensedCode = false;
 
@@ -52,8 +59,10 @@ public class ConsoleController : MonoBehaviour {
     statusText.text = "";
     code.text = "";
     instructionCount = 0;
-    instructionText.text = levelController.Current.world.ToString()+"-"
-      +levelController.Current.level.ToString()+": " + levelController.Current.instructions;
+		instructionHeaderText.text = "World " + (levelController.Current.world+1) + ", Level " + (levelController.Current.level+1);
+
+    instructionText.text = levelController.Current.instructions;
+		instructionTextOld.text = instructionText.text;
     panelAllCode.SetActive(false);
     allCode.Clear();
     updateScoreText();
@@ -61,8 +70,10 @@ public class ConsoleController : MonoBehaviour {
   }
 
   public void LevelEnd() {
-    instructionText.text = levelController.Current.world.ToString() + "-"
-    + levelController.Current.level.ToString() + ": Press = for next level!";
+		PanelPopUp.SetActive(true);
+		HeaderPopUp.GetComponent<Text>().text = positiveAffirmations[Random.Range(0,positiveAffirmations.Length)];
+		instructionText.text = ""; //levelController.Current.world.ToString() + "-"
+   			 //+ levelController.Current.level.ToString() + ": Press = for next level!";
 
     if (condensedCode) {
       // condense

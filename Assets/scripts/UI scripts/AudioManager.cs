@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
 	[SerializeField]
 	private List<AudioSource> sfxSources;
 	[SerializeField]
-	private AudioSource musicSource;
+	public AudioSource musicSource;
 	public static AudioManager instance;
 	private float lowPitch = 0.95f;
 	private float highPitch = 1.05f;
@@ -43,10 +43,12 @@ public class AudioManager : MonoBehaviour
 	//Play a new music clip
 	public void PlayNewMusic(AudioClip clip)
 	{
-		if (clip == musicSource.clip)
-			return;
+		Debug.LogError ("play new music!");
+		//if (clip == musicSource.clip)
+		//	return;
 
-		musicSource.Stop();
+		//Debug.LogError("still playing");
+		//musicSource.Stop();
 
 		musicSource.clip = clip;
 		musicSource.Play();
@@ -77,14 +79,14 @@ public class AudioManager : MonoBehaviour
 
 	//Plays a single sound clip
 	//Finds an available source to play the effect through
-	public void PlaySingle(bool isLooped, AudioClip clip)
+	public void PlaySingle(/*bool isLooped,*/ AudioClip clip)
 	{
 		foreach (AudioSource source in sfxSources)
 		{
 			if (!source.isPlaying)
 			{
 				source.clip = clip;
-				source.loop = isLooped;
+				//source.loop = isLooped;
 				source.Play();
 				return;
 			}

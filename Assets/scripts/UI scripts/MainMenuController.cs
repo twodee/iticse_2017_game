@@ -128,7 +128,7 @@ public class MainMenuController : MonoBehaviour {
 	#region Private Functions
 
 	public void playButtonSound(){
-		AudioManager.instance.PlaySingle(false, simpleButtonSFX);
+		AudioManager.instance.PlaySingle(/*false, */simpleButtonSFX);
 	}
 		
 	public void goToEULA()

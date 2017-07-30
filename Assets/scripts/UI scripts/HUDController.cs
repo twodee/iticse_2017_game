@@ -9,7 +9,7 @@ public class HUDController : MonoBehaviour {
 
 	// Audio
 	[SerializeField]
-	private AudioClip[] worldMusic;
+	private AudioClip   worldMusic;
 	private AudioClip   worldVictoryMusic;
 	[SerializeField]
 	private AudioClip   worldVictorySFX;
@@ -71,6 +71,21 @@ public class HUDController : MonoBehaviour {
 		PanelPause.SetActive(false);
 	}
 
+	//Pauses the game and timescale
+	public void showPanelInfo()     
+	{
+		Time.timeScale = 0.0001F; 
+		PanelInfo.SetActive(true);
+	}
+
+	//resumes the game from the paused state
+	public void closePanelInfo()    
+	{
+		Time.timeScale = 1;  
+		PanelInfo.SetActive(false);
+	}
+
+
 	//goes to main menu
 	public void goToMainMenu()
 	{
@@ -83,6 +98,7 @@ public class HUDController : MonoBehaviour {
 	{
 		GameObject.Find("TheLevel").GetComponent<LevelLoader>().ResetLevel();
 	}
+
 
 
 	//advances scene to the specified level
@@ -99,13 +115,14 @@ public class HUDController : MonoBehaviour {
 		PlayerPrefs.SetInt("currentLevel", currentLevel);
 		PlayerPrefs.SetInt("currentWorld", currentWorld);
 		SceneManager.LoadScene("FromLevelLoadFile");
+		AudioManager.instance.PlayNewMusic(worldMusic);
 	}
 		
 	public void callNextLevel()
 	{
 		levelCompleteText.text = levelCompleteFeedback[Random.Range(0, levelCompleteFeedback.Length)];
 		//StartCoroutine(displayFeedback());
-		AudioManager.instance.PlaySingle(false, levelVictory);
+		//AudioManager.instance.PlaySingle(false, levelVictory);
 	}
 
 	public void closePanel()
@@ -118,7 +135,7 @@ public class HUDController : MonoBehaviour {
 	#region Private Functions
 
 	public void playButtonSound(){
-		AudioManager.instance.PlaySingle(false, simpleButtonSFX);
+		AudioManager.instance.PlaySingle(/*false, */simpleButtonSFX);
 	}
 		
 	public void goToEULA()

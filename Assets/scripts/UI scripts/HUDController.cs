@@ -19,6 +19,8 @@ public class HUDController : MonoBehaviour {
 	private AudioClip   simpleButtonSFX;
 	[SerializeField]
 
+	private Animator anim;
+
 	private int currentLevel;
 	private int currentWorld;
 	private int achievedLevel;
@@ -52,6 +54,10 @@ public class HUDController : MonoBehaviour {
 
 	void Start()
 	{
+		anim = PanelToggle.GetComponent<Animator>();
+		//disable it on start to stop it from playing the default animation
+		anim.enabled = false;
+
 	}
 
 	#endregion
@@ -146,21 +152,27 @@ public class HUDController : MonoBehaviour {
 	{
 	}
 
+
 	public void toggleCodePanel(bool position)
 	{
+
 		if (position)
 		{
 			// slide it out
-			//Vector3 slideOutPosition = new Vector3(PanelToggle.transform.up(new Vector3 (0, -100, 0)));
+			//enable the animator component
+			anim.enabled = true;
+			//play the Slidein animation
+			anim.Play("PauseMenuSlideIn");
+
 			//PanelToggle.transform.Translate.Ler
 			// set rotation
-			ButtonToggleCode.transform.Rotate(180,0,0);
-			position = false;
+			//ButtonToggleCode.transform.Rotate(180,0,0);
+			//position = false;
 		}
 		else
 		{
-			ButtonToggleCode.transform.Rotate(180,0,0);
-			position = true;
+			//ButtonToggleCode.transform.Rotate(180,0,0);
+			//position = true;
 		}
 	}
 

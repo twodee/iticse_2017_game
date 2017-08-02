@@ -750,6 +750,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 
+  prepPlate:
+  - {fileID: 0}
+  servePlate:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   barbLength: 0
 --- !u!120 &546142144
 LineRenderer:
@@ -1297,6 +1310,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 
+  prepPlate:
+  - {fileID: 0}
+  servePlate:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1001 &922103928
 Prefab:
   m_ObjectHideFlags: 0
@@ -2062,6 +2088,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 
+  prepPlate:
+  - {fileID: 0}
+  servePlate:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1001 &1377271131
 Prefab:
   m_ObjectHideFlags: 0
@@ -2189,6 +2228,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 
+  prepPlate:
+  - {fileID: 0}
+  servePlate:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   barbLength: 0
 --- !u!120 &1383432741
 LineRenderer:
@@ -2732,6 +2784,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 
+  prepPlate:
+  - {fileID: 8300000, guid: f2b036bde8e384e41a9722757e12c07d, type: 3}
+  - {fileID: 8300000, guid: 78bf2e4f32ea8479ea5173ea69c40b7d, type: 3}
+  - {fileID: 8300000, guid: c151983c6be08418d8bd5cd55d920a07, type: 3}
+  - {fileID: 8300000, guid: d9020e1415b054af381f7a657403fe0f, type: 3}
+  servePlate:
+  - {fileID: 8300000, guid: 9b239c7b9c5724381a43ee2784ad3e0b, type: 3}
+  - {fileID: 8300000, guid: 1c8151cd90bd94622baa9f3b8d338fea, type: 3}
+  - {fileID: 8300000, guid: c108c6af91ce2403cbd63da58f99ac79, type: 3}
+  - {fileID: 8300000, guid: 7c83b4fd624ba4131a299863e1aac357, type: 3}
 --- !u!1001 &1642579178
 Prefab:
   m_ObjectHideFlags: 0
@@ -3596,3 +3658,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 
+  prepPlate:
+  - {fileID: 0}
+  servePlate:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

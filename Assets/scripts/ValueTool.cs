@@ -4,6 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ValueTool : Tool {
+
+
+
   void Awake() {
     id = "V";
   }
@@ -64,7 +67,7 @@ public class ValueTool : Tool {
       yield return null;
       elapsedTime = Time.time - startTime;
     }
-
+	SoundManager.instance.PlayRandomizeSfx(servePlate);
     Destroy(payload);
     player.targetCell.SetLoot(value);
     player.levelController.OnTransmit(player.targetCell, player.basePointer, player, false);
@@ -90,7 +93,7 @@ public class ValueTool : Tool {
       yield return null;
       elapsedTime = Time.time - startTime;
     }
-
+	SoundManager.instance.PlayRandomizeSfx(prepPlate);
     player.Acquire(player.targetCell.GetLoot());
     player.levelController.OnTransmit(player.targetCell, player.basePointer, player, true);
 

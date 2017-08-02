@@ -308,6 +308,7 @@ public abstract class PlayerController : MonoBehaviour {
 //      foreach (Collider2D hit in hits) {
 //        if (hit != null && hit.gameObject == collision.gameObject) {
           activeTool.Enter(collision.gameObject.GetComponent<CellBehavior>());
+
 //        }
 //      }
     }

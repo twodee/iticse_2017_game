@@ -23,7 +23,7 @@ public class ConsoleController : MonoBehaviour {
   // Use this for initialization
   void Start() {
     text = GetComponent<Text>();
-    instructionTextOld = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
+   // instructionTextOld = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
 	instructionHeaderText = GameObject.Find("/canvasHUD2/PanelInfo/Panel/TextHeader").GetComponent<Text>();
 	instructionText = GameObject.Find("/canvasHUD2/PanelInfo/Panel/TextBody").GetComponent<Text>();
 
@@ -62,7 +62,7 @@ public class ConsoleController : MonoBehaviour {
 		instructionHeaderText.text = "World " + (levelController.Current.world+1) + ", Level " + (levelController.Current.level+1);
 
     instructionText.text = levelController.Current.instructions;
-		instructionTextOld.text = instructionText.text;
+	//	instructionTextOld.text = instructionText.text;
     panelAllCode.SetActive(false);
     allCode.Clear();
     updateScoreText();

@@ -4,8 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Tool : MonoBehaviour {
+
   public String id;
   protected PlayerController player;
+
+	[SerializeField]
+	public AudioClip[] prepPlate = new AudioClip[10];
+
+	[SerializeField]
+	public AudioClip[] servePlate = new AudioClip[10];
+
   public PlayerController Player {
     get {
       return player;

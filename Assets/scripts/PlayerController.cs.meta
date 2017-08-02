@@ -1,10 +1,14 @@
 fileFormatVersion: 2
 guid: f9379d20e3a064af7a375932d94be918
-timeCreated: 1496968735
+timeCreated: 1501618841
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - targetCell: {instanceID: 0}
+  - basePointer: {instanceID: 0}
+  - levelController: {instanceID: 0}
+  - prepPlate: {fileID: 8300000, guid: 8dbb7d5554ed945749a90a1fb3269a1e, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

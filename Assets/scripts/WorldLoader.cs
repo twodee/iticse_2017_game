@@ -69,8 +69,8 @@ public class WorldLoader : MonoBehaviour {
 	public void LoadLevelSelect() {
 		int level = 0;
 		int worldY = 0;
-		GameObject[] worldPanels = new GameObject[worlds.Count-1];
-		for (int i=0; i<worlds.Count-1; i++)
+		GameObject[] worldPanels = new GameObject[worlds.Count];
+		for (int i=0; i<worlds.Count; i++)
 		{
 			// Create a panel
 			worldPanels[i] = Instantiate(worldPanel) as GameObject;

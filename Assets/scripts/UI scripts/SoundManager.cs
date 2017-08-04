@@ -9,6 +9,8 @@ public class SoundManager : MonoBehaviour
 	public float lowPitchRange = .95f;              //The lowest a sound effect will be randomly pitched.
 	public float highPitchRange = 1.05f;            //The highest a sound effect will be randomly pitched.
 
+	[SerializeField]
+	public AudioClip buttonTap;
 
 	void Awake ()
 	{
@@ -34,6 +36,18 @@ public class SoundManager : MonoBehaviour
 
 		//Play the clip.
 		efxSource.Play ();
+	}
+
+	//Used to play single sound clips.
+	public void PlayButtonTap()
+	{
+		efxSource.volume = 0.1f;
+		//Set the clip of our efxSource audio source to the clip passed in as a parameter.
+		efxSource.clip = buttonTap;
+
+		//Play the clip.
+		efxSource.Play ();
+		//efxSource.volume = 1.0f;
 	}
 
 

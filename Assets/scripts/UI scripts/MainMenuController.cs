@@ -8,27 +8,18 @@ public class MainMenuController : MonoBehaviour {
 	#region Variables
 
 	// Audio
-	[SerializeField]
-	private AudioClip[] worldMusic;
-	private AudioClip   worldVictoryMusic;
-	[SerializeField]
-	private AudioClip   worldVictorySFX;
-	[SerializeField]
-	private AudioClip   levelVictory;
-	[SerializeField]
-	private AudioClip   simpleButtonSFX;
-	[SerializeField]
-
-	private int currentLevel;
-	private int currentWorld;
-	private int achievedLevel;
-	private int achievedWorld;
 
 	[SerializeField]
 	public GameObject PanelLevelSelect, loadingPanel;
 
 	[SerializeField]
 	public GameObject UICanvas;
+
+	private int currentLevel;
+	private int currentWorld;
+	private int achievedLevel;
+	private int achievedWorld;
+
 
 	//private LevelManager levelManager;
 	#endregion
@@ -77,23 +68,25 @@ public class MainMenuController : MonoBehaviour {
 
 	#region Public Functions
 	//restarts the level
-	public void restartLevel()
-	{
-		GameObject.Find("TheLevel").GetComponent<LevelLoader>().ResetLevel();
-	}
-		
 	public void goToLevelSelect()  
 	{ 
 		// Create the buttons on the screen
 		int levelNum = 1;
+		SoundManager.instance.PlaySingle(simpleButtonSFX);
 		goToGeneric("Level");  
 	}
 
-	public void goToAbout()        {  goToGeneric("About");  }
+	public void goToAbout()       
+	{  		
+		SoundManager.instance.PlaySingle(simpleButtonSFX);
+		goToGeneric("About");  
+	}
 
 	//goes to the world select screen
 	public void goToGeneric(string panelName)
 	{
+		SoundManager.instance.PlaySingle(simpleButtonSFX);
+
 		for (int i = 0; i < UICanvas.transform.childCount; i++)
 		{
 			if (UICanvas.transform.GetChild(i).name.Contains(panelName))
@@ -105,6 +98,8 @@ public class MainMenuController : MonoBehaviour {
 	//advances scene to the specified level
 	public void goToLevel(Button buttonSelected)
 	{
+		SoundManager.instance.PlaySingle(simpleButtonSFX);
+
 		string buttonName = buttonSelected.name;
 		buttonName = buttonName.Remove(0,5);					// Left with "0-1"
 		string[] sceneLocale = buttonName.Split ('-'); 
@@ -120,6 +115,7 @@ public class MainMenuController : MonoBehaviour {
 		
 	public void closePanel()
 	{
+		SoundManager.instance.PlaySingle(simpleButtonSFX);
 		goToGeneric("Main");
 	}
 
@@ -128,7 +124,7 @@ public class MainMenuController : MonoBehaviour {
 	#region Private Functions
 
 	public void playButtonSound(){
-		AudioManager.instance.PlaySingle(/*false, */simpleButtonSFX);
+		SoundManager.instance.PlaySingle(simpleButtonSFX);
 	}
 		
 	public void goToEULA()

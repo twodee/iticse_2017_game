@@ -10,6 +10,9 @@ public class HUDController : MonoBehaviour {
 	// Audio
 	[SerializeField]
 	private AudioClip   worldMusic;
+	[SerializeField]
+	private AudioClip   chatter;
+	[SerializeField]
 	private AudioClip   worldVictoryMusic;
 	[SerializeField]
 	private AudioClip   worldVictorySFX;
@@ -31,6 +34,7 @@ public class HUDController : MonoBehaviour {
 
 	[SerializeField]
 	public GameObject loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo, PanelToggle, ButtonToggleCode;
+
 
 	private string[] levelCompleteFeedback = { "Excellent!", "Good job!", "You did it!", "Fantastic!", "Very good!", "Superb!", "Splendid!"};
 
@@ -89,6 +93,8 @@ public class HUDController : MonoBehaviour {
 	{
 		Time.timeScale = 1;  
 		PanelInfo.SetActive(false);
+		SoundManager.instance.PlayBGMusic(worldMusic);
+		SoundManager.instance.PlayBGChatter (chatter);
 	}
 
 
@@ -121,7 +127,7 @@ public class HUDController : MonoBehaviour {
 		PlayerPrefs.SetInt("currentLevel", currentLevel);
 		PlayerPrefs.SetInt("currentWorld", currentWorld);
 		SceneManager.LoadScene("FromLevelLoadFile");
-		AudioManager.instance.PlayNewMusic(worldMusic);
+		//AudioManager.instance.PlayNewMusic(worldMusic);
 	}
 		
 	public void callNextLevel()

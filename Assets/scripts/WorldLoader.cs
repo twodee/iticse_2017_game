@@ -88,7 +88,7 @@ public class WorldLoader : MonoBehaviour {
 			{
 				GameObject newButton = Instantiate(levelButton) as GameObject;
 				newButton.transform.SetParent(worldPanels[i].transform, false);
-				newButton.name = levels[j].ToString();
+				newButton.name = "level" + i + "-" + j; // levels[j].ToString(); This alwasy set world to 0, so not sure why
 				newButton.GetComponentInChildren<Text>().text = (j+1)+"";
 				Vector2	newButtonPos = new Vector2(175*j-200,0);
 				newButton.transform.localPosition = newButtonPos;

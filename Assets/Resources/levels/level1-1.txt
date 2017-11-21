@@ -5,7 +5,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Put a coffee on the Table ; instructions
+Help Addy put a cup of coffee on a customer's table. ; instructions
 A ; console target
 
 ; Initial Layout

@@ -33,10 +33,14 @@ public class HUDController : MonoBehaviour {
 	private Text levelCompleteText;
 
 	[SerializeField]
-	public GameObject loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo, PanelToggle, ButtonToggleCode, PanelSettings;
-
+	public GameObject loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo, PanelToggle, ButtonToggleCode, PanelSettings, PanelStory, backwardButton;
+	[SerializeField]
+	public GameObject PanelStory1, PanelStory2, PanelStory3;
+	public int currentStoryPanel = 1;
 
 	private string[] levelCompleteFeedback = { "Excellent!", "Good job!", "You did it!", "Fantastic!", "Very good!", "Superb!", "Splendid!"};
+
+	LevelController levelController;
 
 	//private LevelManager levelManager;
 	#endregion
@@ -54,14 +58,23 @@ public class HUDController : MonoBehaviour {
 		}
 		achievedWorld = PlayerPrefs.GetInt("achievedWorld");
 		achievedLevel = PlayerPrefs.GetInt("achievedLevel");
+		levelController = GameObject.Find("/TheLevel").GetComponent<LevelController>();
+
 	}
 
 	void Start()
 	{
+		
 		anim = PanelToggle.GetComponent<Animator>();
 		//disable it on start to stop it from playing the default animation
 		anim.enabled = false;
-
+		/*if ((levelController.Current.world == 0) && (levelController.Current.level == 0)) {
+			PanelStory.SetActive (true);
+			PanelInfo.SetActive (false);
+		} else {
+			PanelStory.SetActive (false);
+			PanelInfo.SetActive (true);
+		}*/
 	}
 
 	#endregion
@@ -127,7 +140,48 @@ public class HUDController : MonoBehaviour {
 		GameObject.Find("TheLevel").GetComponent<LevelLoader>().ResetLevel();
 	}
 
+	public void forwardStoryPanel() {
+		currentStoryPanel += 1;
+		showStoryPanel ();
+	}
 
+	public void backwardStoryPanel() {
+		currentStoryPanel -= 1;
+		showStoryPanel ();
+	}
+
+	private void showStoryPanel() {
+		// Shows game story panels 1 through 3 depending on what is selected
+		Debug.Log(currentStoryPanel);
+		switch (currentStoryPanel) {
+		case 1:
+			PanelStory1.SetActive (true);
+			PanelStory2.SetActive (false);
+			PanelStory3.SetActive (false);
+			backwardButton.SetActive (true);
+			break;
+		case 2:
+			PanelStory1.SetActive(false);
+			PanelStory2.SetActive(true);
+			PanelStory3.SetActive(false);
+			break;
+		case 3:
+			PanelStory1.SetActive (false);
+			PanelStory2.SetActive (false);
+			PanelStory3.SetActive (true);
+			break;
+		case 4:
+			// Show the PanelInfo
+			PanelInfo.SetActive (true);
+			PanelStory.SetActive (false);
+			break;
+		default:
+			PanelStory1.SetActive (true);
+			PanelStory2.SetActive(false);
+			PanelStory3.SetActive(false);
+			break;
+		}
+	}
 
 	//advances scene to the specified level
 	public void goToLevel(Button buttonSelected)

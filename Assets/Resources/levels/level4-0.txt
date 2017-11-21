@@ -12,7 +12,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Copy A to table ; instructions
+Pipes can be connected to other pipes, allowing food to travel indirectly to destination tables. Copy A to table. ; instructions
 A ; console target
 
 ; Initial Layout

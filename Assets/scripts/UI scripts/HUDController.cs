@@ -33,7 +33,7 @@ public class HUDController : MonoBehaviour {
 	private Text levelCompleteText;
 
 	[SerializeField]
-	public GameObject loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo, PanelToggle, ButtonToggleCode;
+	public GameObject loadingPanel, LevelPopUpPanel, PanelPause, PanelInfo, PanelToggle, ButtonToggleCode, PanelSettings;
 
 
 	private string[] levelCompleteFeedback = { "Excellent!", "Good job!", "You did it!", "Fantastic!", "Very good!", "Superb!", "Splendid!"};
@@ -97,6 +97,22 @@ public class HUDController : MonoBehaviour {
 		SoundManager.instance.PlayBGChatter (chatter);
 	}
 
+  //Pauses the game and timescale
+  public void showPanelSettings()     
+  {
+    Time.timeScale = 0.0001F; 
+    PanelSettings.SetActive(true);
+  }
+
+  //resumes the game from the paused state
+  public void closePanelSettings()    
+  {
+    Time.timeScale = 1;  
+    PanelSettings.SetActive(false);
+    SoundManager.instance.PlayBGMusic(worldMusic);
+    SoundManager.instance.PlayBGChatter (chatter);
+  }
+
 
 	//goes to main menu
 	public void goToMainMenu()
@@ -159,16 +175,18 @@ public class HUDController : MonoBehaviour {
 	}
 
 
-	public void toggleCodePanel(bool position)
+	public void toggleCodePanel()
 	{
 
-		if (position)
+    if (!PanelToggle.activeSelf)
 		{
 			// slide it out
 			//enable the animator component
 			anim.enabled = true;
 			//play the Slidein animation
 			anim.Play("PauseMenuSlideIn");
+
+      PanelToggle.SetActive(true);
 
 			//PanelToggle.transform.Translate.Ler
 			// set rotation
@@ -179,8 +197,9 @@ public class HUDController : MonoBehaviour {
 		{
 			//ButtonToggleCode.transform.Rotate(180,0,0);
 			//position = true;
+      PanelToggle.SetActive(false);
 		}
 	}
-
+ 
 	#endregion
 }

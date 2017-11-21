@@ -75,6 +75,13 @@ public class ConsoleController : MonoBehaviour {
 		instructionText.text = ""; //levelController.Current.world.ToString() + "-"
    			 //+ levelController.Current.level.ToString() + ": Press = for next level!";
 
+    
+    panelAllCode.SetActive(true);
+  }
+
+  public void updateAllCodePanel() {
+    code.text = "";
+
     if (condensedCode) {
       // condense
       int count = allCode.Count;
@@ -101,7 +108,6 @@ public class ConsoleController : MonoBehaviour {
         code.text += s + "\n";
       }
     }
-    panelAllCode.SetActive(true);
   }
 
   public void Status(string text) {
@@ -109,5 +115,13 @@ public class ConsoleController : MonoBehaviour {
     allCode.Add(text);
     instructionCount++;
     updateScoreText();
+
+    // not good for performance but for now this should be ok
+    updateAllCodePanel();
+  }
+
+  public void SetCondensedCode(bool value) {
+    condensedCode = value;
+    updateAllCodePanel();
   }
 }

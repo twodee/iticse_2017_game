@@ -5,7 +5,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Put Coffee on the Table ; instructions
+Help put a cup of coffee on the table.; instructions
 A ; console target
 
 ; Initial Layout

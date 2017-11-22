@@ -5,7 +5,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Swap the Coffee and Cake ; instructions
+Your cafe challenge is now to swap the cup of coffee and the cake. ; instructions
 BA ; console target
 
 ; Initial Layout

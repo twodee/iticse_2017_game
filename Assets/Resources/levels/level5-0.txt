@@ -14,7 +14,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Clear the table with the Coffee ; instructions
+Addy now has a clear table tool which when used on a pipe's origin green square will remove a table from the restaurant. Val now has a set table tool which when used over the blue counter will allocate a new table and create a pipe to the new table. If the tool has a connected pipe and is used on a origin green square it will attach the pipe. Clear the table with the Coffee. ; instructions
 x ; console target
 
 ; Initial Layout

@@ -5,28 +5,27 @@ using UnityEngine.UI;
 
 
 public class ConsoleController : MonoBehaviour {
-  public Text text;
-  LevelController levelController;
+    public Text text;
+    LevelController levelController;
 	private Text instructionText, instructionTextOld, instructionHeaderText, statusText;
- // private InputField statusText;
-  public Text code;
-  private Text scoreText;
-  private int instructionCount;
-  private GameObject panelAllCode;
+    public Text code;
+    private Text scoreText;
+    private int instructionCount;
+    private GameObject panelAllCode;
+	[SerializeField]
+	public Text instructionHeaderText2, instructionBodyText2;
 
-  private ArrayList allCode;
-	private string[] positiveAffirmations = new string[] {"Great work!", "Excellent!", "Order Up!", "Smooth Server!"};
+  	private ArrayList allCode;
+	private string[] positiveAffirmations = new string[] {"Great work!", "Excellent!", "Order Up!", "Smooth Server!", "Sweetener and Cream!"};
+	public GameObject PanelStory, PanelInfo;
 
-  public bool condensedCode;
+  	public bool condensedCode;
 	public GameObject PanelPopUp, HeaderPopUp, BodyPopUp; 
 
   // Use this for initialization
   void Start() {
     text = GetComponent<Text>();
-   // instructionTextOld = GameObject.Find("/canvasHUD2/Instructions").GetComponent<Text>();
-	instructionHeaderText = GameObject.Find("/canvasHUD2/PanelInfo/Panel/TextHeader").GetComponent<Text>();
-	instructionText = GameObject.Find("/canvasHUD2/PanelInfo/Panel/TextBody").GetComponent<Text>();
-
+ 
     statusText = GameObject.Find("/canvasHUD2/PanelHUD/PanelCode/Text").GetComponent<Text>();
     panelAllCode = GameObject.Find("/canvasHUD2/PanelHUD/PanelAllCode");
     allCode = new ArrayList();
@@ -55,24 +54,32 @@ public class ConsoleController : MonoBehaviour {
   }
 
   public void LevelStart() {
+		
+	if ((levelController.Current.world == 0) && (levelController.Current.level == 0)) {
+		PanelStory.SetActive (true);
+		PanelInfo.SetActive (false);
+	} else {
+		PanelStory.SetActive (false);
+		PanelInfo.SetActive (true);
+	}
+
     text.text = "";
     statusText.text = "";
     code.text = "";
     instructionCount = 0;
-		instructionHeaderText.text = "World " + (levelController.Current.world+1) + ", Level " + (levelController.Current.level+1);
+	instructionHeaderText2.text = "World " + (levelController.Current.world+1) + ", Level " + (levelController.Current.level+1);
 
-    instructionText.text = levelController.Current.instructions;
+    instructionBodyText2.text = levelController.Current.instructions;
 	//	instructionTextOld.text = instructionText.text;
     panelAllCode.SetActive(false);
     allCode.Clear();
     updateScoreText();
-
   }
 
   public void LevelEnd() {
 		PanelPopUp.SetActive(true);
 		HeaderPopUp.GetComponent<Text>().text = positiveAffirmations[Random.Range(0,positiveAffirmations.Length)];
-		instructionText.text = ""; //levelController.Current.world.ToString() + "-"
+		instructionBodyText2.text = ""; //levelController.Current.world.ToString() + "-"
    			 //+ levelController.Current.level.ToString() + ": Press = for next level!";
 
     

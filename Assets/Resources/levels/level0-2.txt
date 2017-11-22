@@ -5,7 +5,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Put Three Coffees on the Counter ; instructions
+Put three cups of coffee on the counter. ; instructions
 AAA ; console target
 
 ; Initial Layout

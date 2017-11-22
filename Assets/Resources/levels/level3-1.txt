@@ -20,7 +20,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Put all 3 items on the counter ; instructions
+Help put all 3 items on the counter. ; instructions
 A ; console target
 
 ; Initial Layout

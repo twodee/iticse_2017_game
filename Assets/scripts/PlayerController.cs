@@ -108,7 +108,7 @@ public abstract class PlayerController : MonoBehaviour {
     inactiveTool = null;
   }
 
-  virtual public void Start() {
+  virtual public void Awake() {
     rigidbody = GetComponent<Rigidbody2D>();
     foot = transform.Find("foot").GetComponent<FootController>();
     loot = transform.Find("loot/canvas/text").GetComponent<Text>();
@@ -122,6 +122,10 @@ public abstract class PlayerController : MonoBehaviour {
 
     isAirborne = false;
     isLocked = false;
+  }
+
+  virtual public void Start() {
+    
   }
 
   protected void Interact(bool squish) {

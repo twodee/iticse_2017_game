@@ -5,7 +5,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Help put a cup of coffee and a piece of cake on the counter. ; instructions
+Help place a cup of coffee and a piece of cake on the counter. ; instructions
 AB ; console target
 
 ; Initial Layout

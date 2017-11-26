@@ -72,7 +72,6 @@ public class MainMenuController : MonoBehaviour {
 	public void goToLevelSelect()  
 	{ 
 		// Create the buttons on the screen
-		int levelNum = 1;
 		SoundManager.instance.PlaySingle(simpleButtonSFX);
 		goToGeneric("Level");  
 	}

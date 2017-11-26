@@ -68,13 +68,7 @@ public class HUDController : MonoBehaviour {
 		anim = PanelToggle.GetComponent<Animator>();
 		//disable it on start to stop it from playing the default animation
 		anim.enabled = false;
-		/*if ((levelController.Current.world == 0) && (levelController.Current.level == 0)) {
-			PanelStory.SetActive (true);
-			PanelInfo.SetActive (false);
-		} else {
-			PanelStory.SetActive (false);
-			PanelInfo.SetActive (true);
-		}*/
+
 	}
 
 	#endregion

@@ -67,7 +67,6 @@ public class WorldLoader : MonoBehaviour {
 
 	// This loads (dynamically) the grid on the level select screen.
 	public void LoadLevelSelect() {
-		int level = 0;
 		int worldY = 0;
 		GameObject[] worldPanels = new GameObject[worlds.Count];
 		for (int i=0; i<worlds.Count; i++)

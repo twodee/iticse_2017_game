@@ -69,7 +69,7 @@ public class ConsoleController : MonoBehaviour {
     instructionCount = 0;
 	instructionHeaderText2.text = "World " + (levelController.Current.world+1) + ", Level " + (levelController.Current.level+1);
 
-    instructionBodyText2.text = levelController.Current.instructions;
+		instructionBodyText2.text = System.Text.RegularExpressions.Regex.Unescape(levelController.Current.instructions);
 	//	instructionTextOld.text = instructionText.text;
     panelAllCode.SetActive(false);
     allCode.Clear();

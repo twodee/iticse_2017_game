@@ -5,7 +5,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-More customers have arrived! Help Val get one cup of coffee to Addy. Addy needs to pick it up and move it down the counter (with the T key), to make room for the next cup. ; instructions
+More customers have arrived! Help Val get one cup of coffee to Addy.\n\nWhen no one is looking, Addy uses magic (T key) to replicate the coffee to create more. ; instructions
 AA ; console target
 
 ; Initial Layout

@@ -5,7 +5,7 @@
 9 ; height
 10 ; camera x
 4.5 ; camera y
-Addy has a wrench tool to pick up a delivery pipe or attach a delivery pipe to a green square. Val can push or pull food through the pipe. For this level, put a cup of coffee on the table. ; instructions
+Addy has a wrench tool to pick up a delivery pipe or attach a delivery pipe to a green square. Val can push or pull food through the pipe.\n\nFor this level, put a cup of coffee on the table. ; instructions
 A ; console target
 
 ; Initial Layout

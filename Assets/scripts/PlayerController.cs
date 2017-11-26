@@ -13,6 +13,7 @@ public abstract class PlayerController : MonoBehaviour {
 
   protected bool isAirborne;
   protected new Rigidbody2D rigidbody;
+
   protected PlayerController otherPlayer;
 //  public bool isBurden;
 //  private int otherMask;

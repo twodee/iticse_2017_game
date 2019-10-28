@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: eb8a666ab16034d6bb89d053225b0bde
+timeCreated: 1501878279
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - simpleButtonSFX: {fileID: 8300000, guid: a4e194b73b487473ea95a84ce7b807b3, type: 3}
+  - PanelLevelSelect: {instanceID: 0}
+  - loadingPanel: {instanceID: 0}
+  - UICanvas: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

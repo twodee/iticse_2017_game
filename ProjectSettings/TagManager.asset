@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - player
+  - pointer
+  - linkedCell
+  - cell
+  - ground
+  - counter
+  - cabinet
   layers:
   - Default
   - TransparentFX

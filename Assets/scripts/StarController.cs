@@ -4,52 +4,91 @@ using System.Collections;
 
 public class StarController : PlayerController {
   private AmpersandController ampersand;
-  private Text loot;
+
+
 
   override public void Start() {
     base.Start();
     this.Type = "D";
-    loot = transform.Find("canvas/loot").GetComponent<Text>();
+
     ampersand = GameObject.Find("/players/ampersand").GetComponent<AmpersandController>();
+    otherPlayer = ampersand;
   }
 
-  public void Acquire(string label) {
-    loot.text = label;
+  override public bool IsConnectedToOther() {
+    return true;
   }
 
-  override public void Update() {
-    base.Update();
+
+
+
+
+//  override public void Update() {
+//    if (isLocked) {
+//      return;
+//    }
+
+//    base.Update();
+
+//    if (Input.GetButtonDown("Dereference")) {
+      // check to see if star or ampersand are on same pointer
+//      GameObject on = GetOnPointer();
+//      bool connected = IsConnectedToOther();
+//      if (on == null && connected) {
+//        on = ampersand.GetOnPointer(); // if ampersand is on a pointer and they are close
+//      }
+
+//      if (on != null) {
+//        PointerController pointer = on.GetComponent<PointerController>();
+//        if (pointer.Target != null) {
+//          // teleport the star and ampersand (if connected) on top of the target cell
+//          CellController cc = pointer.Target;
+//          Vector2 pos = (Vector2)cc.transform.position;
+//          BoxCollider2D b = cc.transform.GetComponent<BoxCollider2D>();
+//          float sizeStar = GetComponent<CircleCollider2D>().radius;
+//          float sizeAmp = ampersand.GetComponent<CircleCollider2D>().radius;
+//
+//          gameObject.transform.position = new Vector2(pos.x - sizeStar, pos.y + b.bounds.size.y / 2 + sizeStar);
+//          if (connected) {
+//            ampersand.gameObject.transform.position = new Vector2(pos.x, pos.y + b.bounds.size.y / 2 + sizeAmp);
+//          }
+//        }
+
+//      }
+//    }
+
+//  }
+
+  override public GameObject GetOnPointer() {
+    GameObject pointer = base.GetOnPointer();
+    return pointer != null ? pointer : GetOnPointer(head, CellBehavior.DOWN);
   }
 
-  override public bool IsTransmittable() {
-    return loot.text != "";
+
+
+  override protected void Jump () {
+    rigidbody.AddForce(Vector2.up * 500);
   }
 
-  override public IEnumerator Transmit() {
-    GameObject payload = Instantiate(loot.gameObject);
-    payload.transform.SetParent(ampersand.Target.gameObject.transform.Find("canvas"));
-    payload.transform.position = ampersand.gameObject.transform.position;
 
-    Vector2 startPosition = ampersand.gameObject.transform.position;
-    Vector2 endPosition = ampersand.Target.gameObject.transform.position;
 
-    float startTime = Time.time;
-    float targetTime = 1.0f;
-    float elapsedTime = 0.0f;
-
-    while (elapsedTime <= targetTime) {
-      payload.transform.position = Vector2.Lerp(startPosition, endPosition, elapsedTime / targetTime);
-      yield return null;
-      elapsedTime = Time.time - startTime;
-    }
-
-    Destroy(payload);
-    ampersand.Target.Label = loot.text;
-  }
-
-  public Vector2 LootPosition {
-    get {
-      return loot.gameObject.transform.position;
+  protected override void OnCollisionEnter2D(Collision2D collision) {
+    if (!isLocked) {
+      base.OnCollisionEnter2D(collision);
+      string collisionTag = collision.gameObject.tag;
+      if (collisionTag == "cell" || collisionTag == "pointer" || 
+        collisionTag == "counter" || collisionTag == "cabinet") {
+        // check to see if it is the head that has hit a cell
+        Collider2D hit = Physics2D.OverlapBox(head.position, new Vector2(head.width, head.height), 0, Utilities.GROUND_MASK);
+        if (hit != null && hit.gameObject == collision.gameObject) {
+          if (hit.gameObject.tag == "cell" || hit.gameObject.tag == "pointer") {
+            Interact(false);
+          }
+          else if (hit.gameObject.tag == "counter" || hit.gameObject.tag == "cabinet") {
+            Bump();
+          }
+        }
+      }
     }
   }
 }
